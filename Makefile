@@ -17,9 +17,9 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-CORE = dyn_allocator class
+CORE = dyn_allocator class malloc
 
-SRC_LIST = $(CORE) 
+SRC_LIST = $(CORE)
 
 VPATH = srcs/core
 
@@ -63,7 +63,7 @@ fclean:
 	rm -f $(OBJ)
 	rm -f $(NAME)_$(HOSTTYPE).so
 	rm -f $(NAME).so
-	
+
 top_level_rebuild_libft:
 	make -C $(LIBFT)/ all DEBUG=$(DEBUG)
 
