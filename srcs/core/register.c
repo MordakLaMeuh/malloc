@@ -1,23 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   class.c                                            :+:      :+:    :+:   */
+/*   register.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/22 17:55:27 by bmickael          #+#    #+#             */
-/*   Updated: 2018/04/22 18:11:56 by bmickael         ###   ########.fr       */
+/*   Created: 2018/04/22 17:44:07 by bmickael          #+#    #+#             */
+/*   Updated: 2018/04/22 17:50:30 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include "dyn_allocator.h"
 
-void	before_start(void)
+int				add_reg_entry(void *addr, size_t size)
 {
-	ctx.page_size = (size_t)getpagesize();
-	ctx.idx_page_count = 0;
-	ctx.first_idx_page = NULL;
-	ctx.first_reg_page = NULL;
-	printf("size of idx = %lu\n", sizeof(struct s_idx_page_description));
+	struct s_reg_page *reg_page;
+
+	reg_page = (struct s_reg_page *)get_new_pages(1);
+	(void)reg_page;
+	(void)addr;
+	(void)size;
+	return (0);
+}
+
+int				del_reg_entry(void *addr)
+{
+	(void)addr;
+	return (0);
 }

@@ -27,6 +27,7 @@
 # include <libft.h>
 
 struct s_idx_page;
+struct s_reg_page;
 
 enum		e_page_type {
 	TINY = 0,
@@ -39,16 +40,26 @@ enum		e_allocated {
 	ALLOCATED
 };
 
-struct					s_ctx {
+struct		s_ctx {
 	size_t				page_size;
 	int					idx_page_count;
 	struct s_idx_page	*first_idx_page;
+	struct s_reg_page	*first_reg_page;
 } ctx;
 
-struct		s_primary_block {
-	struct s_idx_page	*next_idx_page;
-	int					nb_page_desc;
-} __attribute__((aligned(32)));
+struct		s_data_page {
+	uint8_t				*content;
+};
+
+struct		s_primary_idx_block {
+	struct s_idx_page	*next;
+	int					nb_idx;
+} __attribute__((aligned(16)));
+
+struct		s_primary_reg_block {
+	struct s_reg_page	*next;
+	size_t				nb_reg;
+} __attribute__((aligned(16)));
 
 struct		s_idx_page_description {
 	uint64_t			mask_sector_a;
@@ -56,24 +67,35 @@ struct		s_idx_page_description {
 	uint64_t			mask_sector_c;
 	uint64_t			mask_sector_d;
 	enum e_page_type	type;
-	void				*page;
+	struct s_data_page	*page;
 	enum e_allocated	allocated;
 } __attribute__((aligned(64)));
 
+struct		s_reg {
+	void	*addr;
+	size_t	size;
+} __attribute__((aligned(16)));
+
+struct		s_reg_page {
+	struct s_primary_reg_block		primary_block;
+	struct s_reg					reg[];
+};
+
 struct		s_idx_page {
-	struct s_primary_block			primary_block;
+	struct s_primary_idx_block		primary_block;
 	struct s_idx_page_description	page_desc_field[];
 };
 
 void		before_start(void) __attribute__((constructor));
 
-struct s_idx_page				*get_new_idx_page(void);
+void		*get_new_pages(int nb);
+int			destroy_pages(void *addr, int nb);
 
-void							*claim_new_data_page(void);
-struct s_idx_page_description	*create_new_idx(
-	struct s_idx_page *idx_page,
-	int n_idx,
-	enum e_page_type type);
-
+/*
+** struct s_idx_page_description	*create_new_idx(
+**	struct s_idx_page *idx_page,
+**	int n_idx,
+**	enum e_page_type type);
+*/
 
 #endif

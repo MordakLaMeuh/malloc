@@ -17,7 +17,7 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-CORE = dyn_allocator class malloc
+CORE = dyn_allocator class malloc register common
 
 SRC_LIST = $(CORE)
 
