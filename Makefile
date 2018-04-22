@@ -4,9 +4,9 @@ CC = gcc
 ### MAIN FLAGS ###
 
 ifeq ($(DEBUG),yes)
-	CFLAGS = -fpic -pedantic -Wextra -Wall -Werror -g -O0 -fsanitize=address
+	CFLAGS = -std=c99 -fpic -pedantic -Wextra -Wall -Werror -g -O0 -fsanitize=address
 else
-	CFLAGS = -fpic -pedantic -Wextra -Wall -Werror
+	CFLAGS = -std=c99 -fpic -pedantic -Wextra -Wall -Werror
 endif
 
 ### LIBRAIRIES ###
@@ -28,6 +28,10 @@ VPATH = srcs/core
 MAIN_HEADER = libft_alloc.h
 _HEADERS =
 
+ifeq ($(HOSTTYPE),)
+HOSTTYPE = $(shell uname -m)_$(shell uname -s)
+endif
+
 SRC = $(addsuffix .c, $(SRC_LIST))
 OBJ_DIR = objs
 __OBJ__ = $(basename $(notdir $(SRC)))
@@ -40,34 +44,30 @@ LDFLAGS = -shared -L$(LIBFT) -lft
 
 .PHONY: all clean fclean re help
 
-all: create_lib_name $(OBJ) link
-	make -C $(LIBFT)/ all DEBUG=$(DEBUG)
+all: top_level_rebuild_libft $(NAME).so
+
+$(NAME).so: $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME)_$(HOSTTYPE).so $(OBJ) $(LDFLAGS)
-	@echo "done"
+	rm -f $(NAME).so
+	ln -s libft_malloc_$(HOSTTYPE).so $(NAME).so
 
 $(OBJ_DIR)/%.o: %.c $(HEADERS) Makefile
 	$(CC) -c $(CFLAGS) -o $@ $< $(IFLAGS)
 
-clean: create_lib_name
+clean:
 	make -C $(LIBFT)/ clean
 	rm -f $(OBJ)
 
-fclean: create_lib_name
+fclean:
 	make -C $(LIBFT)/ fclean
 	rm -f $(OBJ)
 	rm -f $(NAME)_$(HOSTTYPE).so
 	rm -f $(NAME).so
+	
+top_level_rebuild_libft:
+	make -C $(LIBFT)/ all DEBUG=$(DEBUG)
 
 re: fclean all
-
-create_lib_name:
-ifeq ($(HOSTTYPE),)
-HOSTTYPE = $(shell uname -m)_$(shell uname -s)
-endif
-
-link:
-	rm -f $(NAME).so
-	ln -s libft_malloc_$(HOSTTYPE).so $(NAME).so
 
 help:
 	@echo

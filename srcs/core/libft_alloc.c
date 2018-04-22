@@ -1,4 +1,6 @@
 
+void begin (void) __attribute__((constructor));
+
 #include <libft.h>
 
 void       free(void *ptr) {
@@ -26,4 +28,10 @@ void       *calloc(size_t count, size_t size)
 	(void)size;
 	(void)count;
 	return NULL;
+}
+
+void begin(void)
+{
+	ft_putstr("custom constructor called !\n");
+
 }
