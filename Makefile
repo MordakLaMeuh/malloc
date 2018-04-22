@@ -1,4 +1,4 @@
-NAME = libft_malloc_
+NAME = libft_malloc
 CC = gcc
 
 ### MAIN FLAGS ###
@@ -42,20 +42,21 @@ LDFLAGS = -shared -L$(LIBFT) -lft
 
 all: create_lib_name $(OBJ) link
 	make -C $(LIBFT)/ all DEBUG=$(DEBUG)
-	$(CC) $(CFLAGS) -o $(NAME)$(HOSTTYPE).so $(OBJ) $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $(NAME)_$(HOSTTYPE).so $(OBJ) $(LDFLAGS)
 	@echo "done"
 
 $(OBJ_DIR)/%.o: %.c $(HEADERS) Makefile
 	$(CC) -c $(CFLAGS) -o $@ $< $(IFLAGS)
 
-clean:
+clean: create_lib_name
 	make -C $(LIBFT)/ clean
 	rm -f $(OBJ)
 
-fclean:
+fclean: create_lib_name
 	make -C $(LIBFT)/ fclean
 	rm -f $(OBJ)
-	rm -f $(NAME)
+	rm -f $(NAME)_$(HOSTTYPE).so
+	rm -f $(NAME).so
 
 re: fclean all
 
@@ -65,8 +66,8 @@ HOSTTYPE = $(shell uname -m)_$(shell uname -s)
 endif
 
 link:
-	rm -f libft_malloc.so
-	ln -s libft_malloc_$(HOSTTYPE).so libft_malloc.so
+	rm -f $(NAME).so
+	ln -s libft_malloc_$(HOSTTYPE).so $(NAME).so
 
 help:
 	@echo
