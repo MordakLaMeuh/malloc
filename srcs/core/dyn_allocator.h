@@ -51,11 +51,14 @@ struct		s_primary_block {
 } __attribute__((aligned(32)));
 
 struct		s_idx_page_description {
+	uint64_t			mask_sector_a;
+	uint64_t			mask_sector_b;
+	uint64_t			mask_sector_c;
+	uint64_t			mask_sector_d;
 	enum e_page_type	type;
-	uint64_t			mask_sector;
 	void				*page;
 	enum e_allocated	allocated;
-} __attribute__((aligned(32)));
+} __attribute__((aligned(64)));
 
 struct		s_idx_page {
 	struct s_primary_block			primary_block;

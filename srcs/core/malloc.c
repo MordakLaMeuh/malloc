@@ -21,7 +21,7 @@ void			*malloc(size_t size)
 	idx_page->primary_block.next_idx_page = NULL;
 	struct s_idx_page_description *desc = &idx_page->page_desc_field[0];
 	desc->type = TINY;
-	desc->mask_sector |= 1;
+	desc->mask_sector_a |= 1;
 	desc->page = mmap(NULL, ctx.page_size, PROT_READ | PROT_WRITE, MAP_ANON | MAP_PRIVATE, -1, 0);
 	desc->allocated = ALLOCATED;
 	return (desc->page);
