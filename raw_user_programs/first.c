@@ -5,5 +5,6 @@
 
 int main(void) {
 	char *s = malloc(10);
+	free(s);
 	return 0;
 }

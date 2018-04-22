@@ -1,1 +1,1 @@
-export DYLD_LIBRARY_PATH=~/Desktop/malloc/:/Users/bmickael/Desktop/malloc/:/Users/bmickael/Desktop/malloc/:
+export DYLD_LIBRARY_PATH=~/Desktop/malloc/:DYLD_LIBRARY_PATH
