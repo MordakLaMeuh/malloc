@@ -17,7 +17,7 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-CORE = libft_alloc
+CORE = dyn_allocator class
 
 SRC_LIST = $(CORE) 
 
@@ -26,7 +26,7 @@ VPATH = srcs/core
 ## HEADERS
 
 MAIN_HEADER = libft_alloc.h
-_HEADERS =
+_HEADERS = dyn_allocator
 
 ifeq ($(HOSTTYPE),)
 HOSTTYPE = $(shell uname -m)_$(shell uname -s)
