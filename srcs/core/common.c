@@ -36,5 +36,7 @@ void		*get_new_pages(int nb)
 
 int			destroy_pages(void *addr, int nb)
 {
-	return (munmap(addr, ctx.page_size * nb));
+	return (munmap(
+		addr,
+		ctx.page_size * nb));
 }

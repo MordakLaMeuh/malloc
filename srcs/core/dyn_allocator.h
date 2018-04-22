@@ -13,8 +13,8 @@
 #ifndef DYN_ALLOCATOR_H
 # define DYN_ALLOCATOR_H
 
-# define TINY_SIZE_MAX 64
-# define MEDIUM_SIZE_MAX 4096
+# define TINY_SIZE_MAX 1024 - 16
+# define MEDIUM_SIZE_MAX 131072 - 512
 
 # include <sys/mman.h>
 # include <stdint.h>
@@ -29,6 +29,12 @@
 struct s_idx_page;
 struct s_reg_page;
 
+struct		s_ctx {
+	size_t				page_size;
+	struct s_idx_page	*first_idx_page;
+	struct s_reg_page	*first_reg_page;
+} ctx;
+
 enum		e_page_type {
 	TINY = 0,
 	MEDIUM,
@@ -40,13 +46,6 @@ enum		e_allocated {
 	ALLOCATED
 };
 
-struct		s_ctx {
-	size_t				page_size;
-	int					idx_page_count;
-	struct s_idx_page	*first_idx_page;
-	struct s_reg_page	*first_reg_page;
-} ctx;
-
 struct		s_data_page {
 	uint8_t				*content;
 };
@@ -54,7 +53,7 @@ struct		s_data_page {
 struct		s_primary_idx_block {
 	struct s_idx_page	*next;
 	int					nb_idx;
-} __attribute__((aligned(16)));
+} __attribute__((aligned(64)));
 
 struct		s_primary_reg_block {
 	struct s_reg_page	*next;
