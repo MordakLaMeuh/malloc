@@ -15,9 +15,9 @@
 
 # include <stdlib.h>
 
-void	free(void *ptr);
-void	*malloc(size_t size);
-void	*realloc(void *ptr, size_t size);
-void	*calloc(size_t count, size_t size);
+void	ft_free(void *ptr);
+void	*ft_malloc(size_t size);
+void	*ft_realloc(void *ptr, size_t size);
+void	*ft_calloc(size_t count, size_t size);
 
 #endif

@@ -13,9 +13,14 @@
 #include <unistd.h>
 #include "dyn_allocator.h"
 
-void	before_start(void)
+void _constructor(void)
 {
+	printf("Constructor called\n");
+#ifdef __APPLE__
 	ctx.page_size = (size_t)getpagesize();
+#else
+	ctx.page_size = sysconf(_SC_PAGESIZE);
+#endif
 	ctx.first_idx_page = NULL;
 	ctx.first_reg_page = NULL;
 	printf("--- DEBUG SUMMARY ---\n");
@@ -25,4 +30,9 @@ void	before_start(void)
 	printf("size of reg_field = %lu\n", sizeof(struct s_reg));
 	printf("size of pri_reg = %lu\n", sizeof(struct s_primary_reg_block));
 	printf("---------------------\n");
+}
+
+void _destructor(void)
+{
+	printf("Destructor called\n");
 }

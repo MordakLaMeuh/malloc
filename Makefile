@@ -4,9 +4,9 @@ CC = gcc
 ### MAIN FLAGS ###
 
 ifeq ($(DEBUG),yes)
-	CFLAGS = -std=c99 -fpic -pedantic -Wextra -Wall -Werror -g -O0 -fsanitize=address
+	CFLAGS = -std=c99 -fPIC -pedantic -Wextra -Wall -Werror -g -O0 -fsanitize=address
 else
-	CFLAGS = -std=c99 -fpic -pedantic -Wextra -Wall -Werror
+	CFLAGS = -std=c99 -fPIC -pedantic -Wextra -Wall -Werror
 endif
 
 ### LIBRAIRIES ###

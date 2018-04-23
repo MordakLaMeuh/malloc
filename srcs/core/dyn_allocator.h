@@ -85,16 +85,10 @@ struct		s_idx_page {
 	struct s_idx_page_description	page_desc_field[];
 };
 
-void		before_start(void) __attribute__((constructor));
+void __attribute__((constructor)) _constructor();
+void __attribute__((destructor)) _destructor();
 
 void		*get_new_pages(int nb);
 int			destroy_pages(void *addr, int nb);
-
-/*
-** struct s_idx_page_description	*create_new_idx(
-**	struct s_idx_page *idx_page,
-**	int n_idx,
-**	enum e_page_type type);
-*/
 
 #endif

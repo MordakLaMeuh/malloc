@@ -24,7 +24,11 @@ void		*get_new_pages(int nb)
 		NULL,
 		ctx.page_size * nb,
 		PROT_READ | PROT_WRITE,
+#ifdef __APPLE__
 		MAP_ANON | MAP_PRIVATE,
+#else
+		MAP_PRIVATE,
+#endif
 		-1,
 		0);
 	return (new_page == MAP_FAILED) ? NULL : new_page;

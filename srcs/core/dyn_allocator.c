@@ -12,13 +12,13 @@
 
 #include "dyn_allocator.h"
 
-void			free(void *ptr)
+void			ft_free(void *ptr)
 {
 	ft_putstr("custom free called !\n");
 	(void)ptr;
 }
 
-void			*realloc(void *ptr, size_t size)
+void			*ft_realloc(void *ptr, size_t size)
 {
 	ft_putstr("custom realoc called !\n");
 	(void)ptr;
@@ -26,7 +26,7 @@ void			*realloc(void *ptr, size_t size)
 	return (NULL);
 }
 
-void			*calloc(size_t count, size_t size)
+void			*ft_calloc(size_t count, size_t size)
 {
 	ft_putstr("custom calloc called !\n");
 	(void)size;
