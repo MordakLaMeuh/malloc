@@ -13,6 +13,8 @@
 #ifndef DYN_ALLOCATOR_H
 # define DYN_ALLOCATOR_H
 
+# define DEBUG_INFO 1
+
 # define TINY_SIZE_MAX 1024 - 16
 # define MEDIUM_SIZE_MAX 131072 - 512
 
@@ -61,10 +63,8 @@ struct		s_primary_reg_block {
 } __attribute__((aligned(16)));
 
 struct		s_idx_page_description {
-	uint64_t			mask_sector_a;
-	uint64_t			mask_sector_b;
-	uint64_t			mask_sector_c;
-	uint64_t			mask_sector_d;
+	__uint128_t			mask_sector_a;
+	__uint128_t			mask_sector_b;
 	enum e_page_type	type;
 	struct s_data_page	*page;
 	enum e_allocated	allocated;
