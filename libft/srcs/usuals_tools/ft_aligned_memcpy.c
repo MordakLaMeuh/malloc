@@ -12,7 +12,6 @@
 
 #include "libft.h"
 #include <stdint.h>
-#include <stdio.h>
 
 void	*ft_aligned_memcpy(
 	void *restrict dst,

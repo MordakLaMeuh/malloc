@@ -55,8 +55,8 @@ void _constructor(void)
     printf("RLIMIT_DATA -> current: %lu, max: %lu\n",
         (ctx.mem_limit.rlim_cur == ULONG_MAX) ? 0 : ctx.mem_limit.rlim_cur,
         (ctx.mem_limit.rlim_max == ULONG_MAX) ? 0 : ctx.mem_limit.rlim_max);
-		printf("size of record block: %lu\n", sizeof(struct s_record));
-		printf("size of pri_record: %lu\n", sizeof(struct s_primary_record));
+	printf("size of record block: %lu\n", sizeof(struct s_record));
+	printf("size of pri_record: %lu\n", sizeof(struct s_primary_record));
 	printf("record per page: %i, trash: %lu\n",
 		ctx.record_density,
 		ctx.page_size -

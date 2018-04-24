@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft_alloc.c                                      :+:      :+:    :+:   */
+/*   realloc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,13 +17,5 @@ void			*ft_realloc(void *ptr, size_t size)
 	ft_putstr("custom realoc called !\n");
 	(void)ptr;
 	(void)size;
-	return (NULL);
-}
-
-void			*ft_calloc(size_t count, size_t size)
-{
-	ft_putstr("custom calloc called !\n");
-	(void)size;
-	(void)count;
 	return (NULL);
 }

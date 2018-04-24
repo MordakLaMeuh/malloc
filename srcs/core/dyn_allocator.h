@@ -45,8 +45,8 @@ struct		s_primary_record {
 } __attribute__((aligned(32)));
 
 struct		s_record {
-	void	*addr;
-	size_t	size;
+	void					*addr;
+	size_t					size;
 } __attribute__((aligned(16)));
 
 struct		s_record_page {
@@ -54,15 +54,15 @@ struct		s_record_page {
 	struct s_record			record[];
 };
 
-void __attribute__((constructor)) _constructor();
-void __attribute__((destructor)) _destructor();
+void __attribute__((constructor))	_constructor();
+void __attribute__((destructor))	_destructor();
 
-void			*get_new_pages(int nb);
-int				destroy_pages(void *addr, int nb);
+void								*get_new_pages(int nb);
+int									destroy_pages(void *addr, int nb);
 
-struct s_record	*search_record(void *addr);
-int				del_record(struct s_record *record);
-struct s_record	*get_new_record(void);
+struct s_record						*search_record(void *addr);
+struct s_record						*get_new_record(void);
+int									del_record(struct s_record *record);
 
 
 
