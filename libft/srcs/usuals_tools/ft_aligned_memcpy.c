@@ -1,29 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft_alloc.c                                      :+:      :+:    :+:   */
+/*   ft_aligned_memcpy.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/22 17:44:07 by bmickael          #+#    #+#             */
-/*   Updated: 2018/04/22 17:50:30 by bmickael         ###   ########.fr       */
+/*   Created: 2017/04/10 14:27:36 by bmickael          #+#    #+#             */
+/*   Updated: 2017/04/26 01:30:19 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
+#include "libft.h"
+#include <stdint.h>
+#include <stdio.h>
 
-void			*ft_realloc(void *ptr, size_t size)
+void	*ft_aligned_memcpy(
+	void *restrict dst,
+	const void *restrict src,
+	size_t n)
 {
-	ft_putstr("custom realoc called !\n");
-	(void)ptr;
-	(void)size;
-	return (NULL);
-}
+	uint64_t *src1;
+	uint64_t *dst1;
 
-void			*ft_calloc(size_t count, size_t size)
-{
-	ft_putstr("custom calloc called !\n");
-	(void)size;
-	(void)count;
-	return (NULL);
+	if (src == dst)
+		return ((void *)src);
+	src1 = (uint64_t *)src;
+	dst1 = (uint64_t *)dst;
+	n >>= 3;
+	while (n--)
+		*dst1++ = *src1++;
+	return (dst);
 }

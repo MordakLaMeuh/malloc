@@ -13,13 +13,11 @@
 #ifndef DYN_ALLOCATOR_H
 # define DYN_ALLOCATOR_H
 
-# define DEBUG_INFO 1
-
-# define TINY_SIZE_MAX 1024 - 16
-# define MEDIUM_SIZE_MAX 131072 - 512
+//# define DEBUG_INFO 0
 
 # include <sys/mman.h>
 # include <stdint.h>
+# include <sys/resource.h>
 
 /*
 ** XXX Debuging include
@@ -29,23 +27,54 @@
 # include <libft.h>
 
 struct s_idx_page;
-struct s_reg_page;
+struct s_record_page;
+struct s_data_page;
 
 struct		s_ctx {
-	size_t				page_size;
-	struct s_idx_page	*first_idx_page;
-	struct s_reg_page	*first_reg_page;
+	size_t					page_size;
+    struct rlimit			mem_limit;
+    struct s_record_page	*first_record_page;
+	struct s_record_page	*last_record_page;
+	int						record_density;
 } ctx;
+
+struct		s_primary_record {
+	struct s_record_page   *next;
+	struct s_record_page   *prev;
+    int                     nb_record;
+} __attribute__((aligned(32)));
+
+struct		s_record {
+	void	*addr;
+	size_t	size;
+} __attribute__((aligned(16)));
+
+struct		s_record_page {
+	struct s_primary_record	primary_block;
+	struct s_record			record[];
+};
+
+void __attribute__((constructor)) _constructor();
+void __attribute__((destructor)) _destructor();
+
+void			*get_new_pages(int nb);
+int				destroy_pages(void *addr, int nb);
+
+struct s_record	*search_record(void *addr);
+int				del_record(struct s_record *record);
+struct s_record	*get_new_record(void);
+
+
+
+
+
+# define TINY_SIZE_MAX 1024 - 16
+# define MEDIUM_SIZE_MAX 131072 - 512
 
 enum		e_page_type {
 	TINY = 0,
 	MEDIUM,
 	LARGE
-};
-
-enum		e_allocated {
-	NO_ALLOCATED = 0,
-	ALLOCATED
 };
 
 struct		s_data_page {
@@ -57,38 +86,16 @@ struct		s_primary_idx_block {
 	int					nb_idx;
 } __attribute__((aligned(64)));
 
-struct		s_primary_reg_block {
-	struct s_reg_page	*next;
-	size_t				nb_reg;
-} __attribute__((aligned(16)));
-
 struct		s_idx_page_description {
 	__uint128_t			mask_sector_a;
 	__uint128_t			mask_sector_b;
 	enum e_page_type	type;
 	struct s_data_page	*page;
-	enum e_allocated	allocated;
 } __attribute__((aligned(64)));
-
-struct		s_reg {
-	void	*addr;
-	size_t	size;
-} __attribute__((aligned(16)));
-
-struct		s_reg_page {
-	struct s_primary_reg_block		primary_block;
-	struct s_reg					reg[];
-};
 
 struct		s_idx_page {
 	struct s_primary_idx_block		primary_block;
 	struct s_idx_page_description	page_desc_field[];
 };
-
-void __attribute__((constructor)) _constructor();
-void __attribute__((destructor)) _destructor();
-
-void		*get_new_pages(int nb);
-int			destroy_pages(void *addr, int nb);
 
 #endif

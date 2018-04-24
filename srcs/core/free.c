@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   malloc.c                                           :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -14,25 +14,30 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-void			*ft_malloc(size_t size)
+void			ft_free(void *ptr)
 {
-	struct s_record *record;
+	struct s_record	*record;
+	int				ret;
 
 #ifdef DEBUG_INFO
-	ft_putstr("custom malloc called !\n");
+	ft_putstr("custom free called !\n");
 #endif
-	record = get_new_record();
+	record = search_record(ptr);
 	if (record == NULL) {
-		ft_putstr_fd("Cannot allocate new record page\n", STDERR_FILENO);
+		ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
 		exit (1);
 	}
-	record->addr = (void *)(uint64_t)rand();
+
 #ifdef DEBUG_INFO
-	printf("generating addr to %p\n", record->addr);
+	ft_putstr("founded !\n");
 #endif
-	record->size = size;
+	ret = del_record(record);
+	if (ret < 0) {
+		ft_putstr_fd("Unexpected error\n", STDERR_FILENO);
+		exit (1);
+	}
+
 #ifdef DEBUG_INFO
-	ft_putstr("custom malloc success\n");
+	ft_putstr("custom free success\n");
 #endif
-	return record->addr;
 }
