@@ -30,7 +30,7 @@ void			*ft_malloc(size_t size)
 #ifdef DEBUG_INFO
 	printf("generating addr to %p\n", record->addr);
 #endif
-	record->size = size;
+	record->size = (uint32_t)size >> 4;
 #ifdef DEBUG_INFO
 	ft_putstr("custom malloc success\n");
 #endif

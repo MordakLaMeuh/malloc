@@ -6,7 +6,7 @@ CC = gcc
 ifeq ($(DEBUG),yes)
 	CFLAGS = -std=c99 -fPIC -pedantic -Wextra -Wall -Werror -g -O0 -fsanitize=address
 else
-	CFLAGS = -std=c99 -fPIC -pedantic -Wextra -Wall -Werror
+	CFLAGS = -Ofast -std=c99 -fPIC -pedantic -Wextra -Wall -Werror
 endif
 
 ### LIBRAIRIES ###
