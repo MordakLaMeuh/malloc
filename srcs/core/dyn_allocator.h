@@ -33,6 +33,7 @@
 struct s_data_page;
 struct s_record_page;
 struct s_index_page;
+struct s_node_page;
 
 struct s_ctx {
 	size_t					page_size;
@@ -43,16 +44,10 @@ struct s_ctx {
 	struct s_index_page		*last_index_page;
 	int						record_density;
 	int						index_density;
+	struct s_node_page		*record_addr_tree;
+	struct s_node_page		*index_addr_tree;
+	struct s_node_page		*index_space_tree;
 } ctx;
-
-/*
-** Color for Black & White binary tree
-*/
-
-enum		e_color {
-	RED = 0,
-	BLACK
-};
 
 /*
 ** Data page
@@ -81,11 +76,8 @@ struct		s_primary_record {
 
 struct		s_record {
 	void					*addr;
-	struct s_record			*left_addr;
-	struct s_record			*right_addr;
-	enum e_color			color_addr;
 	uint32_t				size;
-} __attribute__((aligned(32)));
+} __attribute__((aligned(16)));
 
 struct		s_record_page {
 	struct s_primary_record	primary_block;
@@ -102,7 +94,7 @@ struct		s_primary_index {
 	struct s_index_page		*next;
 	struct s_index_page		*prev;
     int						nb_index;
-} __attribute__((aligned(128)));
+} __attribute__((aligned(64)));
 
 enum		e_page_type {
 	TINY = 0,
@@ -115,19 +107,42 @@ struct		s_index {
 	__uint64_t				chunk_b;
 	__uint64_t				chunk_c;
 	__uint64_t				chunk_d;
-	struct s_index			*left_addr;
-	struct s_index			*right_addr;
-	enum e_color			color_addr;
-	struct s_index			*left_space;
-	struct s_index			*right_space;
-	enum e_color			color_space;
 	struct s_data_page		*page;
 	enum e_page_type		type;
-} __attribute__((aligned(128)));
+} __attribute__((aligned(64)));
 
 struct		s_index_page {
 	struct s_primary_index	primary_block;
 	struct s_index			index[];
+};
+
+/*
+** Color for Black & White binary tree
+*/
+
+struct s_node;
+
+enum		e_color {
+	RED = 0,
+	BLACK
+};
+
+struct		s_primary_node {
+	struct s_node_page		*next;
+	struct s_node_page		*prev;
+    int						nb_node;
+} __attribute__((aligned(32)));
+
+struct		s_node {
+	struct s_node			*left;
+	struct s_node			*right;
+	void					*content;
+	enum e_color			color;
+} __attribute__((aligned(32)));
+
+struct		s_node_page {
+	struct s_primary_node	primary_block;
+	struct s_node			node[];
 };
 
 /*
