@@ -20,7 +20,8 @@ struct s_record				*get_new_record(void)
 	tmp = ctx.last_record_page;
 	if (tmp == NULL || tmp->primary_block.nb_record == ctx.record_density)
 	{
-		ctx.last_record_page = (struct s_record_page *)get_new_pages(1);
+		ctx.last_record_page =
+			(struct s_record_page *)get_new_pages(ctx.page_size);
 		if (ctx.last_record_page == NULL)
 			return (NULL);
 		if (ctx.first_record_page == NULL)
@@ -60,13 +61,13 @@ int							del_record(struct s_record *record)
 		else
 			ctx.first_record_page = NULL;
 		ctx.last_record_page = last_record_page->primary_block.prev;
-		if (destroy_pages(last_record_page, 1) < 0)
+		if (destroy_pages(last_record_page, ctx.page_size) < 0)
 			return (-1);
 	}
 	return (0);
 }
 
-struct s_record				*search_record(void *addr)
+struct s_record				*search_record(uint64_t addr)
 {
 	struct s_record_page	*record_page;
 	int						i;

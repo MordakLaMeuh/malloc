@@ -49,6 +49,9 @@ void _constructor(void)
 	ctx.record_density =
 		(ctx.page_size - sizeof(struct s_primary_record)) /
 		sizeof(struct s_record);
+	ctx.index_density =
+		(ctx.page_size - sizeof(struct s_primary_index)) /
+		sizeof(struct s_index);
 #ifdef DEBUG_INFO
 	printf("--- DEBUG SUMMARY ---\n");
 	printf("page_size: %lu\n", ctx.page_size);
@@ -62,9 +65,11 @@ void _constructor(void)
 		ctx.page_size -
 		(ctx.record_density * sizeof(struct s_record) +
 		sizeof(struct s_primary_record)));
-
-	printf("size of idx_field: %lu\n", sizeof(struct s_idx_page_description));
-	printf("size of pri_idx: %lu\n", sizeof(struct s_primary_idx_block));
+	printf("index per page: %i, trash: %lu\n",
+		ctx.index_density,
+		ctx.page_size -
+		(ctx.index_density * sizeof(struct s_index) +
+		sizeof(struct s_primary_index)));
 	printf("---------------------\n");
 #endif
 }

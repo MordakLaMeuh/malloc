@@ -44,6 +44,7 @@ struct s_ctx {
 	struct s_index_page		*last_index_page;
 	int						record_density;
 	int						index_density;
+
 	struct s_node_page		*record_addr_tree;
 	struct s_node_page		*index_addr_tree;
 	struct s_node_page		*index_space_tree;
@@ -53,13 +54,17 @@ struct s_ctx {
 ** Data page
 */
 
-# define TINY_BLOCK_SIZE	16
-# define MEDIUM_BLOCK_SIZE	512
-# define TINY_LIMIT			496
-# define MEDIUM_LIMIT		16124
+# define TINY_SHR			4
+# define MEDIUM_SHR			9
+# define TINY_BLOCK_SIZE	(1 << TINY_SHR)
+# define MEDIUM_BLOCK_SIZE	(1 << MEDIUM_SHR)
+# define TINY_LIMIT			(TINY_BLOCK_SIZE * 32 - TINY_BLOCK_SIZE)
+# define MEDIUM_LIMIT		(MEDIUM_BLOCK_SIZE * 32 - MEDIUM_BLOCK_SIZE)
+# define TINY_RANGE			(TINY_BLOCK_SIZE * 256)
+# define MEDIUM_RANGE		(MEDIUM_BLOCK_SIZE * 256)
 
 struct		s_data_page {
-	void					*content;
+	uint64_t				*content;
 };
 
 /*
@@ -75,8 +80,8 @@ struct		s_primary_record {
 } __attribute__((aligned(32)));
 
 struct		s_record {
-	void					*addr;
-	uint32_t				size;
+	uint64_t				addr;
+	size_t					size;
 } __attribute__((aligned(16)));
 
 struct		s_record_page {
@@ -107,7 +112,7 @@ struct		s_index {
 	__uint64_t				chunk_b;
 	__uint64_t				chunk_c;
 	__uint64_t				chunk_d;
-	struct s_data_page		*page;
+	__uint64_t				page_addr;
 	enum e_page_type		type;
 } __attribute__((aligned(64)));
 
@@ -152,11 +157,14 @@ struct		s_node_page {
 void __attribute__((constructor))	_constructor();
 void __attribute__((destructor))	_destructor();
 
-void								*get_new_pages(int nb);
-int									destroy_pages(void *addr, int nb);
+void								*get_new_pages(size_t size);
+int									destroy_pages(void *addr, size_t size);
 
-struct s_record						*search_record(void *addr);
-struct s_record						*get_new_record(void);
+struct s_record						*search_record(uint64_t addr);
+struct s_record						*get_new_record();
 int									del_record(struct s_record *record);
+
+uint64_t							assign_index(size_t size);
+int									del_index(uint64_t addr, size_t size);
 
 #endif

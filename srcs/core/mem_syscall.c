@@ -16,16 +16,16 @@
 #define MAP_ANONYMOUS	0x20
 
 /*
-** Claim pages from Kernel, size is calibrated to page_size.
+** Claim pages from Kernel, size may be calibrated to page_size.
 */
 
-void		*get_new_pages(int nb)
+void		*get_new_pages(size_t size)
 {
 	void *new_page;
 
 	new_page = mmap(
 		NULL,
-		ctx.page_size * nb,
+		size,
 		PROT_READ | PROT_WRITE,
 #ifdef __APPLE__
 		MAP_ANON | MAP_PRIVATE,
@@ -34,18 +34,22 @@ void		*get_new_pages(int nb)
 #endif
 		-1,
 		0);
-	printf("* NEW PAGE ALLOCATED nb: %i addr: %p *\n", nb, new_page);
+#ifdef DEBUG_PAGES
+	printf("* NEW PAGE ALLOCATED size: %lu addr: %p *\n", size, new_page);
+#endif
 	return (new_page == MAP_FAILED) ? NULL : new_page;
 }
 
 /*
-** Say to lernel to destroy pages, size is calibrated to page_size.
+** Say to lernel to destroy pages, size may be calibrated to page_size.
 */
 
-int			destroy_pages(void *addr, int nb)
+int			destroy_pages(void *addr, size_t size)
 {
-	printf("* DESTROYING PAGE nb: %i addr: %p *\n", nb, addr);
+#ifdef DEBUG_PAGES
+	printf("* DESTROYING PAGE nb: %lu addr: %p *\n", size, addr);
+#endif
 	return (munmap(
 		addr,
-		ctx.page_size * nb));
+		size));
 }
