@@ -91,5 +91,6 @@ void			*ft_realloc(void *ptr, size_t size)
 void			ft_debug_allocator(void)
 {
 	pthread_mutex_lock(&mut);
+	core_debug();
 	pthread_mutex_unlock(&mut);
 }

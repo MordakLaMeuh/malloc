@@ -190,4 +190,6 @@ int									fill(
 	uint64_t *field,
 	uint32_t required_sectors);
 
+void								core_debug(void);
+
 #endif
