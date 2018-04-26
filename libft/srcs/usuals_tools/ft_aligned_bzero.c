@@ -1,21 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   calloc.c                                           :+:      :+:    :+:   */
+/*   ft_aligned_bzero.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/04/22 17:44:07 by bmickael          #+#    #+#             */
-/*   Updated: 2018/04/22 17:50:30 by bmickael         ###   ########.fr       */
+/*   Created: 2017/04/10 14:27:36 by bmickael          #+#    #+#             */
+/*   Updated: 2017/04/26 01:30:19 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
+#include "libft.h"
+#include <stdint.h>
 
-void			*ft_calloc(size_t count, size_t size)
+void	ft_aligned_bzero(void *s, size_t n)
 {
-	ft_putstr("custom calloc called !\n");
-	(void)size;
-	(void)count;
-	return (NULL);
+	uint64_t *dst;
+	uint8_t *e;
+
+	dst = (uint64_t *)s;
+	while (n >= 8)
+	{
+		*dst++ = (uint64_t)0;
+		n -= 8;
+	}
+	e = (uint8_t *)dst;
+	while (n)
+	{
+		*e++ = (uint8_t)0;
+		n -= 1;
+	}
 }

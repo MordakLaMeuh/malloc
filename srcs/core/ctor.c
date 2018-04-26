@@ -10,21 +10,16 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef __APPLE__
-#include <stdlib.h>
-#include <errno.h>
-#endif
-#include <unistd.h>
 #include "dyn_allocator.h"
 
-#ifdef DEBUG_INFO
+#ifdef DEBUG_CTOR
 #include <limits.h>
 #endif
 
 void _constructor(void)
 {
     int ret;
-#ifdef DEBUG_INFO
+#ifdef DEBUG_CTOR
 	printf("Constructor called\n");
 #endif
 #ifdef __APPLE__
@@ -34,14 +29,14 @@ void _constructor(void)
 
     res = (size_t)sysconf(_SC_PAGESIZE);
     if (res < 0) {
-        perror("dyn_allocator cannot page size");
+        ft_putstr_fd("dyn_allocator cannot page size", STDERR_FILENO);
         exit (1);
     }
     ctx.page_size = (size_t)res;
 #endif
     ret = getrlimit(RLIMIT_DATA, &ctx.mem_limit);
     if (ret < 0) {
-        perror("dyn_allocator cannot get RLIMIT_DATA");
+        ft_putstr_fd("dyn_allocator cannot get RLIMIT_DATA", STDERR_FILENO);
         exit (1);
     }
 	ctx.first_record_page = NULL;
@@ -52,7 +47,7 @@ void _constructor(void)
 	ctx.index_density =
 		(ctx.page_size - sizeof(struct s_primary_index)) /
 		sizeof(struct s_index);
-#ifdef DEBUG_INFO
+#ifdef DEBUG_CTOR
 	printf("--- DEBUG SUMMARY ---\n");
 	printf("page_size: %lu\n", ctx.page_size);
     printf("RLIMIT_DATA -> current: %lu, max: %lu\n",
@@ -76,7 +71,7 @@ void _constructor(void)
 
 void _destructor(void)
 {
-#ifdef DEBUG_INFO
+#ifdef DEBUG_CTOR
 	printf("Destructor called\n");
 #endif
 }

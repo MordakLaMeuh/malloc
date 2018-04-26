@@ -74,5 +74,6 @@ int					ft_secure_atoi(const char *nptr, int *error);
 
 void				*ft_aligned_memcpy(void *restrict dst,
 		const void *restrict src, size_t n);
+void				ft_aligned_bzero(void *s, size_t n);
 
 #endif

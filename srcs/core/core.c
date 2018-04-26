@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   malloc.c                                           :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,16 +11,12 @@
 /* ************************************************************************** */
 
 #include "dyn_allocator.h"
-#include <unistd.h>
 
-void				*ft_malloc(size_t size)
+void				*core_allocator(size_t size)
 {
 	struct s_record	*record;
-	void *addr;
+	void			*addr;
 
-#ifdef DEBUG_INFO
-	ft_putstr("custom malloc called !\n");
-#endif
 	if (size <= MEDIUM_LIMIT)
 		addr = (void *)assign_index(size);
 	else
@@ -29,17 +25,16 @@ void				*ft_malloc(size_t size)
 		ft_putstr_fd("Cannot allocate new page\n", STDERR_FILENO);
 		return (NULL);
 	}
-
 	record = get_new_record();
 	if (record == NULL) {
 		ft_putstr_fd("Cannot allocate new record page\n", STDERR_FILENO);
+		if (size <= MEDIUM_LIMIT)
+			del_index((uint64_t)addr, size);
+		else
+			destroy_pages(addr, size);
 		return (NULL);
 	}
 	record->addr = (uint64_t)addr;
 	record->size = size;
-#ifdef DEBUG_INFO
-	printf("generating addr to %p\n", (void *)record->addr);
-	ft_putstr("custom malloc success\n");
-#endif
-	return (addr);
+	return addr;
 }

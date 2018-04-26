@@ -21,7 +21,7 @@ SRC_USUALS	= ft_memset ft_bzero ft_memcpy ft_memccpy ft_memmove ft_memchr ft_mem
 	ft_strequ ft_strnequ \
 	ft_putchar ft_putstr ft_putendl ft_putnbr ft_putchar_fd ft_putstr_fd \
 	ft_putendl_fd ft_putnbr_fd ft_secure_atoi \
-	ft_aligned_memcpy
+	ft_aligned_memcpy ft_aligned_bzero
 
 USUALS_DIR	= usuals_tools
 

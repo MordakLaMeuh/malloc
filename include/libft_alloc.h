@@ -19,5 +19,6 @@ void	ft_free(void *ptr);
 void	*ft_malloc(size_t size);
 void	*ft_realloc(void *ptr, size_t size);
 void	*ft_calloc(size_t count, size_t size);
+void	ft_debug_allocator(void);
 
 #endif

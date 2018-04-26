@@ -12,6 +12,10 @@
 
 #include "dyn_allocator.h"
 
+/*
+** Return a new record field. Create an new record page if needed.
+*/
+
 struct s_record				*get_new_record(void)
 {
 	struct s_record_page	*tmp;
@@ -27,10 +31,7 @@ struct s_record				*get_new_record(void)
 		if (ctx.first_record_page == NULL)
 			ctx.first_record_page = ctx.last_record_page;
 		nb_record = &ctx.last_record_page->primary_block.nb_record;
-		ctx.last_record_page->primary_block.next = NULL;
 		ctx.last_record_page->primary_block.prev = tmp;
-		if (tmp != NULL)
-			tmp->primary_block.next = ctx.last_record_page;
 		*nb_record = 1;
 	}
 	else
@@ -40,6 +41,10 @@ struct s_record				*get_new_record(void)
 	}
 	return (&ctx.last_record_page->record[*nb_record - 1]);
 }
+
+/*
+** Delete a useless record field. Destroy a page if needed.
+*/
 
 int							del_record(struct s_record *record)
 {
@@ -56,9 +61,7 @@ int							del_record(struct s_record *record)
 		ft_aligned_memcpy(record, last_record, sizeof(struct s_record));
 	if (last_record_page->primary_block.nb_record == 0)
 	{
-		if (last_record_page->primary_block.prev)
-			last_record_page->primary_block.prev->primary_block.next = NULL;
-		else
+		if (!last_record_page->primary_block.prev)
 			ctx.first_record_page = NULL;
 		ctx.last_record_page = last_record_page->primary_block.prev;
 		if (destroy_pages(last_record_page, ctx.page_size) < 0)
@@ -66,6 +69,10 @@ int							del_record(struct s_record *record)
 	}
 	return (0);
 }
+
+/*
+** Search a record.
+*/
 
 struct s_record				*search_record(uint64_t addr)
 {
