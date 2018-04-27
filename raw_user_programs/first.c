@@ -49,6 +49,7 @@ int main(void) {
 	c = ft_realloc(c, 250);
 	c = ft_realloc(c, 400);
 	x = ft_malloc(200);
+	ft_debug_allocator();
 	c = ft_realloc(c, 300);
 	c = ft_realloc(c, 400);
 	c = ft_realloc(c, 450);

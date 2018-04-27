@@ -12,11 +12,10 @@
 
 #include <sys/mman.h>
 #include <unistd.h>
-#ifdef DEBUG_PAGES
-#include <stdio.h>
-#endif
 
+#ifndef __APPLE__
 #define MAP_ANONYMOUS	0x20
+#endif
 
 /*
 ** Claim pages from Kernel, size may be calibrated to page_size.
@@ -37,9 +36,6 @@ void		*get_new_pages(size_t size)
 #endif
 		-1,
 		0);
-#ifdef DEBUG_PAGES
-	printf("* NEW PAGE ALLOCATED size: %lu addr: %p *\n", size, new_page);
-#endif
 	return (new_page == MAP_FAILED) ? NULL : new_page;
 }
 
@@ -49,9 +45,6 @@ void		*get_new_pages(size_t size)
 
 int			destroy_pages(void *addr, size_t size)
 {
-#ifdef DEBUG_PAGES
-	printf("* DESTROYING PAGE nb: %lu addr: %p *\n", size, addr);
-#endif
 	return (munmap(
 		addr,
 		size));

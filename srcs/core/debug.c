@@ -36,7 +36,7 @@ static uint64_t				debug_record(uint64_t *q)
 		record_count += record_page->primary_block.nb_record;
 		record_page = record_page->primary_block.prev;
 	}
-	printf("Got %i record page for %i record\n", page_count, record_count);
+	ft_printf("Got %i record page for %i record\n", page_count, record_count);
 	return (ctx.page_size * page_count);
 }
 
@@ -64,7 +64,7 @@ static uint64_t				debug_index(uint64_t *q)
 		index_count += index_page->primary_block.nb_index;
 		index_page = index_page->primary_block.prev;
 	}
-	printf("Got %i index page for %i index\n", page_count, index_count);
+	ft_printf("Got %i index page for %i index\n", page_count, index_count);
 	return (ctx.page_size * page_count);
 }
 
@@ -77,10 +77,10 @@ void						core_debug(void)
 	total_occupied_size = 0;
 	record_size = debug_record(&total_occupied_size);
 	index_size = debug_index(&total_occupied_size);
-	printf("Total occupation:\n-> Record: %lu\n-> Index: %lu\n",
+	ft_printf("Total occupation:\n-> Record: %lu\n-> Index: %lu\n",
 		record_size,
 		index_size);
-	printf("-> Allocated for programm: %lu\nTOTAL: %lu\n",
+	ft_printf("-> Allocated for programm: %lu\nTOTAL: %lu\n",
 		total_occupied_size,
 		total_occupied_size + record_size + index_size);
 }
