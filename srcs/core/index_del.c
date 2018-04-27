@@ -41,51 +41,26 @@ static int		destroy_index(struct s_index *index)
 }
 
 /*
-** Unfill some sectors in a field.
-*/
-
-static int		unfill(
-	uint64_t *field,
-	uint32_t sector,
-	uint32_t required_sectors)
-{
-	uint64_t mask;
-	int initial_offset;
-
-	initial_offset = BLOC_COUNT - sector - required_sectors;
-	mask = (((uint64_t)1 << required_sectors) - 1) << initial_offset;
-	*field &= ~mask;
-	return (0);
-}
-
-/*
 ** Find the good place to unfill sectors.
 */
 
 static int		unreg_mark(
-	struct s_index_page *index_page,
-	int offset,
+	struct s_index *index,
 	uint64_t addr,
 	size_t size
 )
 {
-	struct s_index *index;
+    uint64_t *tab[4] = {&index->chunk_a, &index->chunk_b,
+          &index->chunk_c, &index->chunk_d};
 	uint32_t sector;
 	uint32_t required_sectors;
+	uint64_t mask;
 
-	index = &index_page->index[offset];
 	sector = addr_to_sector(addr, index);
 	required_sectors = get_required_sectors(size, index->type);
-	if (sector < 64)
-		unfill(&index->chunk_a, sector, required_sectors);
-	else if (sector < 128)
-		unfill(&index->chunk_b, sector - 64, required_sectors);
-	else if (sector < 192)
-		unfill(&index->chunk_c, sector - 128, required_sectors);
-	else
-		unfill(&index->chunk_d, sector - 192, required_sectors);
-	if (index->chunk_a == 0 && index->chunk_b == 0 &&
-		index->chunk_c == 0 && index->chunk_d == 0)
+	mask = (((uint64_t)1 << required_sectors) - 1) << (sector & 0x3f);
+	*tab[sector >> BLOC_COUNT_SHR] &= ~mask;
+	if (*tab[0] == 0 && *tab[1] == 0 && *tab[2] == 0 && *tab[3] == 0)
 	{
 		destroy_pages((void *)addr,
 			(index->type == TINY) ? TINY_RANGE : MEDIUM_RANGE);
@@ -141,6 +116,6 @@ int				del_index(uint64_t addr, size_t size)
 	page_type = (size <= TINY_LIMIT) ? TINY : MEDIUM;
 	index_page = find_index_page(addr, page_type, &i);
 	if (index_page)
-		return (unreg_mark(index_page, i, addr, size));
+	    return (unreg_mark(&index_page->index[i], addr, size));
 	return (-1);
 }

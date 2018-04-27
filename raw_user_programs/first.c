@@ -41,7 +41,7 @@ int main(void) {
 	ft_free(y);
 
 
-//	ft_debug_allocator();
+	ft_debug_allocator();
 	char *c;
 	c = ft_malloc(100);
 	c = ft_realloc(c, 120);
@@ -54,6 +54,6 @@ int main(void) {
 	c = ft_realloc(c, 450);
 	ft_free(c);
 	ft_free(x);
-//	ft_debug_allocator();
+	ft_debug_allocator();
 	return 0;
 }

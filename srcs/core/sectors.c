@@ -63,48 +63,47 @@ uint32_t		addr_to_sector(uint64_t addr, struct s_index *index)
 ** Introduce a binary mechanism to skip some bit fail tests.
 */
 
-static int		jump(uint64_t r, uint32_t required_sectors)
-{
-	static int	itab[16] = {4, 0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0};
-	uint32_t	tmp;
 
-	while (1)
-	{
-		tmp = r & 0xf,
-		required_sectors -= itab[tmp];
-		if (tmp != 0)
-			break;
-		r >>= 4;
-	}
-	return (required_sectors);
+static int      jump(uint64_t r)
+{
+    static int  itab[16] = {0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4};
+    int         i;
+
+    i = 0;
+    while (r >> 4)
+    {
+        i++;
+        r >>= 4;
+    }
+    return (itab[r & 0xf] + (i * 4));
 }
 
 /*
 ** Fill a chunk.
+** Return sector number, or -1 if fail.
+** XXX Caution: Never use this function with required sector >= BLOC_COUNT
 */
 
-int				fill(uint64_t *field, uint32_t required_sectors)
+int             fill(uint64_t *field, uint32_t required_sectors)
 {
-	int			initial_offset;
-	uint64_t	mask;
-	uint64_t	r;
-	int			offset;
+    int         initial_offset;
+    uint64_t    mask;
+    uint64_t    r;
+    int         offset;
 
-	if (required_sectors == BLOC_COUNT && *field != 0)
-		return (-1);
-	initial_offset = BLOC_COUNT - required_sectors;
-	mask = (((uint64_t)1 << required_sectors) - 1) << initial_offset;
-	while (mask >> initial_offset != 0)
-	{
-		r = *field & mask;
-		if (r == 0)
-		{
-			*field |= mask;
-			return (BLOC_COUNT - initial_offset - required_sectors);
-		}
-		offset = jump(r >> initial_offset, required_sectors);
-		mask >>= offset;
-		initial_offset -= offset;
-	}
-	return (-1);
+    initial_offset = 0;
+    mask = (((uint64_t)1 << required_sectors) - 1) << initial_offset;
+    while (initial_offset + required_sectors <= BLOC_COUNT)
+    {
+        r = *field & mask;
+        if (r == 0)
+        {
+            *field |= mask;
+            return (initial_offset);
+        }
+        offset = jump(r >> initial_offset);
+        mask <<= offset;
+        initial_offset += offset;
+    }
+    return (-1);
 }
