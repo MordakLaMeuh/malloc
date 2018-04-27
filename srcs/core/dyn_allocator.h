@@ -59,6 +59,8 @@ struct s_ctx {
 
 # define TINY_SHR			4
 # define MEDIUM_SHR			9
+# define TINY_MASK			0xf
+# define MEDIUM_MASK		0x1ff
 # define TINY_BLOCK_SIZE	(1 << TINY_SHR)
 # define MEDIUM_BLOCK_SIZE	(1 << MEDIUM_SHR)
 # define TINY_LIMIT			(TINY_BLOCK_SIZE * 32 - TINY_BLOCK_SIZE)
@@ -190,7 +192,7 @@ int									del_record(struct s_record *record);
 ** Index functions
 */
 
-uint64_t							assign_index(size_t size);
+uint64_t							assign_index(size_t size, enum e_page_type page_type);
 int									del_index(uint64_t addr, size_t size);
 
 uint32_t							get_required_sectors(
@@ -217,6 +219,10 @@ int									try_new_field(
 	uint32_t sector,
 	uint32_t required_sectors_old,
 	uint32_t required_sectors_new);
+
+size_t								allign_size(
+	size_t size,
+	enum e_page_type page_type);
 
 void								core_debug(void);
 

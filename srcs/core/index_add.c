@@ -100,15 +100,13 @@ static uint64_t	create_new_index(
 ** Try to fill nez sectors. If it can't, create a new index field.
 */
 
-uint64_t		assign_index(size_t size)
+uint64_t		assign_index(size_t size, enum e_page_type page_type)
 {
 	struct s_index_page *index_page;
-	enum e_page_type page_type;
 	uint32_t required_sectors;
 	int sector;
 	int i;
 
-	page_type = (size <= TINY_LIMIT) ? TINY : MEDIUM;
 	required_sectors = get_required_sectors(size, page_type);
 	index_page = ctx.last_index_page;
 	while (index_page)

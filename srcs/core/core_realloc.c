@@ -21,9 +21,7 @@ static void					*substract_large_page(
 	int offset;
 
 	old_page_count = record->size / ctx.page_size;
-	old_page_count += (record->size % ctx.page_size) ? 1 : 0;
 	new_page_count = size / ctx.page_size;
-	new_page_count += (size % ctx.page_size) ? 1 : 0;
 	offset = old_page_count - new_page_count;
 	if (offset != 0)
 		destroy_pages(
@@ -55,14 +53,14 @@ static enum e_page_type		get_page_type(size_t size)
 
 static void					*copy_another_place(
 	struct s_record *record,
-	size_t size)
+	size_t size,
+	enum e_page_type page_type)
 {
 	void				*addr;
 	int					ret;
-	size_t				aligned_size;
 
 	if (size <= MEDIUM_LIMIT)
-		addr = (void *)assign_index(size);
+		addr = (void *)assign_index(size, page_type);
 	else
 		addr = get_new_pages(size);
 	if (addr == NULL)
@@ -70,9 +68,10 @@ static void					*copy_another_place(
 		ft_putstr_fd("Cannot allocate new page\n", STDERR_FILENO);
 		return (NULL);
 	}
-	aligned_size = (record->size < size) ? record->size : size;
-	aligned_size += (aligned_size & 0x7) ? 8 - (aligned_size & 0x7) : 0;
-	ft_aligned_memcpy(addr, (void *)record->addr, aligned_size);
+	ft_aligned_memcpy(
+		addr,
+		(void *)record->addr,
+		(record->size < size) ? record->size : size);
 	if (record->size <= MEDIUM_LIMIT)
 		ret = del_index(record->addr, record->size);
 	else
@@ -116,23 +115,23 @@ void						*core_realloc(struct s_record *record, size_t size)
 
 	old_type = get_page_type(record->size);
 	new_type = get_page_type(size);
+	size = allign_size(size, new_type);
 	if (old_type != new_type)
-		return (copy_another_place(record, size));
+		return (copy_another_place(record, size, new_type));
 	if (old_type == LARGE)
 	{
-		if ((record->size / ctx.page_size) == (size / ctx.page_size))
+		if (record->size == size)
 		{
-			record->size = size;
 			return ((void *)record->addr);
 		}
 		if (size > record->size)
-			return (copy_another_place(record, size));
+			return (copy_another_place(record, size, new_type));
 		else
 			return (substract_large_page(record, size));
 	}
 	if (fill_possible(record, size, old_type))
 		return ((void *)record->addr);
-	return (copy_another_place(record, size));
+	return (copy_another_place(record, size, new_type));
 }
 
 /*

@@ -17,6 +17,7 @@ static void			*core_allocator_large(size_t size)
 	void			*addr;
 	struct s_record	*record;
 
+	size = allign_size(size, LARGE);
 	addr = get_new_pages(size);
 	if (addr == NULL)
 	{
@@ -39,8 +40,11 @@ static void			*core_allocator_tiny_medium(size_t size)
 {
 	void			*addr;
 	struct s_record	*record;
+	enum e_page_type page_type;
 
-	addr = (void *)assign_index(size);
+	page_type = (size <= TINY_LIMIT) ? TINY : MEDIUM;
+	size = allign_size(size, page_type);
+	addr = (void *)assign_index(size, page_type);
 	if (addr == NULL)
 	{
 		ft_putstr_fd("Cannot allocate new index\n", STDERR_FILENO);
