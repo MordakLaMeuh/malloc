@@ -90,9 +90,9 @@ int				fill(uint64_t *field, uint32_t required_sectors)
 	uint64_t	r;
 	int			offset;
 
-	if (required_sectors == BLOC_MASK && *field != 0)
+	if (required_sectors == BLOC_COUNT && *field != 0)
 		return (-1);
-	initial_offset = BLOC_MASK - required_sectors;
+	initial_offset = BLOC_COUNT - required_sectors;
 	mask = (((uint64_t)1 << required_sectors) - 1) << initial_offset;
 	while (mask >> initial_offset != 0)
 	{
@@ -100,7 +100,7 @@ int				fill(uint64_t *field, uint32_t required_sectors)
 		if (r == 0)
 		{
 			*field |= mask;
-			return (BLOC_MASK - initial_offset - required_sectors);
+			return (BLOC_COUNT - initial_offset - required_sectors);
 		}
 		offset = jump(r >> initial_offset, required_sectors);
 		mask >>= offset;

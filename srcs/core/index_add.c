@@ -25,13 +25,13 @@ static int		fill_index(struct s_index *index, int required_sectors)
 		return (sector_founded);
 	sector_founded = fill(&index->chunk_b, required_sectors);
 	if (sector_founded != -1)
-		return (sector_founded + 1 * BLOC_MASK);
+		return (sector_founded + 1 * BLOC_COUNT);
 	sector_founded = fill(&index->chunk_c, required_sectors);
 	if (sector_founded != -1)
-		return (sector_founded + 2 * BLOC_MASK);
+		return (sector_founded + 2 * BLOC_COUNT);
 	sector_founded = fill(&index->chunk_d, required_sectors);
 	if (sector_founded != -1)
-		return (sector_founded + 3 * BLOC_MASK);
+		return (sector_founded + 3 * BLOC_COUNT);
 	return (-1);
 }
 
@@ -136,19 +136,21 @@ int				try_new_field(
 		&index->chunk_c, &index->chunk_d};
 	uint64_t old_mask;
 	uint64_t new_mask;
-	int i;
+	int idx;
 
-	i = sector >> BLOC_MASK_SHR;
+	idx = sector >> BLOC_COUNT_SHR;
+	if (idx + required_sectors_new > BLOC_COUNT)
+	    return (0);
 	old_mask = (((uint64_t)1 << required_sectors_old) - 1) <<
-		(BLOC_MASK - sector - required_sectors_old);
-	*tab[i] &= ~old_mask;
+		(BLOC_COUNT - sector - required_sectors_old);
+	*tab[idx] &= ~old_mask;
 	new_mask = (((uint64_t)1 << required_sectors_new) - 1) <<
-		(BLOC_MASK - sector - required_sectors_new);
-	if ((*tab[i] & new_mask) == 0)
+		(BLOC_COUNT - sector - required_sectors_new);
+	if ((*tab[idx] & new_mask) == 0)
 	{
-		*tab[i] |= new_mask;
+		*tab[idx] |= new_mask;
 		return (1);
 	}
-	*tab[i] |= old_mask;
+	*tab[idx] |= old_mask;
 	return (0);
 }

@@ -70,8 +70,8 @@ struct s_ctx {
 # define INDEX_ALLIGN		64
 # define NODE_ALLIGN		32
 
-# define BLOC_MASK			64
-# define BLOC_MASK_SHR		6
+# define BLOC_COUNT			64
+# define BLOC_COUNT_SHR		6
 
 struct		s_data_page {
 	uint64_t				*content;

@@ -52,7 +52,7 @@ static int		unfill(
 	uint64_t mask;
 	int initial_offset;
 
-	initial_offset = BLOC_MASK - sector - required_sectors;
+	initial_offset = BLOC_COUNT - sector - required_sectors;
 	mask = (((uint64_t)1 << required_sectors) - 1) << initial_offset;
 	*field &= ~mask;
 	return (0);
