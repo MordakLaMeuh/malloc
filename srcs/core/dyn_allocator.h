@@ -168,7 +168,7 @@ struct		s_node_page {
 void __attribute__((constructor))	_constructor();
 void __attribute__((destructor))	_destructor();
 
-void								*core_allocator(size_t size);
+void								*core_allocator(size_t *size);
 void								core_deallocator(void *addr);
 void								*core_realloc(
 	struct s_record *record,

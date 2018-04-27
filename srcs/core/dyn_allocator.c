@@ -21,10 +21,7 @@ void				*ft_malloc(size_t size)
 	if (size == 0)
 		return (NULL);
 	pthread_mutex_lock(&mut);
-	addr = core_allocator(size);
-#ifdef MAIN_DEBUG
-	printf("malloc associated %p. size:%lu\n", addr, size);
-#endif
+	addr = core_allocator(&size);
 	pthread_mutex_unlock(&mut);
 	return (addr);
 }
@@ -38,25 +35,19 @@ void				*ft_calloc(size_t count, size_t size)
 	if (global_size == 0)
 		return (NULL);
 	pthread_mutex_lock(&mut);
-	addr = core_allocator(size);
+	addr = core_allocator(&global_size);
 	if (addr == NULL)
 	{
 		pthread_mutex_unlock(&mut);
 		return (NULL);
 	}
 	ft_aligned_bzero(addr, global_size);
-#ifdef MAIN_DEBUG
-	printf("calloc associated %p. size:%lu\n", addr, size);
-#endif
 	pthread_mutex_unlock(&mut);
 	return (addr);
 }
 
 void				ft_free(void *ptr)
 {
-#ifdef MAIN_DEBUG
-	printf("freeing addr: %p\n", ptr);
-#endif
 	if (ptr == NULL)
 		return ;
 	pthread_mutex_lock(&mut);
@@ -72,7 +63,7 @@ void			*ft_realloc(void *ptr, size_t size)
 	pthread_mutex_lock(&mut);
 	if (ptr == NULL)
 	{
-		addr = core_allocator(size);
+		addr = core_allocator(&size);
 		pthread_mutex_unlock(&mut);
 		return (addr);
 	}

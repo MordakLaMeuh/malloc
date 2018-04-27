@@ -13,21 +13,16 @@
 #include "libft.h"
 #include <stdint.h>
 
+/*
+** XXX This function is not secure ! Only size multiplied by 8 works !
+*/
+
 void	ft_aligned_bzero(void *s, size_t n)
 {
 	uint64_t *dst;
-	uint8_t *e;
 
 	dst = (uint64_t *)s;
-	while (n >= 8)
-	{
+	n >>= 3;
+	while (n--)
 		*dst++ = (uint64_t)0;
-		n -= 8;
-	}
-	e = (uint8_t *)dst;
-	while (n)
-	{
-		*e++ = (uint8_t)0;
-		n -= 1;
-	}
 }
