@@ -13,6 +13,10 @@
 #include "libft.h"
 #include <stdint.h>
 
+/*
+** XXX This function is not secure ! Only size multiplied by 8 works !
+*/
+
 void	*ft_aligned_memcpy(
 	void *restrict dst,
 	const void *restrict src,

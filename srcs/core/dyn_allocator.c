@@ -18,6 +18,8 @@ void				*ft_malloc(size_t size)
 {
 	void			*addr;
 
+	if (size == 0)
+		return (NULL);
 	pthread_mutex_lock(&mut);
 	addr = core_allocator(size);
 #ifdef MAIN_DEBUG
@@ -32,8 +34,10 @@ void				*ft_calloc(size_t count, size_t size)
 	void			*addr;
 	size_t			global_size;
 
-	pthread_mutex_lock(&mut);
 	global_size = count * size;
+	if (global_size == 0)
+		return (NULL);
+	pthread_mutex_lock(&mut);
 	addr = core_allocator(size);
 	if (addr == NULL)
 	{
@@ -45,47 +49,52 @@ void				*ft_calloc(size_t count, size_t size)
 	printf("calloc associated %p. size:%lu\n", addr, size);
 #endif
 	pthread_mutex_unlock(&mut);
-	return (NULL);
+	return (addr);
 }
 
 void				ft_free(void *ptr)
 {
-	struct s_record	*record;
-	int				ret;
-
 #ifdef MAIN_DEBUG
 	printf("freeing addr: %p\n", ptr);
 #endif
 	if (ptr == NULL)
 		return ;
 	pthread_mutex_lock(&mut);
-	if ((record = search_record((uint64_t)ptr)) == NULL)
-	{
-		ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
-		pthread_mutex_unlock(&mut);
-		exit (1);
-	}
-	if (record->size <= MEDIUM_LIMIT)
-		ret = del_index(record->addr, record->size);
-	else
-		ret = destroy_pages((void *)record->addr, record->size);
-	if (ret < 0 || del_record(record) < 0)
-	{
-		ft_putstr_fd("Unexpected error at free", STDERR_FILENO);
-		pthread_mutex_unlock(&mut);
-		exit (1);
-	}
+	core_deallocator(ptr);
 	pthread_mutex_unlock(&mut);
 }
 
 void			*ft_realloc(void *ptr, size_t size)
 {
+	struct s_record		*record;
+	void				*addr;
+
 	pthread_mutex_lock(&mut);
-	// XXX TODO
-	(void)ptr;
-	(void)size;
+	if (ptr == NULL)
+	{
+		addr = core_allocator(size);
+		pthread_mutex_unlock(&mut);
+		return (addr);
+	}
+	if ((record = search_record((uint64_t)ptr)) == NULL)
+	{
+		ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
+		exit (1);
+	}
+	if (size == 0)
+	{
+		core_deallocator(ptr);
+		pthread_mutex_unlock(&mut);
+		return (NULL);
+	}
+	if (size == record->size)
+	{
+		pthread_mutex_unlock(&mut);
+		return ((void *)record->addr);
+	}
+	addr = core_realloc(record, size);
 	pthread_mutex_unlock(&mut);
-	return (NULL);
+	return (addr);
 }
 
 void			ft_debug_allocator(void)

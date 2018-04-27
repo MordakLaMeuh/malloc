@@ -125,3 +125,30 @@ uint64_t		assign_index(size_t size)
 	}
 	return (create_new_index(required_sectors, page_type));
 }
+
+int				try_new_field(
+	struct s_index *index,
+	uint32_t sector,
+	uint32_t required_sectors_old,
+	uint32_t required_sectors_new)
+{
+	uint64_t *tab[4] = {&index->chunk_a, &index->chunk_b,
+		&index->chunk_c, &index->chunk_d};
+	uint64_t old_mask;
+	uint64_t new_mask;
+	int i;
+
+	i = sector >> BLOC_MASK_SHR;
+	old_mask = (((uint64_t)1 << required_sectors_old) - 1) <<
+		(BLOC_MASK - sector - required_sectors_old);
+	*tab[i] &= ~old_mask;
+	new_mask = (((uint64_t)1 << required_sectors_new) - 1) <<
+		(BLOC_MASK - sector - required_sectors_new);
+	if ((*tab[i] & new_mask) == 0)
+	{
+		*tab[i] |= new_mask;
+		return (1);
+	}
+	*tab[i] |= old_mask;
+	return (0);
+}

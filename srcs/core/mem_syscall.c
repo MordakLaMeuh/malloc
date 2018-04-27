@@ -10,8 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
+#include <sys/mman.h>
 #include <unistd.h>
+#ifdef DEBUG_PAGES
+#include <stdio.h>
+#endif
 
 #define MAP_ANONYMOUS	0x20
 

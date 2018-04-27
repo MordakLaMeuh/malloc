@@ -95,32 +95,52 @@ static int		unreg_mark(
 }
 
 /*
+** Return an index_page and the value n of a specified index.
+*/
+
+struct s_index_page	*find_index_page(
+	uint64_t addr,
+	enum e_page_type page_type,
+	int *i)
+{
+	struct s_index_page *index_page;
+	struct s_index *index;
+	uint64_t off_last;
+
+	*i = 0;
+	index_page = ctx.last_index_page;
+	off_last = (page_type == TINY) ? TINY_RANGE : MEDIUM_RANGE;
+	index_page = ctx.last_index_page;
+	while (index_page)
+	{
+		*i = index_page->primary_block.nb_index - 1;
+		while (*i >= 0)
+		{
+			index = &index_page->index[*i];
+			if (page_type == index->type &&
+				addr >= index->page_addr &&
+				addr < index->page_addr + off_last)
+					return (index_page);
+			(*i)--;
+		}
+		index_page = index_page->primary_block.prev;
+	}
+	return (NULL);
+}
+
+/*
 ** Delete association.
 */
 
 int				del_index(uint64_t addr, size_t size)
 {
 	struct s_index_page *index_page;
-	struct s_index *index;
 	enum e_page_type page_type;
-	uint64_t off_last;
 	int i;
 
 	page_type = (size <= TINY_LIMIT) ? TINY : MEDIUM;
-	off_last = (page_type == TINY) ? TINY_RANGE : MEDIUM_RANGE;
-	index_page = ctx.last_index_page;
-	while (index_page)
-	{
-		i = index_page->primary_block.nb_index - 1;
-		while (i >= 0)
-		{
-			index = &index_page->index[i];
-			if (page_type == index->type &&
-				addr >= index->page_addr && addr < index->page_addr + off_last)
-					return (unreg_mark(index_page, i, addr, size));
-			i--;
-		}
-		index_page = index_page->primary_block.prev;
-	}
+	index_page = find_index_page(addr, page_type, &i);
+	if (index_page)
+		return (unreg_mark(index_page, i, addr, size));
 	return (-1);
 }

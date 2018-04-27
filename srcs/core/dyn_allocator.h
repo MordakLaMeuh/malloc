@@ -71,6 +71,7 @@ struct s_ctx {
 # define NODE_ALLIGN		32
 
 # define BLOC_MASK			64
+# define BLOC_MASK_SHR		6
 
 struct		s_data_page {
 	uint64_t				*content;
@@ -165,13 +166,29 @@ void __attribute__((constructor))	_constructor();
 void __attribute__((destructor))	_destructor();
 
 void								*core_allocator(size_t size);
+void								core_deallocator(void *addr);
+void								*core_realloc(
+	struct s_record *record,
+	size_t size);
+
+/*
+** Mem_syscall functions
+*/
 
 void								*get_new_pages(size_t size);
 int									destroy_pages(void *addr, size_t size);
 
+/*
+** Record functions
+*/
+
 struct s_record						*search_record(uint64_t addr);
 struct s_record						*get_new_record();
 int									del_record(struct s_record *record);
+
+/*
+** Index functions
+*/
 
 uint64_t							assign_index(size_t size);
 int									del_index(uint64_t addr, size_t size);
@@ -189,6 +206,17 @@ uint32_t							addr_to_sector(
 int									fill(
 	uint64_t *field,
 	uint32_t required_sectors);
+
+struct s_index_page					*find_index_page(
+	uint64_t addr,
+	enum e_page_type page_type,
+	int *i);
+
+int									try_new_field(
+	struct s_index *index,
+	uint32_t sector,
+	uint32_t required_sectors_old,
+	uint32_t required_sectors_new);
 
 void								core_debug(void);
 

@@ -39,5 +39,21 @@ int main(void) {
 	char *y = ft_malloc(10);
 	ft_free(x);
 	ft_free(y);
+
+
+//	ft_debug_allocator();
+	char *c;
+	c = ft_malloc(100);
+	c = ft_realloc(c, 120);
+	c = ft_realloc(c, 150);
+	c = ft_realloc(c, 250);
+	c = ft_realloc(c, 400);
+	x = ft_malloc(200);
+	c = ft_realloc(c, 300);
+	c = ft_realloc(c, 400);
+	c = ft_realloc(c, 450);
+	ft_free(c);
+	ft_free(x);
+//	ft_debug_allocator();
 	return 0;
 }
