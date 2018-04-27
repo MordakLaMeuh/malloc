@@ -74,6 +74,7 @@ struct s_ctx {
 
 # define BLOC_COUNT			64
 # define BLOC_COUNT_SHR		6
+# define BLOC_MASK			0x3f
 
 struct		s_data_page {
 	uint64_t				*content;

@@ -58,7 +58,7 @@ static int		unreg_mark(
 
 	sector = addr_to_sector(addr, index);
 	required_sectors = get_required_sectors(size, index->type);
-	mask = (((uint64_t)1 << required_sectors) - 1) << (sector & 0x3f);
+	mask = (((uint64_t)1 << required_sectors) - 1) << (sector & BLOC_MASK);
 	*tab[sector >> BLOC_COUNT_SHR] &= ~mask;
 	if (*tab[0] == 0 && *tab[1] == 0 && *tab[2] == 0 && *tab[3] == 0)
 	{

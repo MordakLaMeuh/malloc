@@ -19,14 +19,10 @@
 
 uint32_t		get_required_sectors(size_t size, enum e_page_type page_type)
 {
-	uint32_t	required_sectors;
 	int			shift_q;
 
 	shift_q = (page_type == TINY) ? TINY_SHR : MEDIUM_SHR;
-	required_sectors = size >> shift_q;
-	if (size != required_sectors << shift_q)
-		required_sectors += 1;
-	return required_sectors;
+	return (size >> shift_q);
 }
 
 /*
