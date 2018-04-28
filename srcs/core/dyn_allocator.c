@@ -55,16 +55,14 @@ void			ft_free(void *ptr)
 	pthread_mutex_unlock(&g_mut);
 }
 
-void			*ft_realloc(void *ptr, size_t size)
+void			*ft_realloc_2(void *ptr, size_t size)
 {
 	struct s_record		*record;
 	void				*addr;
 
-	pthread_mutex_lock(&g_mut);
 	if (ptr == NULL)
 	{
 		addr = core_allocator(&size);
-		pthread_mutex_unlock(&g_mut);
 		return (addr);
 	}
 	if ((record = search_record((uint64_t)ptr)) == NULL)
@@ -75,15 +73,20 @@ void			*ft_realloc(void *ptr, size_t size)
 	if (size == 0)
 	{
 		core_deallocator(ptr);
-		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}
 	if (size == record->size)
-	{
-		pthread_mutex_unlock(&g_mut);
 		return ((void *)record->addr);
-	}
 	addr = core_realloc(record, size);
+	return (addr);
+}
+
+void			*ft_realloc(void *ptr, size_t size)
+{
+	void				*addr;
+
+	pthread_mutex_lock(&g_mut);
+	addr = ft_realloc_2(ptr, size);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }

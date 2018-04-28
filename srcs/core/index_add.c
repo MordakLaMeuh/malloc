@@ -135,9 +135,7 @@ int						try_new_field(
 	uint32_t required_sectors_old,
 	uint32_t required_sectors_new)
 {
-	uint64_t			*tab[4] = {
-		&index->chunk_a, &index->chunk_b,
-		&index->chunk_c, &index->chunk_d};
+	uint64_t			*tab[4];
 	uint64_t			old_mask;
 	uint64_t			new_mask;
 	int					idx;
@@ -145,6 +143,10 @@ int						try_new_field(
 	idx = sector >> BLOC_COUNT_SHR;
 	if (idx + required_sectors_new > BLOC_COUNT)
 		return (0);
+	tab[0] = &index->chunk_a;
+	tab[1] = &index->chunk_b;
+	tab[2] = &index->chunk_c;
+	tab[3] = &index->chunk_d;
 	old_mask = (((uint64_t)1 << required_sectors_old) - 1) << (sector & 0x3f);
 	*tab[idx] &= ~old_mask;
 	new_mask = (((uint64_t)1 << required_sectors_new) - 1) << (sector & 0x3f);

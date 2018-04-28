@@ -50,13 +50,15 @@ static int			unreg_mark(
 	size_t size
 )
 {
-	uint64_t	*tab[4] = {
-		&index->chunk_a, &index->chunk_b,
-		&index->chunk_c, &index->chunk_d};
+	uint64_t	*tab[4];
 	uint32_t	sector;
 	uint32_t	required_sectors;
 	uint64_t	mask;
 
+	tab[0] = &index->chunk_a;
+	tab[1] = &index->chunk_b;
+	tab[2] = &index->chunk_c;
+	tab[3] = &index->chunk_d;
 	sector = addr_to_sector(addr, index);
 	required_sectors = get_required_sectors(size, index->type);
 	mask = (((uint64_t)1 << required_sectors) - 1) << (sector & BLOC_MASK);
