@@ -14,7 +14,7 @@
 #include <unistd.h>
 
 #ifndef __APPLE__
-#define MAP_ANONYMOUS	0x20
+# define MAP_ANON	0x20
 #endif
 
 /*
@@ -29,11 +29,7 @@ void		*get_new_pages(size_t size)
 		NULL,
 		size,
 		PROT_READ | PROT_WRITE,
-#ifdef __APPLE__
 		MAP_ANON | MAP_PRIVATE,
-#else
-		MAP_ANONYMOUS | MAP_PRIVATE,
-#endif
 		-1,
 		0);
 	return (new_page == MAP_FAILED) ? NULL : new_page;

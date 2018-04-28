@@ -88,10 +88,10 @@ static int					fill_possible(
 	size_t size,
 	enum e_page_type page_type)
 {
-	struct s_index_page *index_page;
-	struct s_index *index;
-	uint32_t sector;
-	int i;
+	struct s_index_page	*index_page;
+	struct s_index		*index;
+	uint32_t			sector;
+	int					i;
 
 	index_page = find_index_page(record->addr, page_type, &i);
 	index = &index_page->index[i];
@@ -135,24 +135,24 @@ void						*core_realloc(struct s_record *record, size_t size)
 }
 
 /*
- ** REALLOC SCHEME
- ** determine page_type with record_size
- ** determine new page type with size
- ** IF Differ
- ** Allocate a new field		SEQ 1
- ** Allocate a new record
- ** copy record_size to new field.
- ** free old record
- ** Free old field
- ** return new record addr.
- ** IF IDENTICAL
- ** IF NEW SIZE < OLD_SIZE
- ** set new field mask			SEQ 2
- ** modify size of record
- ** ELSE
- ** TEST IF FIELD CAN CONTAIN BIGGER FIELD
- ** IF IT S OKAY.
- ** DO 							SEQ 2
- ** ELSE
- ** DO 							SEQ 1
+** REALLOC SCHEME
+** determine page_type with record_size
+** determine new page type with size
+** IF Differ
+** Allocate a new field		SEQ 1
+** Allocate a new record
+** copy record_size to new field.
+** free old record
+** Free old field
+** return new record addr.
+** IF IDENTICAL
+** IF NEW SIZE < OLD_SIZE
+** set new field mask			SEQ 2
+** modify size of record
+** ELSE
+** TEST IF FIELD CAN CONTAIN BIGGER FIELD
+** IF IT S OKAY.
+** DO 							SEQ 2
+** ELSE
+** DO 							SEQ 1
 */

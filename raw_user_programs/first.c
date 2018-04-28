@@ -211,6 +211,7 @@ int main(void) {
 	ft_free(t[2]);
 	ft_free(t[3]);
 	ft_free(t[0]);
+	ft_debug_allocator();
 	c = ft_realloc(NULL, 65536);
 	ft_debug_allocator();
 	return 0;

@@ -16,7 +16,7 @@
 ** Test the filling of four chunks.
 */
 
-static int		fill_index(struct s_index *index, int required_sectors)
+static int				fill_index(struct s_index *index, int required_sectors)
 {
 	int			sector_founded;
 
@@ -36,7 +36,8 @@ static int		fill_index(struct s_index *index, int required_sectors)
 }
 
 /*
-** Request a new index field in index_page, create a new index page if necessary.
+** Request a new index field in index_page, create a new index page
+** if necessary.
 */
 
 static struct s_index	*get_new_index(void)
@@ -69,22 +70,22 @@ static struct s_index	*get_new_index(void)
 ** Create a proper index field, and DATA page associated.
 */
 
-static uint64_t	create_new_index(
+static uint64_t			create_new_index(
 	uint32_t required_sectors,
 	enum e_page_type page_type)
 {
-	struct s_index *index;
-	void *addr;
+	struct s_index	*index;
+	void			*addr;
 
 	addr = get_new_pages((page_type == TINY) ? TINY_RANGE : MEDIUM_RANGE);
-    if (addr == NULL)
-    {
-    	return (0);
-    }
+	if (addr == NULL)
+	{
+		return (0);
+	}
 	index = get_new_index();
 	if (index == NULL)
 	{
-	    destroy_pages(addr, (page_type == TINY) ? TINY_RANGE : MEDIUM_RANGE);
+		destroy_pages(addr, (page_type == TINY) ? TINY_RANGE : MEDIUM_RANGE);
 		return (0);
 	}
 	index->chunk_a = (1 << required_sectors) - 1;
@@ -100,12 +101,12 @@ static uint64_t	create_new_index(
 ** Try to fill nez sectors. If it can't, create a new index field.
 */
 
-uint64_t		assign_index(size_t size, enum e_page_type page_type)
+uint64_t				assign_index(size_t size, enum e_page_type page_type)
 {
-	struct s_index_page *index_page;
-	uint32_t required_sectors;
-	int sector;
-	int i;
+	struct s_index_page		*index_page;
+	uint32_t				required_sectors;
+	int						sector;
+	int						i;
 
 	required_sectors = get_required_sectors(size, page_type);
 	index_page = ctx.last_index_page;
@@ -117,8 +118,10 @@ uint64_t		assign_index(size_t size, enum e_page_type page_type)
 			if (page_type == index_page->index[i].type &&
 				((sector = fill_index(&index_page->index[i],
 				required_sectors)) != -1))
+			{
 				return (sector_to_addr(
 					index_page->index[i].page_addr, page_type, sector));
+			}
 			i--;
 		}
 		index_page = index_page->primary_block.prev;
@@ -126,21 +129,22 @@ uint64_t		assign_index(size_t size, enum e_page_type page_type)
 	return (create_new_index(required_sectors, page_type));
 }
 
-int				try_new_field(
+int						try_new_field(
 	struct s_index *index,
 	uint32_t sector,
 	uint32_t required_sectors_old,
 	uint32_t required_sectors_new)
 {
-	uint64_t *tab[4] = {&index->chunk_a, &index->chunk_b,
+	uint64_t			*tab[4] = {
+		&index->chunk_a, &index->chunk_b,
 		&index->chunk_c, &index->chunk_d};
-	uint64_t old_mask;
-	uint64_t new_mask;
-	int idx;
+	uint64_t			old_mask;
+	uint64_t			new_mask;
+	int					idx;
 
 	idx = sector >> BLOC_COUNT_SHR;
 	if (idx + required_sectors_new > BLOC_COUNT)
-	    return (0);
+		return (0);
 	old_mask = (((uint64_t)1 << required_sectors_old) - 1) << (sector & 0x3f);
 	*tab[idx] &= ~old_mask;
 	new_mask = (((uint64_t)1 << required_sectors_new) - 1) << (sector & 0x3f);

@@ -38,9 +38,9 @@ static void			*core_allocator_large(size_t *size)
 
 static void			*core_allocator_tiny_medium(size_t *size)
 {
-	void			*addr;
-	struct s_record	*record;
-	enum e_page_type page_type;
+	void				*addr;
+	struct s_record		*record;
+	enum e_page_type	page_type;
 
 	page_type = (*size <= TINY_LIMIT) ? TINY : MEDIUM;
 	*size = allign_size(*size, page_type);
@@ -77,7 +77,7 @@ void				core_deallocator(void *addr)
 	if ((record = search_record((uint64_t)addr)) == NULL)
 	{
 		ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
-		exit (1);
+		exit(1);
 	}
 	if (record->size <= MEDIUM_LIMIT)
 		ret = del_index(record->addr, record->size);
@@ -86,12 +86,12 @@ void				core_deallocator(void *addr)
 	if (ret < 0)
 	{
 		ft_putstr_fd("Unexpected error at del index", STDERR_FILENO);
-		exit (1);
+		exit(1);
 	}
 	ret = del_record(record);
 	if (ret < 0)
 	{
 		ft_putstr_fd("Unexpected error at del record", STDERR_FILENO);
-		exit (1);
+		exit(1);
 	}
 }

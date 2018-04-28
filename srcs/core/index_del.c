@@ -16,7 +16,7 @@
 ** Destroy an index field, even an index page if necessary.
 */
 
-static int		destroy_index(struct s_index *index)
+static int			destroy_index(struct s_index *index)
 {
 	struct s_index_page		*last_index_page;
 	struct s_index			*last_index;
@@ -44,17 +44,18 @@ static int		destroy_index(struct s_index *index)
 ** Find the good place to unfill sectors.
 */
 
-static int		unreg_mark(
+static int			unreg_mark(
 	struct s_index *index,
 	uint64_t addr,
 	size_t size
 )
 {
-    uint64_t *tab[4] = {&index->chunk_a, &index->chunk_b,
-          &index->chunk_c, &index->chunk_d};
-	uint32_t sector;
-	uint32_t required_sectors;
-	uint64_t mask;
+	uint64_t	*tab[4] = {
+		&index->chunk_a, &index->chunk_b,
+		&index->chunk_c, &index->chunk_d};
+	uint32_t	sector;
+	uint32_t	required_sectors;
+	uint64_t	mask;
 
 	sector = addr_to_sector(addr, index);
 	required_sectors = get_required_sectors(size, index->type);
@@ -78,9 +79,9 @@ struct s_index_page	*find_index_page(
 	enum e_page_type page_type,
 	int *i)
 {
-	struct s_index_page *index_page;
-	struct s_index *index;
-	uint64_t off_last;
+	struct s_index_page		*index_page;
+	struct s_index			*index;
+	uint64_t				off_last;
 
 	*i = 0;
 	index_page = ctx.last_index_page;
@@ -95,7 +96,9 @@ struct s_index_page	*find_index_page(
 			if (page_type == index->type &&
 				addr >= index->page_addr &&
 				addr < index->page_addr + off_last)
-					return (index_page);
+			{
+				return (index_page);
+			}
 			(*i)--;
 		}
 		index_page = index_page->primary_block.prev;
@@ -107,15 +110,15 @@ struct s_index_page	*find_index_page(
 ** Delete association.
 */
 
-int				del_index(uint64_t addr, size_t size)
+int					del_index(uint64_t addr, size_t size)
 {
-	struct s_index_page *index_page;
-	enum e_page_type page_type;
-	int i;
+	struct s_index_page		*index_page;
+	enum e_page_type		page_type;
+	int						i;
 
 	page_type = (size <= TINY_LIMIT) ? TINY : MEDIUM;
 	index_page = find_index_page(addr, page_type, &i);
 	if (index_page)
-	    return (unreg_mark(&index_page->index[i], addr, size));
+		return (unreg_mark(&index_page->index[i], addr, size));
 	return (-1);
 }

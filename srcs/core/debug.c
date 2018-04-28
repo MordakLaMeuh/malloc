@@ -68,11 +68,11 @@ static uint64_t				debug_index(uint64_t *q)
 	return (ctx.page_size * page_count);
 }
 
-static struct s_index			**got_index_tab(size_t *len)
+static struct s_index		**got_index_tab(size_t *len)
 {
-	struct s_index_page			*index_page;
-	struct s_index				**t1;
-	int							i;
+	struct s_index_page		*index_page;
+	struct s_index			**t1;
+	int						i;
 
 	*len = 0;
 	index_page = ctx.last_index_page;
@@ -82,7 +82,8 @@ static struct s_index			**got_index_tab(size_t *len)
 		index_page = index_page->primary_block.prev;
 	}
 	index_page = ctx.last_index_page;
-	if ((t1 = (struct s_index **)get_new_pages(*len * sizeof(struct s_index *))) == NULL)
+	if ((t1 = (struct s_index **)
+		get_new_pages(*len * sizeof(struct s_index *))) == NULL)
 		return (NULL);
 	*len = 0;
 	while (index_page)
@@ -95,11 +96,11 @@ static struct s_index			**got_index_tab(size_t *len)
 	return (t1);
 }
 
-static struct s_record			**got_record_tab(size_t *len)
+static struct s_record		**got_record_tab(size_t *len)
 {
-	struct s_record_page		*record_page;
-	struct s_record				**t1;
-	int							i;
+	struct s_record_page	*record_page;
+	struct s_record			**t1;
+	int						i;
 
 	*len = 0;
 	record_page = ctx.last_record_page;
@@ -109,7 +110,8 @@ static struct s_record			**got_record_tab(size_t *len)
 		record_page = record_page->primary_block.prev;
 	}
 	record_page = ctx.last_record_page;
-	if ((t1 = (struct s_record **)get_new_pages(*len * sizeof(struct s_record *))) == NULL)
+	if ((t1 = (struct s_record **)
+		get_new_pages(*len * sizeof(struct s_record *))) == NULL)
 		return (NULL);
 	*len = 0;
 	while (record_page)
@@ -142,9 +144,9 @@ void						display_debug(
 		size_t len_i,
 		size_t len_r)
 {
-	size_t c_i;
-	size_t c_r;
-	uint64_t addr;
+	size_t		c_i;
+	size_t		c_r;
+	uint64_t	addr;
 
 	c_i = -1;
 	c_r = 0;
@@ -154,7 +156,7 @@ void						display_debug(
 			ft_printf("TINY : %p\n", index_tab[c_i]->page_addr);
 		else
 			ft_printf("%s : %p\n", index_tab[c_i]->type == MEDIUM ?
-					"SMALL": "LARGE", index_tab[c_i]->page_addr);
+					"SMALL" : "LARGE", index_tab[c_i]->page_addr);
 		if (c_i + 1 != len_i)
 			addr = index_tab[c_i + 1]->page_addr;
 		else
@@ -171,11 +173,11 @@ void						display_debug(
 
 static int					debug_tab(void)
 {
-	struct s_index **index_tab;
-	struct s_record **record_tab;
-	size_t len_i;
-	size_t len_r;
-	int ret;
+	struct s_index	**index_tab;
+	struct s_record	**record_tab;
+	size_t			len_i;
+	size_t			len_r;
+	int				ret;
 
 	ret = -1;
 	if ((index_tab = got_index_tab(&len_i)) == NULL)
@@ -205,7 +207,6 @@ void						core_debug(void)
 	uint64_t index_size;
 
 	debug_tab();
-
 	total_occupied_size = 0;
 	record_size = debug_record(&total_occupied_size);
 	index_size = debug_index(&total_occupied_size);

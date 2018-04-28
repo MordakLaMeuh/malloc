@@ -59,19 +59,18 @@ uint32_t		addr_to_sector(uint64_t addr, struct s_index *index)
 ** Introduce a binary mechanism to skip some bit fail tests.
 */
 
-
-static int      jump(uint64_t r)
+static int		jump(uint64_t r)
 {
-    static int  itab[16] = {0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4};
-    int         i;
+	static int	itab[16] = {0, 1, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4};
+	int			i;
 
-    i = 0;
-    while (r >> 4)
-    {
-        i++;
-        r >>= 4;
-    }
-    return (itab[r & 0xf] + (i * 4));
+	i = 0;
+	while (r >> 4)
+	{
+		i++;
+		r >>= 4;
+	}
+	return (itab[r & 0xf] + (i * 4));
 }
 
 /*
@@ -80,26 +79,26 @@ static int      jump(uint64_t r)
 ** XXX Caution: Never use this function with required sector >= BLOC_COUNT
 */
 
-int             fill(uint64_t *field, uint32_t required_sectors)
+int				fill(uint64_t *field, uint32_t required_sectors)
 {
-    int         initial_offset;
-    uint64_t    mask;
-    uint64_t    r;
-    int         offset;
+	int			initial_offset;
+	uint64_t	mask;
+	uint64_t	r;
+	int			offset;
 
-    initial_offset = 0;
-    mask = (((uint64_t)1 << required_sectors) - 1) << initial_offset;
-    while (initial_offset + required_sectors <= BLOC_COUNT)
-    {
-        r = *field & mask;
-        if (r == 0)
-        {
-            *field |= mask;
-            return (initial_offset);
-        }
-        offset = jump(r >> initial_offset);
-        mask <<= offset;
-        initial_offset += offset;
-    }
-    return (-1);
+	initial_offset = 0;
+	mask = (((uint64_t)1 << required_sectors) - 1) << initial_offset;
+	while (initial_offset + required_sectors <= BLOC_COUNT)
+	{
+		r = *field & mask;
+		if (r == 0)
+		{
+			*field |= mask;
+			return (initial_offset);
+		}
+		offset = jump(r >> initial_offset);
+		mask <<= offset;
+		initial_offset += offset;
+	}
+	return (-1);
 }

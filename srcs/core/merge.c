@@ -62,7 +62,8 @@ static void		**exec(void **t1, void **t2, int l, int (*cmp)(void *, void *))
 	return ((state) ? t2 : t1);
 }
 
-int				ft_merge_tab_malloc(void ***t1, int len, int (*cmp)(void *, void *))
+int				ft_merge_tab_malloc(void ***t1, int len,
+	int (*cmp)(void *, void *))
 {
 	void **t2;
 	void **tmp;
