@@ -22,11 +22,11 @@ SRC_USUALS	= ft_memset ft_bzero ft_memcpy ft_memccpy ft_memmove ft_memchr ft_mem
 	ft_putchar ft_putstr ft_putendl ft_putnbr ft_putchar_fd ft_putstr_fd \
 	ft_putendl_fd ft_putnbr_fd ft_secure_atoi \
 	ft_aligned_memcpy ft_aligned_bzero
-	
+
 SRC_PRINTF	= beacon op_main modifiers extract_args \
 	s_string s_char s_numeric_u s_numeric_i \
 	s_pointer s_logical_b s_logical_o s_logical_xmin s_logical_xmaj	\
-	cast buffer
+	cast buffer norme
 
 USUALS_DIR	= usuals_tools
 PRINTF_DIR  = ft_printf
@@ -46,7 +46,7 @@ $(NAME): $(OBJ) $(INCDIR)/$(HEADER)
 
 $(OBJDIR)/%.o: $(SRCDIR)/$(USUALS_DIR)/%.c $(INCDIR)/$(HEADER)
 	$(CC) -c $(CFLAGS) $(LIBFT_HEADER)-o $@ $<
-	
+
 $(OBJDIR)/%.o: $(SRCDIR)/$(PRINTF_DIR)/%.c $(INCDIR)/$(HEADER)
 	$(CC) -c $(CFLAGS) $(LIBFT_HEADER)-o $@ $<
 

@@ -24,10 +24,10 @@ static void		f_xmaj(char *s, uintmax_t n, int size)
 static void		buffer_xmaj(uintmax_t n, t_args *args, int *params,
 														t_status *op)
 {
-	int x;
-	int flag_0;
-	int left_justify;
-	char buf[params[1]];
+	int		x;
+	int		flag_0;
+	int		left_justify;
+	char	buf[params[1]];
 
 	left_justify = (args->b & MINUS) ? 1 : 0;
 	flag_0 = ((args->b & ZERO) && (!(left_justify)) &&

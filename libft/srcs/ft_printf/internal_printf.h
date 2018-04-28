@@ -6,7 +6,7 @@
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/10 19:26:04 by bmickael          #+#    #+#             */
-/*   Updated: 2017/04/11 00:07:08 by bmickael         ###   ########.fr       */
+/*   Updated: 2018/04/28 20:30:16 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,6 @@ typedef long long int			t_ll_int;
 
 typedef struct					s_status
 {
-	char						buf[MAX_BUF_LEN];
 	va_list						ap;
 	const char *restrict		s;
 	int							fd;
@@ -138,5 +137,12 @@ void							string_to_buffer(const char *s, int len,
 												t_status *op);
 void							char_to_buffer(char c, int len, t_status *op);
 void							fflush_buffer(t_status *op);
+
+/*
+** norme.c: Not logica, just for the trash norm.
+*/
+
+void							s_char_wchar(t_args *args, t_status *op,
+												wchar_t c);
 
 #endif

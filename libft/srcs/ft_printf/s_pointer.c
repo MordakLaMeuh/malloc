@@ -23,10 +23,10 @@ static void		f_x(char *s, uintmax_t n, int size)
 
 static void		buffer_p(uintmax_t n, t_args *args, t_status *op, int *params)
 {
-	int flag_0;
-	int left_justify;
-	int start_n;
-	char buf[params[1]];
+	int		flag_0;
+	int		left_justify;
+	int		start_n;
+	char	buf[params[1]];
 
 	left_justify = (args->b & MINUS) ? 1 : 0;
 	flag_0 = ((args->b & ZERO) && (args->p == -1) && (!(left_justify))) ? 1 : 0;
@@ -36,6 +36,7 @@ static void		buffer_p(uintmax_t n, t_args *args, t_status *op, int *params)
 		buf[0] = '0';
 		buf[1] = 'x';
 		f_x(buf + 2, n, params[0]);
+		string_to_buffer(buf, params[1], op);
 		return ;
 	}
 	start_n = params[1] - params[0];
@@ -49,7 +50,7 @@ static void		buffer_p(uintmax_t n, t_args *args, t_status *op, int *params)
 	string_to_buffer(buf, params[1], op);
 }
 
-int			s_pointer(t_args *args, t_status *op)
+int				s_pointer(t_args *args, t_status *op)
 {
 	void		*n;
 	uintmax_t	i;

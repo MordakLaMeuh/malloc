@@ -9,24 +9,16 @@
 #define NB_F 1500
 #define NB_U 6000
 
-#include <malloc.h>
 #include <stdio.h>
 
 int					ft_printf(const char *restrict format, ...);
 
 int main(void) {
-	char *h = memalign(512, 1024);
+	char *h = ft_malloc(1024);
 	printf("h pointe sur %p\n", h);
-	char *w = memalign(512, 1024);
+	char *w = ft_malloc(1024);
 	printf("w pointe sur %p\n", w);
-	char *z = memalign(512, 1024);
-	printf("z pointe sur %p\n", z);
-
-	h = ft_malloc(1024);
-	printf("h pointe sur %p\n", h);
-	w = ft_malloc(1024);
-	printf("w pointe sur %p\n", w);
-	z = ft_malloc(1024);
+	char *z = ft_malloc(1024);
 	printf("w pointe sur %p\n", z);
 
 	ft_free(h);

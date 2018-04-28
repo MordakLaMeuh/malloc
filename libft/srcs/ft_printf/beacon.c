@@ -18,8 +18,8 @@
 
 int		ft_printf(const char *restrict format, ...)
 {
-	t_status op;
-	int ret;
+	t_status	op;
+	int			ret;
 
 	ft_memset(&op, 0, sizeof(t_status));
 	op.s = format;
@@ -35,8 +35,8 @@ int		ft_printf(const char *restrict format, ...)
 
 int		ft_eprintf(const char *restrict format, ...)
 {
-	t_status op;
-	int ret;
+	t_status	op;
+	int			ret;
 
 	ft_memset(&op, 0, sizeof(t_status));
 	op.s = format;
@@ -52,8 +52,8 @@ int		ft_eprintf(const char *restrict format, ...)
 
 int		ft_fprintf(int const fd, const char *restrict format, ...)
 {
-	t_status op;
-	int ret;
+	t_status	op;
+	int			ret;
 
 	ft_memset(&op, 0, sizeof(t_status));
 	op.s = format;
@@ -69,8 +69,8 @@ int		ft_fprintf(int const fd, const char *restrict format, ...)
 
 int		ft_sprintf(char *str, const char *restrict format, ...)
 {
-	t_status op;
-	int ret;
+	t_status	op;
+	int			ret;
 
 	if (str == NULL)
 		return (-1);
@@ -87,17 +87,17 @@ int		ft_sprintf(char *str, const char *restrict format, ...)
 }
 
 /*
-int		ft_asprintf(char **str, const char *restrict format, ...)
-{
-	t_status op;
-
-	ft_memset(&op, 0, sizeof(t_status));
-	op.s = format;
-	va_start(op.ap, format);
-	new_chain(&op);
-	va_end(op.ap);
-	if (!(*str = op.ptr))
-		return (-1);
-	return (op.size);
-}
+** int		ft_asprintf(char **str, const char *restrict format, ...)
+** {
+**	t_status op;
+**
+**	ft_memset(&op, 0, sizeof(t_status));
+**	op.s = format;
+**	va_start(op.ap, format);
+**	new_chain(&op);
+**	va_end(op.ap);
+**	if (!(*str = op.ptr))
+**		return (-1);
+**	return (op.size);
+** }
 */

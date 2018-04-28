@@ -89,46 +89,42 @@ static void		fill_wchar(wchar_t c, char tmp[4], int size)
 		tmp[3 - i] = 0xF0 | (c & 0b111);
 }
 
-static int		s_wchar_t(t_args *args, wchar_t *src, t_status *op,
-													int *utf8_size)
+static int		s_wchar_t(t_args *args, t_status *op, int *utf8_size)
 {
-	char	tmp[4];
-	int		len;
-	int		k;
-	int		l;
+	char		tmp[4];
+	int			len;
+	int			l;
+	wchar_t		*wchar;
 
-	if (!(check_extended_string(src)))
+	wchar = (wchar_t *)va_arg(op->ap, wchar_t *);
+	wchar = (wchar) ? wchar : L"(null)";
+	if (!(check_extended_string(wchar)))
 		return (-1);
-	len = get_wchar_t_size(src, args->p);
-	k = (len > args->w) ? len : args->w;
+	len = get_wchar_t_size(wchar, args->p);
 	if (!(args->b & MINUS))
-		char_to_buffer((args->b & ZERO) ? '0' : ' ' , k - len, op);
+		char_to_buffer((args->b & ZERO) ? '0' : ' ',
+			(len > args->w) ? 0 : args->w - len, op);
 	l = 0;
-	while (*src)
+	while (*wchar)
 	{
-		*utf8_size = get_size_for_string(*src);
-		fill_wchar(*src, tmp, *utf8_size);
+		fill_wchar(*wchar, tmp, *utf8_size = get_size_for_string(*wchar));
 		if ((l += *utf8_size) > len)
 			break ;
 		string_to_buffer(tmp + (4 - *utf8_size), *utf8_size, op);
-		src++;
+		wchar++;
 	}
 	if (args->b & MINUS)
-		char_to_buffer(' ' , k - len, op);
+		char_to_buffer(' ', (len > args->w) ? 0 : args->w - len, op);
 	return (0);
 }
 
-int			s_string(t_args *args, t_status *op)
+int				s_string(t_args *args, t_status *op)
 {
 	int			size;
 	char		*str;
-	wchar_t		*wchar;
 
 	if (args->l & L)
-	{
-		wchar = (wchar_t *)va_arg(op->ap, wchar_t *);
-		return (s_wchar_t(args, (wchar) ? wchar : L"(null)", op, &size));
-	}
+		return (s_wchar_t(args, op, &size));
 	str = (char *)va_arg(op->ap, char *);
 	str = (!str) ? "(null)" : str;
 	size = ft_strlen(str);

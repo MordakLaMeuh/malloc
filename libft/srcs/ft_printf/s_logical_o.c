@@ -23,10 +23,10 @@ static void		f_o(char *s, uintmax_t n, int size)
 
 static void		buffer_o(uintmax_t n, t_args *args, int *params, t_status *op)
 {
-	int flag_0;
-	int left_justify;
-	int start_n;
-	char buf[params[1]];
+	int		flag_0;
+	int		left_justify;
+	int		start_n;
+	char	buf[params[1]];
 
 	left_justify = (args->b & MINUS) ? 1 : 0;
 	flag_0 = ((args->b & ZERO) && (args->p == -1) && (!(left_justify))) ? 1 : 0;

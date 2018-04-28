@@ -23,11 +23,11 @@ static void		f_b(char *s, uintmax_t n, int size)
 
 static void		buffer_b(uintmax_t n, t_args *args, int *params, t_status *op)
 {
-	int flag_0;
-	int flag_hash;
-	int left_justify;
-	int start_n;
-	char buf[params[1]];
+	int		flag_0;
+	int		flag_hash;
+	int		left_justify;
+	int		start_n;
+	char	buf[params[1]];
 
 	left_justify = (args->b & MINUS) ? 1 : 0;
 	flag_hash = (args->b & HASH) ? 2 : 0;

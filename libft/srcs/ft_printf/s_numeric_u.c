@@ -23,9 +23,9 @@ static void		f_u(char *s, uintmax_t n, int size)
 
 static void		buffer_u(uintmax_t n, int *size, t_args *args, t_status *op)
 {
-	int i;
-	int j;
-	char buf[size[1]];
+	int		i;
+	int		j;
+	char	buf[size[1]];
 
 	if (args->b & MINUS)
 	{
@@ -34,6 +34,7 @@ static void		buffer_u(uintmax_t n, int *size, t_args *args, t_status *op)
 		while (i < j)
 			buf[i++] = ' ';
 		f_u(buf, n, size[0]);
+		string_to_buffer(buf, size[1], op);
 		return ;
 	}
 	i = 0;

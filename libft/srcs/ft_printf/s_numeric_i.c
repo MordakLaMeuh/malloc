@@ -34,9 +34,9 @@ static void		f_i(char *s, intmax_t n, int size)
 
 static void		buffer_i(intmax_t n, int *size, t_args *args, t_status *op)
 {
-	int x;
-	int flag_0;
-	char buf[size[1]];
+	int		x;
+	int		flag_0;
+	char	buf[size[1]];
 
 	flag_0 = ((args->b & ZERO) && (!(args->b & MINUS)) && args->p == -1) ?
 																		1 : 0;
