@@ -179,6 +179,8 @@ int main(void) {
 	for (i = 0; i < NB_F; i++)
 		t[i] = ft_malloc(700);
 
+	ft_debug_allocator();
+
 	for (i = NB_I; i < NB_U; i++) {
 		t[i] = ft_malloc(700);
 		strcpy(t[i], "les carotes sont cuites");
@@ -195,7 +197,6 @@ int main(void) {
 	ft_free(y);
 
 
-	ft_debug_allocator();
 	char *c;
 	c = ft_malloc(100);
 	c = ft_realloc(c, 120);
@@ -203,12 +204,22 @@ int main(void) {
 	c = ft_realloc(c, 250);
 	c = ft_realloc(c, 400);
 	x = ft_malloc(200);
+	t[0] = ft_malloc(1024);
+	t[1] = ft_malloc(1024);
+	t[2] = ft_malloc(1024);
+	t[3] = ft_malloc(1024);
 	ft_debug_allocator();
 	c = ft_realloc(c, 300);
 	c = ft_realloc(c, 400);
 	c = ft_realloc(c, 450);
 	ft_free(c);
 	ft_free(x);
+	ft_debug_allocator();
+	ft_free(t[1]);
+	ft_free(t[2]);
+	ft_free(t[3]);
+	ft_free(t[0]);
+	c = ft_realloc(NULL, 65536);
 	ft_debug_allocator();
 	return 0;
 }

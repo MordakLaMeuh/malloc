@@ -162,6 +162,16 @@ struct		s_node_page {
 };
 
 /*
+ * Utilized for merging.
+ */
+
+typedef struct		s_info
+{
+	int				offset;
+	int				(*cmp)(void *, void *);
+}					t_info;
+
+/*
 ** Functions
 */
 
@@ -226,5 +236,10 @@ size_t								allign_size(
 	enum e_page_type page_type);
 
 void								core_debug(void);
+
+int									ft_merge_tab_malloc(
+	void ***t1,
+	int len,
+	int (*cmp)(void *, void *));
 
 #endif
