@@ -9,9 +9,163 @@
 #define NB_F 1500
 #define NB_U 6000
 
+#include <malloc.h>
+#include <stdio.h>
+
+int					ft_printf(const char *restrict format, ...);
+
 int main(void) {
+	char *h = memalign(512, 1024);
+	printf("h pointe sur %p\n", h);
+	char *w = memalign(512, 1024);
+	printf("w pointe sur %p\n", w);
+	char *z = memalign(512, 1024);
+	printf("z pointe sur %p\n", z);
+
+	h = ft_malloc(1024);
+	printf("h pointe sur %p\n", h);
+	w = ft_malloc(1024);
+	printf("w pointe sur %p\n", w);
+	z = ft_malloc(1024);
+	printf("w pointe sur %p\n", z);
+
+	ft_free(h);
+	ft_free(w);
+	ft_free(z);
+
 	char *t[65636];
 	int i;
+
+
+	for (i = 0; i < NB_I; i++) {
+		t[i] = ft_malloc(50);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_F; i++)
+		ft_free(t[i]);
+
+	for (i = 0; i < NB_F; i++)
+		t[i] = ft_malloc(700);
+
+	for (i = NB_I; i < NB_U; i++) {
+		t[i] = ft_malloc(700);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_U; i++)
+		ft_free(t[i]);
+
+
+
+
+
+	for (i = 0; i < NB_I; i++) {
+		t[i] = ft_malloc(50);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_F; i++)
+		ft_free(t[i]);
+
+	for (i = 0; i < NB_F; i++)
+		t[i] = ft_malloc(700);
+
+	for (i = NB_I; i < NB_U; i++) {
+		t[i] = ft_malloc(700);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_U; i++)
+		ft_free(t[i]);
+
+
+
+
+	for (i = 0; i < NB_I; i++) {
+		t[i] = ft_malloc(50);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_F; i++)
+		ft_free(t[i]);
+
+	for (i = 0; i < NB_F; i++)
+		t[i] = ft_malloc(700);
+
+	for (i = NB_I; i < NB_U; i++) {
+		t[i] = ft_malloc(700);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_U; i++)
+		ft_free(t[i]);
+
+
+
+
+	for (i = 0; i < NB_I; i++) {
+		t[i] = ft_malloc(50);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_F; i++)
+		ft_free(t[i]);
+
+	for (i = 0; i < NB_F; i++)
+		t[i] = ft_malloc(700);
+
+	for (i = NB_I; i < NB_U; i++) {
+		t[i] = ft_malloc(700);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_U; i++)
+		ft_free(t[i]);
+
+
+
+
+	for (i = 0; i < NB_I; i++) {
+		t[i] = ft_malloc(50);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_F; i++)
+		ft_free(t[i]);
+
+	for (i = 0; i < NB_F; i++)
+		t[i] = ft_malloc(700);
+
+	for (i = NB_I; i < NB_U; i++) {
+		t[i] = ft_malloc(700);
+		strcpy(t[i], "les carotes sont cuites");
+		if (strcmp(t[i], "les carotes sont cuites") != 0)
+			exit (1);
+	}
+
+	for (i = 0; i < NB_U; i++)
+		ft_free(t[i]);
+
+
 	for (i = 0; i < NB_I; i++) {
 		t[i] = ft_malloc(50);
 		strcpy(t[i], "les carotes sont cuites");
