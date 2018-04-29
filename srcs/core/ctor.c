@@ -13,6 +13,10 @@
 #include "dyn_allocator.h"
 #include "ctor.h"
 
+#ifndef __APPLE__
+# define getpagesize() (size_t)sysconf(_SC_PAGESIZE)
+#endif
+
 void		main_constructor(void)
 {
 	int ret;

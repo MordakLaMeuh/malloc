@@ -25,6 +25,7 @@ int main(void) {
 	ft_free(w);
 	ft_free(z);
 
+
 	char *t[65636];
 	int i;
 
@@ -35,6 +36,7 @@ int main(void) {
 		if (strcmp(t[i], "les carotes sont cuites") != 0)
 			exit (1);
 	}
+
 
 	for (i = 0; i < NB_F; i++)
 		ft_free(t[i]);
@@ -51,7 +53,6 @@ int main(void) {
 
 	for (i = 0; i < NB_U; i++)
 		ft_free(t[i]);
-
 
 
 
@@ -214,5 +215,7 @@ int main(void) {
 	ft_debug_allocator();
 	c = ft_realloc(NULL, 65536);
 	ft_debug_allocator();
+
+	printf("end\n");
 	return 0;
 }
