@@ -40,13 +40,13 @@ __H__ = $(basename $(notdir $(_HEADERS)))
 HEADERS = $(addsuffix .h, $(__H__))
 
 IFLAGS = -Isrcs -I$(LIBFT)/includes
-LDFLAGS = -shared -L$(LIBFT) -lft
+LDFLAGS = -shared -L$(LIBFT) -lft -Wl,--version-script=exportmap
 
 .PHONY: all clean fclean re help
 
 all: top_level_rebuild_libft $(NAME).so
 
-$(NAME).so: $(OBJ) libft/libft.a
+$(NAME).so: $(OBJ) libft/libft.a exportmap
 	$(CC) $(CFLAGS) -o $(NAME)_$(HOSTTYPE).so $(OBJ) $(LDFLAGS)
 	rm -f $(NAME).so
 	ln -s libft_malloc_$(HOSTTYPE).so $(NAME).so

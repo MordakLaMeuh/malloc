@@ -9,9 +9,18 @@
 #define NB_F 1500
 #define NB_U 6000
 
+#include <sys/mman.h>
+#include <unistd.h>
+
+#ifndef __APPLE__
+# define MAP_ANON	0x20
+#endif
+
 #include <stdio.h>
 
-int					ft_printf(const char *restrict format, ...);
+void				ft_bzero(void *s, size_t n);
+
+int					printf(const char *restrict format, ...);
 
 int main(void) {
 	char *h = ft_malloc(1024);
@@ -20,6 +29,7 @@ int main(void) {
 	printf("w pointe sur %p\n", w);
 	char *z = ft_malloc(1024);
 	printf("w pointe sur %p\n", z);
+
 
 	ft_free(h);
 	ft_free(w);
@@ -172,7 +182,7 @@ int main(void) {
 	for (i = 0; i < NB_F; i++)
 		t[i] = ft_malloc(700);
 
-	ft_debug_allocator();
+	ft_show_alloc_mem();
 
 	for (i = NB_I; i < NB_U; i++) {
 		t[i] = ft_malloc(700);
@@ -201,20 +211,38 @@ int main(void) {
 	t[1] = ft_malloc(1024);
 	t[2] = ft_malloc(1024);
 	t[3] = ft_malloc(1024);
-	ft_debug_allocator();
+
+	ft_show_alloc_mem();
+
+	void *new_page;
+
+	new_page = mmap(
+		NULL,
+		4096,
+		PROT_READ | PROT_WRITE,
+		MAP_ANON | MAP_PRIVATE,
+		-1,
+		0);
+
+	printf("new pointer at %p\n", new_page);
+
 	c = ft_realloc(c, 300);
 	c = ft_realloc(c, 400);
 	c = ft_realloc(c, 450);
 	ft_free(c);
 	ft_free(x);
-	ft_debug_allocator();
+	ft_show_alloc_mem();
 	ft_free(t[1]);
 	ft_free(t[2]);
 	ft_free(t[3]);
 	ft_free(t[0]);
-	ft_debug_allocator();
+	ft_show_alloc_mem();
 	c = ft_realloc(NULL, 65536);
-	ft_debug_allocator();
+	ft_show_alloc_mem();
+	ft_free(c);
+	ft_show_alloc_mem();
+	c = ft_malloc(4096);
+	printf("ret = %i\n", munmap(c, 4096));
 
 	printf("end\n");
 	return 0;

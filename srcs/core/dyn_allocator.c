@@ -91,7 +91,7 @@ void			*ft_realloc(void *ptr, size_t size)
 	return (addr);
 }
 
-void			ft_debug_allocator(void)
+void			ft_show_alloc_mem(void)
 {
 	pthread_mutex_lock(&g_mut);
 	core_debug();
