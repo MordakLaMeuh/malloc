@@ -76,8 +76,9 @@ void				core_deallocator(void *addr)
 
 	if ((record = search_record((uint64_t)addr)) == NULL)
 	{
-		ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
-		exit(1);
+	//	ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
+	//	exit(1);
+		return ;
 	}
 	if (record->size <= MEDIUM_LIMIT)
 		ret = del_index(record->addr, record->size);

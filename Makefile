@@ -40,7 +40,7 @@ __H__ = $(basename $(notdir $(_HEADERS)))
 HEADERS = $(addsuffix .h, $(__H__))
 
 IFLAGS = -Isrcs -I$(LIBFT)/includes
-LDFLAGS = -shared -L$(LIBFT) -lft -Wl,--version-script=exportmap
+LDFLAGS = -shared -L$(LIBFT) -lft
 
 .PHONY: all clean fclean re help
 

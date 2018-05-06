@@ -11,30 +11,38 @@
 /* ************************************************************************** */
 
 #include "dyn_allocator.h"
+#include "ctor.h"
 
 pthread_mutex_t g_mut = PTHREAD_MUTEX_INITIALIZER;
 
-void			*ft_malloc(size_t size)
+void			*malloc(size_t size)
 {
 	void		*addr;
 
+//	ft_printf("malloc called: size = %lu\n", size);
 	if (size == 0)
 		return (NULL);
 	pthread_mutex_lock(&g_mut);
+	if (ctx.page_size == 0)
+		main_constructor();
 	addr = core_allocator(&size);
 	pthread_mutex_unlock(&g_mut);
+//	ft_printf("addr given = %p\n", addr);
 	return (addr);
 }
 
-void			*ft_calloc(size_t count, size_t size)
+void			*calloc(size_t count, size_t size)
 {
 	void		*addr;
 	size_t		global_size;
 
+	ft_printf("calloc called: size = %lu\n", size);
 	global_size = count * size;
 	if (global_size == 0)
 		return (NULL);
 	pthread_mutex_lock(&g_mut);
+	if (ctx.page_size == 0)
+		main_constructor();
 	addr = core_allocator(&global_size);
 	if (addr == NULL)
 	{
@@ -43,14 +51,18 @@ void			*ft_calloc(size_t count, size_t size)
 	}
 	ft_aligned_bzero(addr, global_size);
 	pthread_mutex_unlock(&g_mut);
+//	ft_printf("addr given = %p\n", addr);
 	return (addr);
 }
 
-void			ft_free(void *ptr)
+void			free(void *ptr)
 {
+//	ft_printf("free called: ptr = %p\n", ptr);
 	if (ptr == NULL)
 		return ;
 	pthread_mutex_lock(&g_mut);
+	if (ctx.page_size == 0)
+		main_constructor();
 	core_deallocator(ptr);
 	pthread_mutex_unlock(&g_mut);
 }
@@ -67,8 +79,8 @@ void			*ft_realloc_2(void *ptr, size_t size)
 	}
 	if ((record = search_record((uint64_t)ptr)) == NULL)
 	{
-		ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
-		exit(1);
+//		ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
+		return NULL;
 	}
 	if (size == 0)
 	{
@@ -81,13 +93,17 @@ void			*ft_realloc_2(void *ptr, size_t size)
 	return (addr);
 }
 
-void			*ft_realloc(void *ptr, size_t size)
+void			*realloc(void *ptr, size_t size)
 {
 	void				*addr;
 
+//	ft_printf("realloc called: ptr = %p, size = %lu\n", ptr, size);
 	pthread_mutex_lock(&g_mut);
+	if (ctx.page_size == 0)
+		main_constructor();
 	addr = ft_realloc_2(ptr, size);
 	pthread_mutex_unlock(&g_mut);
+//	ft_printf("addr given = %p\n", addr);
 	return (addr);
 }
 
