@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
 #include "ctor.h"
+#include "main_headers.h"
 
 #ifndef __APPLE__
 # define GETPAGESIZE() (size_t)sysconf(_SC_PAGESIZE)

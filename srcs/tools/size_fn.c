@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   size_conversio                                     :+:      :+:    :+:   */
+/*   size_fn.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
+#include "main_headers.h"
 
-size_t	allign_size(size_t size, enum e_page_type page_type)
+size_t				allign_size(size_t size, enum e_page_type page_type)
 {
 	if (page_type == TINY)
 	{
@@ -26,4 +26,18 @@ size_t	allign_size(size_t size, enum e_page_type page_type)
 	}
 	return (((size / ctx.page_size) +
 		((size % ctx.page_size) ? 1 : 0)) * ctx.page_size);
+}
+
+/*
+** Simple, basic, just return the page type.
+*/
+
+enum e_page_type	get_page_type(size_t size)
+{
+	if (size <= TINY_LIMIT)
+		return (TINY);
+	else if (size <= MEDIUM_LIMIT)
+		return (MEDIUM);
+	else
+		return (LARGE);
 }

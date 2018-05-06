@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
+#include "main_headers.h"
 
 /*
 ** Destroy an index field, even an index page if necessary.

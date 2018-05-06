@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   core_realloc.c                                     :+:      :+:    :+:   */
+/*   realloc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
+#include "main_headers.h"
 
 static void					*substract_large_page(
 	struct s_record *record,
@@ -29,20 +29,6 @@ static void					*substract_large_page(
 			offset * ctx.page_size);
 	record->size = size;
 	return ((void *)record->addr);
-}
-
-/*
-** Simple, basic, just return the page type.
-*/
-
-static enum e_page_type		get_page_type(size_t size)
-{
-	if (size <= TINY_LIMIT)
-		return (TINY);
-	else if (size <= MEDIUM_LIMIT)
-		return (MEDIUM);
-	else
-		return (LARGE);
 }
 
 /*
@@ -108,7 +94,7 @@ static int					fill_possible(
 	return (0);
 }
 
-void						*core_realloc(struct s_record *record, size_t size)
+static void					*reallocator(struct s_record *record, size_t size)
 {
 	enum e_page_type	old_type;
 	enum e_page_type	new_type;
@@ -132,6 +118,24 @@ void						*core_realloc(struct s_record *record, size_t size)
 	if (fill_possible(record, size, old_type))
 		return ((void *)record->addr);
 	return (copy_another_place(record, size, new_type));
+}
+
+void						*core_realloc(void *ptr, size_t size)
+{
+	struct s_record		*record;
+
+	if (ptr == NULL)
+		return (core_allocator(&size));
+	if ((record = search_record((uint64_t)ptr)) == NULL)
+		return (NULL);
+	if (size == 0)
+	{
+		core_deallocator(ptr);
+		return (NULL);
+	}
+	if (size == record->size)
+		return ((void *)record->addr);
+	return (reallocator(record, size));
 }
 
 /*

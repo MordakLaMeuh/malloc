@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
+#include "main_headers.h"
 
 /*
 ** Return a new record field. Create an new record page if needed.

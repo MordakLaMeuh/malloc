@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DYN_ALLOCATOR_H
-# define DYN_ALLOCATOR_H
+#ifndef MAIN_HEADERS_H
+# define MAIN_HEADERS_H
 
 /*
 ** # define DEBUG_CTOR 0
@@ -27,7 +27,7 @@
 # include <stdbool.h>
 
 /*
-** XXX Debuging include
+** XXX Debugging include
 */
 # include <stdio.h>
 
@@ -74,9 +74,7 @@ struct								s_ctx {
 	struct s_index_page		*last_index_page;
 	int						record_density;
 	int						index_density;
-	struct s_node_page		*record_addr_tree;
-	struct s_node_page		*index_addr_tree;
-	struct s_node_page		*index_space_tree;
+	struct s_node_page		*data_pages_tree;
 	bool					is_initialized;
 } ctx;
 
@@ -140,50 +138,24 @@ struct								s_index_page {
 ** Color for Black & White binary tree
 */
 
-struct s_node;
-
-enum		e_color {
-	RED = 0,
-	BLACK
-};
-
 struct								s_primary_node {
 	struct s_node_page		*next;
 	struct s_node_page		*prev;
 	int						nb_node;
 } __attribute__((aligned(NODE_ALLIGN)));
 
-struct								s_node {
-	struct s_node			*left;
-	struct s_node			*right;
-	void					*content;
-	enum e_color			color;
-} __attribute__((aligned(NODE_ALLIGN)));
-
 struct								s_node_page {
 	struct s_primary_node	primary_block;
-	struct s_node			node[];
+	struct s_node			*node;
 };
 
 /*
-** Utilized for merging.
-*/
-
-typedef struct						s_info
-{
-	int				offset;
-	int				(*cmp)(void *, void *);
-}									t_info;
-
-/*
-** Functions
+** Main Functions
 */
 
 void								*core_allocator(size_t *size);
 void								core_deallocator(void *addr);
-void								*core_realloc(
-	struct s_record *record,
-	size_t size);
+void								*core_realloc(void *ptr, size_t size);
 
 /*
 ** Mem_syscall functions
@@ -237,11 +209,6 @@ size_t								allign_size(
 	size_t size,
 	enum e_page_type page_type);
 
-void								core_debug(void);
-
-int									ft_merge_tab_malloc(
-	void ***t1,
-	int len,
-	int (*cmp)(void *, void *));
+enum e_page_type					get_page_type(size_t size);
 
 #endif

@@ -17,16 +17,18 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-CORE = ctor mem_syscall record index_add index_del dyn_allocator core_base core_realloc debug sectors size_conversion merge
+CORE = allocator deallocator reallocator
+TOOLS = record index_add index_del sectors size_fn 
+MAIN = main_prototypes ctor mem_syscall 
 
-SRC_LIST = $(CORE)
+SRC_LIST = $(MAIN) $(CORE) $(TOOLS)
 
-VPATH = srcs/core
+VPATH = srcs srcs/core srcs/tools
 
 ## HEADERS
 
 MAIN_HEADER = libft_alloc.h
-_HEADERS = dyn_allocator
+_HEADERS = main_headers.h
 
 ifeq ($(HOSTTYPE),)
 HOSTTYPE = $(shell uname -m)_$(shell uname -s)
@@ -46,7 +48,7 @@ LDFLAGS = -shared -fPIC -L$(LIBFT) -lft -exported_symbols_list symbol_list
 
 all: top_level_rebuild_libft $(NAME).so
 
-$(NAME).so: $(OBJ) libft/libft.a ExportMap.map
+$(NAME).so: $(OBJ) libft/libft.a symbol_list
 	$(CC) $(CFLAGS) -o $(NAME)_$(HOSTTYPE).so $(OBJ) $(LDFLAGS)
 	rm -f $(NAME).so
 	ln -s libft_malloc_$(HOSTTYPE).so $(NAME).so

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "dyn_allocator.h"
+#include "main_headers.h"
 
 /*
 ** Test the filling of four chunks.
