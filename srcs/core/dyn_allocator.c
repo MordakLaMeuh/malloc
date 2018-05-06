@@ -67,16 +67,15 @@ void			free(void *ptr)
 	pthread_mutex_unlock(&g_mut);
 }
 
-void			*ft_realloc_2(void *ptr, size_t size)
+
+void			*realloc_cases(void *ptr, size_t size)
 {
 	struct s_record		*record;
-	void				*addr;
 
+	if (ctx.is_initialized == false)
+		main_constructor();
 	if (ptr == NULL)
-	{
-		addr = core_allocator(&size);
-		return (addr);
-	}
+		return (core_allocator(&size));
 	if ((record = search_record((uint64_t)ptr)) == NULL)
 		return (NULL);
 	if (size == 0)
@@ -86,25 +85,23 @@ void			*ft_realloc_2(void *ptr, size_t size)
 	}
 	if (size == record->size)
 		return ((void *)record->addr);
-	addr = core_realloc(record, size);
-	return (addr);
+	return (core_realloc(record, size));
 }
+
+//	ft_printf("realloc called: ptr = %p, size = %lu\n", ptr, size);
+//	ft_printf("addr given = %p\n", addr);
 
 void			*realloc(void *ptr, size_t size)
 {
 	void				*addr;
 
-	ft_printf("realloc called: ptr = %p, size = %lu\n", ptr, size);
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		main_constructor();
-	addr = ft_realloc_2(ptr, size);
+	addr = realloc_cases(ptr, size);
 	pthread_mutex_unlock(&g_mut);
-	ft_printf("addr given = %p\n", addr);
 	return (addr);
 }
 
-void			ft_show_alloc_mem(void)
+void			show_alloc_mem(void)
 {
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
