@@ -14,6 +14,9 @@
 # define LIBFT_H
 
 # include <string.h>
+# include <stdint.h>
+# include <unistd.h>
+# include <limits.h>
 
 # define FALSE		0
 # define TRUE		1

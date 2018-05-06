@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   btree_apply_prefix.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/10 17:07:49 by bmickael          #+#    #+#             */
-/*   Updated: 2017/04/10 17:08:15 by bmickael         ###   ########.fr       */
+/*   Created: 2017/03/22 14:42:12 by bmickael          #+#    #+#             */
+/*   Updated: 2017/03/22 16:57:47 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "btree_internal_header.h"
 
-void	ft_putstr(const char *s)
+int		btree_apply_prefix(struct s_node *root, void (*applyf)(void *))
 {
-	write(1, s, ft_strlen(s));
+	if (applyf == NULL)
+		return (-EINVAL);
+	if (root)
+	{
+		applyf(root->content);
+		if (root->left)
+			btree_apply_prefix(root->left, applyf);
+		if (root->right)
+			btree_apply_prefix(root->right, applyf);
+	}
+	return (0);
 }

@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   lst_create_elem.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/10 17:07:49 by bmickael          #+#    #+#             */
-/*   Updated: 2017/04/10 17:08:15 by bmickael         ###   ########.fr       */
+/*   Created: 2017/04/10 17:29:12 by bmickael          #+#    #+#             */
+/*   Updated: 2017/04/10 17:29:23 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "chained_tools.h"
 
-void	ft_putstr(const char *s)
+struct s_list	*lst_create_elem(void *data, size_t len,
+		void *(*allocator)(size_t))
 {
-	write(1, s, ft_strlen(s));
+	struct s_list *elmt;
+
+	if (!(elmt = (struct s_list *)allocator(sizeof(struct s_list))))
+		return (NULL);
+	elmt->content = data;
+	elmt->content_size = len;
+	return (elmt);
 }

@@ -1,18 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   custom_allocator.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/10 17:07:49 by bmickael          #+#    #+#             */
-/*   Updated: 2017/04/10 17:08:15 by bmickael         ###   ########.fr       */
+/*   Created: 2017/03/24 01:42:50 by bmickael          #+#    #+#             */
+/*   Updated: 2017/03/24 02:37:21 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef CUSTOM_ALLOCATOR_H
+# define CUSTOM_ALLOCATOR_H
 
-void	ft_putstr(const char *s)
+# include <stdlib.h>
+
+struct				s_custom_memory_fn
 {
-	write(1, s, ft_strlen(s));
-}
+	void			*(*allocator)(size_t);
+	void			(*deallocator)(void *);
+};
+
+#endif

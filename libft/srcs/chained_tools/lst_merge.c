@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   lst_merge.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/10 17:07:49 by bmickael          #+#    #+#             */
-/*   Updated: 2017/04/10 17:08:15 by bmickael         ###   ########.fr       */
+/*   Created: 2017/04/10 17:30:54 by bmickael          #+#    #+#             */
+/*   Updated: 2017/04/10 17:31:04 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "chained_tools.h"
 
-void	ft_putstr(const char *s)
+void	lst_merge(struct s_list **alst, struct s_list *lst)
 {
-	write(1, s, ft_strlen(s));
+	struct s_list *ptr;
+
+	if (!(*alst))
+	{
+		*alst = lst;
+		return ;
+	}
+	ptr = *alst;
+	while (ptr->next)
+		ptr = ptr->next;
+	ptr->next = lst;
 }

@@ -1,37 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putnbr.c                                        :+:      :+:    :+:   */
+/*   btree_level_count.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/10 17:09:28 by bmickael          #+#    #+#             */
-/*   Updated: 2017/04/10 17:13:14 by bmickael         ###   ########.fr       */
+/*   Created: 2017/03/22 17:45:19 by bmickael          #+#    #+#             */
+/*   Updated: 2017/03/24 07:11:41 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "btree_internal_header.h"
 
-void	ft_putnbr(int n)
+static int	recurse_level_count(struct s_node *root, int n)
 {
-	int		exponent;
-	int		sign;
-	int		i;
-	char	buff;
+	int i;
+	int j;
 
-	sign = (n < 0) ? 1 : 0;
-	exponent = 1;
 	i = n;
-	while ((i = i / 10))
-		exponent *= 10;
-	if (sign)
-		write(1, "-", 1);
-	while (exponent)
+	j = n;
+	if (root)
 	{
-		i = n / exponent;
-		buff = (sign) ? HEX_T(-(i % 10)) : HEX_T((i % 10));
-		n -= i * exponent;
-		write(1, &buff, 1);
-		exponent /= 10;
+		if (root->left)
+			i = recurse_level_count(root->left, n + 1);
+		if (root->right)
+			j = recurse_level_count(root->right, n + 1);
 	}
+	return ((i > j) ? i : j);
+}
+
+int			btree_level_count(struct s_node *root)
+{
+	if (!root)
+		return (0);
+	return (recurse_level_count(root, 1));
 }

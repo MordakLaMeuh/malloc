@@ -1,35 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_aligned_memcpy.c                                :+:      :+:    :+:   */
+/*   btree_limit_items.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/10 14:27:36 by bmickael          #+#    #+#             */
-/*   Updated: 2017/04/26 01:30:19 by bmickael         ###   ########.fr       */
+/*   Created: 2017/03/22 13:38:18 by bmickael          #+#    #+#             */
+/*   Updated: 2017/03/24 07:12:30 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "btree_internal_header.h"
 
 /*
-** XXX This function is not secure ! Only size multiplied by 8 works !
+** Logically, if the tree is okay, highest item is in far right sector.
 */
 
-void	*ft_aligned_memcpy(
-	void *restrict dst,
-	const void *restrict src,
-	size_t n)
+struct s_node	*get_highest_elem(struct s_node *node)
 {
-	uint64_t *src1;
-	uint64_t *dst1;
+	while (node->right)
+		node = node->right;
+	return (node);
+}
 
-	if (src == dst)
-		return ((void *)src);
-	src1 = (uint64_t *)src;
-	dst1 = (uint64_t *)dst;
-	n >>= 3;
-	while (n--)
-		*dst1++ = *src1++;
-	return (dst);
+/*
+** Logically, if the tree is okay, lowest item is in far left sector.
+*/
+
+struct s_node	*get_lowest_elem(struct s_node *node)
+{
+	while (node->left)
+		node = node->left;
+	return (node);
 }

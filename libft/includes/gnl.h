@@ -1,18 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/04/10 17:07:49 by bmickael          #+#    #+#             */
-/*   Updated: 2017/04/10 17:08:15 by bmickael         ###   ########.fr       */
+/*   Created: 2017/04/11 01:44:48 by bmickael          #+#    #+#             */
+/*   Updated: 2017/04/11 01:45:48 by bmickael         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#ifndef GNL_H
+# define GNL_H
 
-void	ft_putstr(const char *s)
-{
-	write(1, s, ft_strlen(s));
-}
+# include "custom_allocator.h"
+
+/*
+** Return the next newline of a file descriptor.
+*/
+
+int					get_next_line(
+		const int fd,
+		char **line,
+		struct s_custom_memory_fn *mem);
+
+#endif
