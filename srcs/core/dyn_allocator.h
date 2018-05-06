@@ -24,6 +24,7 @@
 # include <stdint.h>
 # include <sys/resource.h>
 # include <pthread.h>
+# include <stdbool.h>
 
 /*
 ** XXX Debuging include
@@ -76,6 +77,7 @@ struct								s_ctx {
 	struct s_node_page		*record_addr_tree;
 	struct s_node_page		*index_addr_tree;
 	struct s_node_page		*index_space_tree;
+	bool					is_initialized;
 } ctx;
 
 struct								s_data_page {

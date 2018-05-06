@@ -14,14 +14,16 @@
 #include "ctor.h"
 
 #ifndef __APPLE__
-# define getpagesize() (size_t)sysconf(_SC_PAGESIZE)
+# define GETPAGESIZE() (size_t)sysconf(_SC_PAGESIZE)
+#else
+# define GETPAGESIZE() getpagesize()
 #endif
 
 void		main_constructor(void)
 {
 	int ret;
 
-	ctx.page_size = getpagesize();
+	ctx.page_size = GETPAGESIZE();
 	ret = getrlimit(RLIMIT_DATA, &ctx.mem_limit);
 	if (ret < 0)
 	{
@@ -34,6 +36,7 @@ void		main_constructor(void)
 		sizeof(struct s_record);
 	ctx.index_density = (ctx.page_size - sizeof(struct s_primary_index)) /
 		sizeof(struct s_index);
+	ctx.is_initialized = true;
 }
 
 void		main_destructor(void)

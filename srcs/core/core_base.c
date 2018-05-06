@@ -69,17 +69,17 @@ void				*core_allocator(size_t *size)
 		core_allocator_large(size));
 }
 
+/*
+** Do nothing when specify a bas address, just return, not exit.
+*/
+
 void				core_deallocator(void *addr)
 {
 	struct s_record *record;
 	int				ret;
 
 	if ((record = search_record((uint64_t)addr)) == NULL)
-	{
-	//	ft_putstr_fd("Double free or corruption\n", STDERR_FILENO);
-	//	exit(1);
 		return ;
-	}
 	if (record->size <= MEDIUM_LIMIT)
 		ret = del_index(record->addr, record->size);
 	else
