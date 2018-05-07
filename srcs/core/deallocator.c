@@ -12,30 +12,35 @@
 
 #include "main_headers.h"
 
+static void			restitute_space(
+		struct s_node		*node,
+		struct s_record		*record,
+		struct s_index		*index
+)
+{
+	(void)node;
+	(void)record;
+	(void)index;
+	return ;
+}
+
 /*
 ** Do nothing when specify a bas address, just return, not exit.
 */
 
 void				core_deallocator(void *addr)
 {
-	struct s_record *record;
-	int				ret;
+	struct s_node		*node;
+	struct s_record		*record;
+	struct s_index		*index;
 
-	if ((record = search_record((uint64_t)addr)) == NULL)
+	if ((node = search_record_node((uint64_t)addr, &index)) == NULL)
 		return ;
-	if (record->size <= MEDIUM_LIMIT)
-		ret = del_index(record->addr, record->size);
-	else
-		ret = destroy_pages((void *)record->addr, record->size);
-	if (ret < 0)
-	{
-		ft_putstr_fd("Unexpected error at del index", STDERR_FILENO);
-		exit(1);
-	}
-	ret = del_record(record);
-	if (ret < 0)
-	{
-		ft_putstr_fd("Unexpected error at del record", STDERR_FILENO);
-		exit(1);
-	}
+	record = (struct s_record *)btree_get_node_content(node);
+	if (record == NULL)
+		return ;
+	restitute_space(node, record, index);
+	btree_delete_rnb_node(&index->allocation_tree, node,
+			&node_custom_deallocator);
+	return ;
 }

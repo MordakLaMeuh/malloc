@@ -35,7 +35,7 @@ int				btree_destoy_node(
 	return (0);
 }
 
-int				bteee_attach_content(
+int				btree_attach_content(
 		struct s_node *node,
 		void *content,
 		void (*deallocator)(void *))

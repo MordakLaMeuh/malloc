@@ -13,22 +13,14 @@
 #include "main_headers.h"
 
 static void					*substract_large_page(
-	struct s_record *record,
-	size_t size)
+		struct s_index *index,
+		struct s_node *node,
+		size_t size)
 {
-	int old_page_count;
-	int new_page_count;
-	int offset;
-
-	old_page_count = record->size / ctx.page_size;
-	new_page_count = size / ctx.page_size;
-	offset = old_page_count - new_page_count;
-	if (offset != 0)
-		destroy_pages(
-			(void *)(record->addr + new_page_count * ctx.page_size),
-			offset * ctx.page_size);
-	record->size = size;
-	return ((void *)record->addr);
+	(void)index;
+	(void)node;
+	(void)size;
+	return (NULL);
 }
 
 /*
@@ -38,95 +30,70 @@ static void					*substract_large_page(
 */
 
 static void					*copy_another_place(
-	struct s_record *record,
-	size_t size,
-	enum e_page_type page_type)
+		struct s_index *index,
+		struct s_node *node,
+		size_t size,
+		enum e_page_type page_type)
 {
-	void				*addr;
-	int					ret;
-
-	if (size <= MEDIUM_LIMIT)
-		addr = (void *)assign_index(size, page_type);
-	else
-		addr = get_new_pages(size);
-	if (addr == NULL)
-	{
-		ft_putstr_fd("Cannot allocate new page\n", STDERR_FILENO);
-		return (NULL);
-	}
-	ft_aligned_memcpy(
-		addr,
-		(void *)record->addr,
-		(record->size < size) ? record->size : size);
-	if (record->size <= MEDIUM_LIMIT)
-		ret = del_index(record->addr, record->size);
-	else
-		ret = destroy_pages((void *)record->addr, record->size);
-	if (ret < 0)
-		ft_putstr_fd("Unexpected error !\n", STDERR_FILENO);
-	record->addr = (uint64_t)addr;
-	record->size = size;
-	return (addr);
+	(void)index;
+	(void)node;
+	(void)size;
+	(void)page_type;
+	return (NULL);
 }
 
 static int					fill_possible(
-	struct s_record *record,
+	struct s_index *index,
+	struct s_node *node,
 	size_t size,
 	enum e_page_type page_type)
 {
-	struct s_index_page	*index_page;
-	struct s_index		*index;
-	uint32_t			sector;
-	int					i;
-
-	index_page = find_index_page(record->addr, page_type, &i);
-	index = &index_page->index[i];
-	sector = addr_to_sector(record->addr, index);
-	if (try_new_field(
-		index,
-		sector,
-		get_required_sectors(record->size, page_type),
-		get_required_sectors(size, page_type)))
-	{
-		record->size = size;
-		return (1);
-	}
+	(void)index;
+	(void)node;
+	(void)size;
+	(void)page_type;
 	return (0);
 }
 
-static void					*reallocator(struct s_record *record, size_t size)
+static void					*reallocator(
+		struct s_node *node,
+		struct s_index *index,
+		size_t size)
 {
+	struct s_record		*record;
 	enum e_page_type	old_type;
 	enum e_page_type	new_type;
 
+	record = btree_get_node_content(node);
 	old_type = get_page_type(record->size);
 	new_type = get_page_type(size);
 	size = allign_size(size, new_type);
 	if (old_type != new_type)
-		return (copy_another_place(record, size, new_type));
+		return (copy_another_place(index, node, size, new_type));
 	if (old_type == LARGE)
 	{
 		if (record->size == size)
-		{
 			return ((void *)record->addr);
-		}
 		if (size > record->size)
-			return (copy_another_place(record, size, new_type));
+			return (copy_another_place(index, node, size, new_type));
 		else
-			return (substract_large_page(record, size));
+			return (substract_large_page(index, node, size));
 	}
-	if (fill_possible(record, size, old_type))
+	if (fill_possible(index, node, size, old_type))
 		return ((void *)record->addr);
-	return (copy_another_place(record, size, new_type));
+	return (copy_another_place(index, node, size, new_type));
 }
 
 void						*core_realloc(void *ptr, size_t size)
 {
+	struct s_node		*node;
 	struct s_record		*record;
+	struct s_index		*index;
 
-	if (ptr == NULL)
-		return (core_allocator(&size));
-	if ((record = search_record((uint64_t)ptr)) == NULL)
+	if ((node = search_record_node((uint64_t)ptr, &index)) == NULL)
+		return (NULL);
+	record = (struct s_record *)btree_get_node_content(node);
+	if (record == NULL)
 		return (NULL);
 	if (size == 0)
 	{
@@ -135,7 +102,7 @@ void						*core_realloc(void *ptr, size_t size)
 	}
 	if (size == record->size)
 		return ((void *)record->addr);
-	return (reallocator(record, size));
+	return (reallocator(node, index, size));
 }
 
 /*

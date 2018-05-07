@@ -25,13 +25,19 @@
 # include "btree.h"
 
 /*
+** XXX Debug
+*/
+
+# include <assert.h>
+
+/*
 ** Data page
 */
 
 # define RECORD_ALLIGN		16
 # define RECORD_REQ_PAGES	4
 
-# define INDEX_ALLIGN		32
+# define INDEX_ALLIGN		64
 # define INDEX_REQ_PAGES	2
 
 # define NODE_ALLIGN		32
@@ -175,6 +181,35 @@ void								*node_custom_allocator(size_t size);
 struct s_index						*index_custom_allocator(void);
 struct s_record						*record_custom_allocator(void);
 
+void								node_custom_deallocator(void *node);
+void								index_custom_deallocator(
+	struct s_index *index);
+void								record_custom_deallocator(
+	struct s_record *record);
+
+int									cmp_index_addr(void *i1, void *i2);
+int									cmp_record_size(void *r1, void *r2);
+int									cmp_record_addr(void *r1, void *r2);
+int									cmp_tiny_addr_range(void *r1, void *r2);
+int									cmp_medium_addr_range(void *r1, void *r2);
+
+/*
+** Finders.
+*/
+
+struct s_node						*get_associated_node_for_record(
+	struct s_record *record);
+struct s_node						*get_associated_node_for_index(
+	struct s_index *index);
+
+struct s_node						*search_record_node(
+	uint64_t addr,
+	struct s_index **index);
+
+/*
+** Size tools.
+*/
+
 size_t								allign_size(
 	size_t size,
 	enum e_page_type page_type);
@@ -182,48 +217,3 @@ size_t								allign_size(
 enum e_page_type					get_page_type(size_t size);
 
 #endif
-
-/*
-** Record functions
-*/
-
-/*
-struct s_record						*search_record(uint64_t addr);
-struct s_record						*get_new_record();
-int									del_record(struct s_record *record);
-*/
-
-/*
-** Index functions
-*/
-
-/*
-uint64_t							assign_index(size_t size,
-	enum e_page_type page_type);
-int									del_index(uint64_t addr, size_t size);
-
-uint32_t							get_required_sectors(
-	size_t size,
-	enum e_page_type page_type);
-uint64_t							sector_to_addr(
-	uint64_t base_addr,
-	enum e_page_type page_type,
-	uint32_t sector);
-uint32_t							addr_to_sector(
-	uint64_t addr,
-	struct s_index *index);
-int									fill(
-	uint64_t *field,
-	uint32_t required_sectors);
-
-struct s_index_page					*find_index_page(
-	uint64_t addr,
-	enum e_page_type page_type,
-	int *i);
-
-int									try_new_field(
-	struct s_index *index,
-	uint32_t sector,
-	uint32_t required_sectors_old,
-	uint32_t required_sectors_new);
-*/

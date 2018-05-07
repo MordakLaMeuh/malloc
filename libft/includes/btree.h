@@ -108,7 +108,7 @@ struct s_node	*btree_smash_checker(
 ** FAIL: -EINVAL Null node sended
 */
 
-int				bteee_attach_content(
+int				btree_attach_content(
 		struct s_node *node,
 		void *content,
 		void (*deallocator)(void *));

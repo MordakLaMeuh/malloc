@@ -40,6 +40,11 @@ void				*node_custom_allocator(size_t size)
 	return (addr);
 }
 
+/*
+** Request a new index field in index_page, create a new index page
+** if necessary.
+*/
+
 struct s_index		*index_custom_allocator(void)
 {
 	struct s_index_page		*index_page;
@@ -63,6 +68,10 @@ struct s_index		*index_custom_allocator(void)
 	index_page->primary_block.nb_index += 1;
 	return ((struct s_index *)addr);
 }
+
+/*
+** Return a new record field. Create an new record chunk if needed.
+*/
 
 struct s_record		*record_custom_allocator(void)
 {

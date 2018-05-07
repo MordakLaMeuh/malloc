@@ -17,10 +17,9 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-#CORE = allocator deallocator reallocator
-CORE =
+CORE = allocator deallocator reallocator
 MEMORY = custom_allocators custom_deallocators
-TOOLS = index size_fn 
+TOOLS = index size_fn cmp finder
 MAIN = main_prototypes ctor mem_syscall 
 PAGES = chunk
 
@@ -44,7 +43,7 @@ OBJ = $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(__OBJ__)))
 __H__ = $(basename $(notdir $(_HEADERS)))
 HEADERS = $(addsuffix .h, $(__H__))
 
-IFLAGS = -Isrcs -I$(LIBFT)/includes
+IFLAGS = -Isrcs -I$(LIBFT)/includes -I$(LIBFT)/srcs
 LDFLAGS = -shared -fPIC -L$(LIBFT) -lft -exported_symbols_list symbol_list
 
 .PHONY: all clean fclean re help
