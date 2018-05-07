@@ -1,5 +1,5 @@
-_free
-_malloc
-_realloc
-_calloc
-_show_alloc_mem
+_ft_free
+_ft_malloc
+_ft_realloc
+_ft_calloc
+_ft_show_alloc_mem

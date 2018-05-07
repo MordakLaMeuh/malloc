@@ -17,18 +17,21 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-CORE = allocator deallocator reallocator
-TOOLS = record index_add index_del sectors size_fn 
+#CORE = allocator deallocator reallocator
+CORE =
+MEMORY = custom_allocators custom_deallocators
+TOOLS = index size_fn 
 MAIN = main_prototypes ctor mem_syscall 
+PAGES = chunk
 
-SRC_LIST = $(MAIN) $(CORE) $(TOOLS)
+SRC_LIST = $(MAIN) $(CORE) $(TOOLS) $(MEMORY) $(PAGES)
 
-VPATH = srcs srcs/core srcs/tools
+VPATH = srcs srcs/core srcs/tools srcs/pages srcs/memory srcs/chunk
 
 ## HEADERS
 
 MAIN_HEADER = libft_alloc.h
-_HEADERS = main_headers.h
+_HEADERS = main_headers.h ctor.h
 
 ifeq ($(HOSTTYPE),)
 HOSTTYPE = $(shell uname -m)_$(shell uname -s)

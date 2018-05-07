@@ -15,32 +15,40 @@
 
 pthread_mutex_t g_mut = PTHREAD_MUTEX_INITIALIZER;
 
-void			*malloc(size_t size)
+void			*ft_malloc(size_t size)
 {
 	void		*addr;
 
-	if (size == 0)
-		return (NULL);
 	pthread_mutex_lock(&g_mut);
+	if (size == 0)
+	{
+		pthread_mutex_unlock(&g_mut);
+		return (NULL);
+	}
 	if (ctx.is_initialized == false)
-		main_constructor();
-	addr = core_allocator(&size);
+		constructor_runtime();
+//	addr = core_allocator(&size);
+	addr = NULL;
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
 
-void			*calloc(size_t count, size_t size)
+void			*ft_calloc(size_t count, size_t size)
 {
 	void		*addr;
 	size_t		global_size;
 
+	pthread_mutex_lock(&g_mut);
 	global_size = count * size;
 	if (global_size == 0)
+	{
+		pthread_mutex_unlock(&g_mut);
 		return (NULL);
-	pthread_mutex_lock(&g_mut);
+	}
 	if (ctx.is_initialized == false)
-		main_constructor();
-	addr = core_allocator(&global_size);
+		constructor_runtime();
+//	addr = core_allocator(&global_size);
+	addr = NULL;
 	if (addr == NULL)
 	{
 		pthread_mutex_unlock(&g_mut);
@@ -51,33 +59,39 @@ void			*calloc(size_t count, size_t size)
 	return (addr);
 }
 
-void			free(void *ptr)
+void			ft_free(void *ptr)
 {
-	if (ptr == NULL)
-		return ;
 	pthread_mutex_lock(&g_mut);
+	if (ptr == NULL)
+	{
+		pthread_mutex_unlock(&g_mut);
+		return ;
+	}
 	if (ctx.is_initialized == false)
-		main_constructor();
-	core_deallocator(ptr);
+		constructor_runtime();
+//	core_deallocator(ptr);
 	pthread_mutex_unlock(&g_mut);
 }
 
-void			*realloc(void *ptr, size_t size)
+void			*ft_realloc(void *ptr, size_t size)
 {
 	void				*addr;
 
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
-		main_constructor();
-	addr = core_realloc(ptr, size);
+		constructor_runtime();
+//	addr = core_realloc(ptr, size);
+	addr = NULL;
+	(void)ptr;
+	(void)size;
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
 
-void			show_alloc_mem(void)
+void			ft_show_alloc_mem(void)
 {
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
-		main_constructor();
+		constructor_runtime();
 	pthread_mutex_unlock(&g_mut);
 }

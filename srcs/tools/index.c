@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ctor.h                                             :+:      :+:    :+:   */
+/*   index.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,12 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef CTOR_H
-# define CTOR_H
+#include "main_headers.h"
 
-void __attribute__((constructor)) main_constructor();
-void __attribute__((destructor)) main_destructor();
-
-void constructor_runtime(void);
-
-#endif
+/*
+** Create a proper index field, and DATA page associated.
+*/

@@ -35,10 +35,13 @@ int main(void) {
 	ft_free(w);
 	ft_free(z);
 
+	printf("meuuuh\n");
 
 	char *t[65636];
 	int i;
 
+
+	printf("STOP\n");
 
 	for (i = 0; i < NB_I; i++) {
 		t[i] = ft_malloc(50);
