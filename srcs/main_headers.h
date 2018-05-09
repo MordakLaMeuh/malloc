@@ -37,7 +37,7 @@
 # define RECORD_ALLIGN		16
 # define RECORD_REQ_PAGES	4
 
-# define INDEX_ALLIGN		64
+# define INDEX_ALLIGN		32
 # define INDEX_REQ_PAGES	2
 
 # define NODE_ALLIGN		32
@@ -80,6 +80,8 @@ struct								s_ctx {
 	struct s_node			*tiny_index_pages_tree;
 	struct s_node			*medium_index_pages_tree;
 	struct s_node			*big_page_record_tree;
+	struct s_node			*global_tiny_space_tree;
+	struct s_node			*global_medium_space_tree;
 
 	int						record_density;
 	int						node_density;
@@ -126,7 +128,6 @@ struct								s_primary_index {
 
 struct								s_index {
 	struct s_node			*allocation_tree;
-	struct s_node			*space_tree;
 	__uint64_t				page_addr;
 	enum e_page_type		type;
 } __attribute__((aligned(INDEX_ALLIGN)));
@@ -164,6 +165,23 @@ void								*core_realloc(void *ptr, size_t size);
 
 void								*get_new_pages(size_t size);
 int									destroy_pages(void *addr, size_t size);
+
+/*
+** Record space tree management
+*/
+
+void								trash_free_record(
+		uint64_t addr,
+		size_t size,
+		enum e_page_type type);
+
+void								add_free_record(
+		struct s_record *record,
+		enum e_page_type type);
+
+struct s_node						*get_free_record_node(
+		size_t size,
+		enum e_page_type type);
 
 /*
 ** Pages management

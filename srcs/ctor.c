@@ -20,6 +20,26 @@ extern pthread_mutex_t g_mut;
 # define GETPAGESIZE() getpagesize()
 #endif
 
+/*
+** That 'next' function is just called like that for the 42 norm...
+** It's not a really a 'next' step, just got 26 lines instead of 25.
+*/
+
+static void	fill_preallocated_chunk_next(char *base_addr)
+{
+	ctx.record_density = (RECORD_REQ_PAGES * ctx.page_size -
+			sizeof(struct s_primary_record)) / sizeof(struct s_record);
+	ctx.index_density = (INDEX_REQ_PAGES * ctx.page_size -
+			sizeof(struct s_primary_index)) / sizeof(struct s_index);
+	ctx.node_density = (NODE_REQ_PAGES * ctx.page_size -
+			sizeof(struct s_primary_node)) / btree_get_node_size();
+	ctx.global_tiny_space_tree = btree_new();
+	assign_new_chunk((void *)base_addr, TINY);
+	base_addr += TINY_RANGE;
+	ctx.global_medium_space_tree = btree_new();
+	assign_new_chunk((void *)base_addr, MEDIUM);
+}
+
 static void	fill_preallocated_chunk(char *base_addr)
 {
 	ctx.record_pages_entry = (struct s_record_page *)base_addr;
@@ -37,15 +57,7 @@ static void	fill_preallocated_chunk(char *base_addr)
 	ctx.tiny_index_pages_tree = btree_new();
 	ctx.medium_index_pages_tree = btree_new();
 	ctx.big_page_record_tree = btree_new();
-	ctx.record_density = (RECORD_REQ_PAGES * ctx.page_size -
-			sizeof(struct s_primary_record)) / sizeof(struct s_record);
-	ctx.index_density = (INDEX_REQ_PAGES * ctx.page_size -
-			sizeof(struct s_primary_index)) / sizeof(struct s_index);
-	ctx.node_density = (NODE_REQ_PAGES * ctx.page_size -
-			sizeof(struct s_primary_node)) / btree_get_node_size();
-	assign_new_chunk((void *)base_addr, TINY);
-	base_addr += TINY_RANGE;
-	assign_new_chunk((void *)base_addr, MEDIUM);
+	fill_preallocated_chunk_next(base_addr);
 }
 
 void		constructor_runtime(void)

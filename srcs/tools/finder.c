@@ -36,8 +36,7 @@ struct s_node	*get_associated_node_for_record(struct s_record *record)
 			(void *)record->addr, &cmp_record_addr);
 	if (node)
 		return (node);
-	return (btree_get_node_by_content(index->space_tree, (void *)record->addr,
-		&cmp_record_addr));
+	return (NULL);
 }
 
 struct s_node	*get_associated_node_for_index(struct s_index *index)
