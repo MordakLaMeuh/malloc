@@ -1,4 +1,4 @@
-	{
+{
 	global: ft_malloc;
 		ft_free;
 		ft_realloc;

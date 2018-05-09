@@ -44,7 +44,15 @@ __H__ = $(basename $(notdir $(_HEADERS)))
 HEADERS = $(addsuffix .h, $(__H__))
 
 IFLAGS = -Isrcs -I$(LIBFT)/includes -I$(LIBFT)/srcs
+
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
 LDFLAGS = -shared -fPIC -L$(LIBFT) -lft -exported_symbols_list symbol_list
+endif
+
+ifeq ($(UNAME_S),Linux)
+LDFLAGS = -shared -fPIC -L$(LIBFT) -lft -Wl,--version-script=exportmap
+endif
 
 .PHONY: all clean fclean re help
 

@@ -1,0 +1,1 @@
+LD_PRELOAD=/home/mordak/Documents/malloc/libft_malloc.so program_name
