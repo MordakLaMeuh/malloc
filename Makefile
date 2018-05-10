@@ -22,10 +22,11 @@ MEMORY = custom_allocators custom_deallocators
 TOOLS = index size_fn cmp finder
 MAIN = main_prototypes ctor mem_syscall 
 PAGES = new_chunk del_chunk free_record
+DEBUG_ALLOC = show_alloc
 
-SRC_LIST = $(MAIN) $(CORE) $(TOOLS) $(MEMORY) $(PAGES)
+SRC_LIST = $(MAIN) $(CORE) $(TOOLS) $(MEMORY) $(PAGES) $(DEBUG_ALLOC)
 
-VPATH = srcs srcs/core srcs/tools srcs/pages srcs/memory srcs/chunk
+VPATH = srcs srcs/core srcs/tools srcs/pages srcs/memory srcs/chunk srcs/debug
 
 ## HEADERS
 

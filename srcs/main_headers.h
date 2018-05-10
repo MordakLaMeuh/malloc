@@ -20,6 +20,7 @@
 # include <sys/resource.h>
 # include <pthread.h>
 # include <stdbool.h>
+# include <errno.h>
 
 # include "libft.h"
 # include "btree.h"
@@ -238,5 +239,7 @@ size_t								allign_size(
 		enum e_page_type page_type);
 
 enum e_page_type					get_page_type(size_t size);
+
+void								show_alloc(void);
 
 #endif

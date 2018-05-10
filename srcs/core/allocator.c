@@ -12,6 +12,18 @@
 
 #include "main_headers.h"
 
+int				x__cmp_index_addr(void *i1, void *i2)
+{
+	uint64_t		*test_addr;
+
+	test_addr = (uint64_t *)i1;
+	if (*test_addr < ((struct s_index *)i2)->page_addr)
+		return (-1);
+	if (*test_addr > ((struct s_index *)i2)->page_addr)
+		return (1);
+	return (0);
+}
+
 static uint64_t		find_index_and_set(
 		size_t size,
 		enum e_page_type page_type,
@@ -45,16 +57,18 @@ static uint64_t		find_index_and_set(
 	addr = record->addr;
 
 	// find in pages (tiny or medium) the corresponding index
+	uint64_t address;
 
+	address = record->addr & (uint64_t)~0xFFF;
 	if (page_type == TINY)
 		*index = btree_search_content(ctx.tiny_index_pages_tree,
-				record,
-				cmp_index_addr);
+				&address,
+				x__cmp_index_addr);
 
 	else
 		*index = btree_search_content(ctx.medium_index_pages_tree,
-				record,
-				cmp_index_addr);
+				&address,
+				x__cmp_index_addr);
 
 	// Test if alone				// step 2 - method founded !
 	alone_node = (btree_is_last_node(free_record_node)) ? true : false;

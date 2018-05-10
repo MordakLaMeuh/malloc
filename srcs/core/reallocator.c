@@ -89,6 +89,7 @@ void						*core_realloc(void *ptr, size_t size)
 	struct s_node		*node;
 	struct s_record		*record;
 	struct s_index		*index;
+	void				*out;
 
 	if ((node = search_record_node((uint64_t)ptr, &index)) == NULL)
 		return (NULL);
@@ -102,7 +103,10 @@ void						*core_realloc(void *ptr, size_t size)
 	}
 	if (size == record->size)
 		return ((void *)record->addr);
-	return (reallocator(node, index, size));
+	out = reallocator(node, index, size);
+	if (out == NULL)
+		errno = ENOMEM;
+	return (out);
 }
 
 /*

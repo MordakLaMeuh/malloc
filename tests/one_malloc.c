@@ -11,5 +11,6 @@ int main(void)
 	(void)b;
 	char *c = ft_malloc(30);
 	(void)c;
+	ft_show_alloc_mem();
 	return 0;
 }

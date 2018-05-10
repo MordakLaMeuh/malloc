@@ -23,6 +23,7 @@ void			*ft_malloc(size_t size)
 	pthread_mutex_lock(&g_mut);
 	if (size == 0)
 	{
+		errno = ENOMEM;
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}
@@ -50,6 +51,7 @@ void			*ft_calloc(size_t count, size_t size)
 	addr = core_allocator(&global_size);
 	if (addr == NULL)
 	{
+		errno = ENOMEM;
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}
@@ -89,5 +91,6 @@ void			ft_show_alloc_mem(void)
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
+	show_alloc();
 	pthread_mutex_unlock(&g_mut);
 }
