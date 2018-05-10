@@ -175,7 +175,7 @@ void								trash_free_record(
 		size_t size,
 		enum e_page_type type);
 
-void								add_free_record(
+struct s_node						*add_free_record(
 		struct s_record *record,
 		enum e_page_type type);
 
@@ -187,9 +187,14 @@ struct s_node						*get_free_record_node(
 ** Pages management
 */
 
-int									assign_new_chunk(
-	void *addr,
-	enum e_page_type page_type);
+struct s_index						*reserve_new_chunk(
+		enum e_page_type page_type,
+		struct s_node **free_record_sub_tree);
+
+struct s_index						*assign_new_chunk(
+		void *addr,
+		enum e_page_type page_type,
+		struct s_node **free_record_tree);
 
 /*
 ** Custom memory management
@@ -201,9 +206,9 @@ struct s_record						*record_custom_allocator(void);
 
 void								node_custom_deallocator(void *node);
 void								index_custom_deallocator(
-	struct s_index *index);
+		struct s_index *index);
 void								record_custom_deallocator(
-	struct s_record *record);
+		struct s_record *record);
 
 int									cmp_index_addr(void *i1, void *i2);
 int									cmp_record_size(void *r1, void *r2);
@@ -216,21 +221,21 @@ int									cmp_medium_addr_range(void *r1, void *r2);
 */
 
 struct s_node						*get_associated_node_for_record(
-	struct s_record *record);
+		struct s_record *record);
 struct s_node						*get_associated_node_for_index(
-	struct s_index *index);
+		struct s_index *index);
 
 struct s_node						*search_record_node(
-	uint64_t addr,
-	struct s_index **index);
+		uint64_t addr,
+		struct s_index **index);
 
 /*
 ** Size tools.
 */
 
 size_t								allign_size(
-	size_t size,
-	enum e_page_type page_type);
+		size_t size,
+		enum e_page_type page_type);
 
 enum e_page_type					get_page_type(size_t size);
 

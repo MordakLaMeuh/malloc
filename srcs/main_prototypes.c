@@ -19,6 +19,7 @@ void			*ft_malloc(size_t size)
 {
 	void		*addr;
 
+	ft_printf("--- MALLOC ---\n");
 	pthread_mutex_lock(&g_mut);
 	if (size == 0)
 	{

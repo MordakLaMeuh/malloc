@@ -18,9 +18,14 @@ static int		cmp_sub_size(void *r1, void *r2)
 	size_t			sub_size;
 	size_t			*test_size;
 
-	sub_tree = btree_get_node_content(r2);
+	assert(r2 != NULL);
+	sub_tree = r2;
+	//assert(sub_tree != NULL);
+
+	assert(btree_get_node_content(sub_tree) != NULL);
 	sub_size = ((struct s_record *)btree_get_node_content(sub_tree))->size;
 	test_size = (size_t *)r1;
+	ft_printf("test size = %lu, sub_size = %lu\n", *test_size, sub_size);
 	if (*test_size < sub_size)
 		return (-1);
 	if (*test_size > sub_size)
@@ -34,7 +39,7 @@ static int		cmp_sub_addr(void *r1, void *r2)
 	size_t			sub_size;
 	uint64_t		*test_addr;
 
-	sub_tree = btree_get_node_content(r2);
+	sub_tree = r2;
 	sub_size = ((struct s_record *)btree_get_node_content(sub_tree))->size;
 	test_addr = (uint64_t *)r1;
 	if (*test_addr < ((struct s_record *)r2)->addr)
@@ -68,28 +73,43 @@ void			trash_free_record(
 				size_node, &node_custom_deallocator);
 }
 
-void			add_free_record(struct s_record *record, enum e_page_type type)
+static int		custom_cmp_sub_size(void *r1, void *r2)
 {
-	struct s_node	*size_node;
+	struct s_record *n2;
+
+	n2 = (struct s_record *)btree_get_node_content(r2);
+
+	if (((struct s_record *)r1)->size < n2->size)
+		return (-1);
+	if (((struct s_record *)r1)->size > n2->size)
+		return (1);
+	return (0);
+}
+
+struct s_node		*add_free_record(struct s_record *record, enum e_page_type type)
+{
+	struct s_node	*size_node_tree;
 	struct s_node	*record_node;
 
-	size_node = btree_get_node_by_content(
+	size_node_tree = btree_get_node_by_content(
 			(type == TINY) ?
 			ctx.global_tiny_space_tree : ctx.global_medium_space_tree,
 			&record->size, &cmp_sub_size);
-	if (size_node == NULL)
+	if (size_node_tree == NULL)
 	{
 		record_node = btree_create_node(record, &node_custom_allocator);
 		assert(record_node != NULL);
-		btree_insert_rnb_node_by_content((type == TINY) ?
+		size_node_tree = btree_insert_rnb_node_by_content((type == TINY) ?
 				&ctx.global_tiny_space_tree : &ctx.global_medium_space_tree,
-				&record->size, &cmp_sub_size, &node_custom_allocator);
-		return ;
+				record_node, &custom_cmp_sub_size, &node_custom_allocator);
+		ft_printf("creation of new record\n");
+		return (size_node_tree);
 	}
-	record_node = btree_get_node_content(size_node);
+	record_node = btree_get_node_content(size_node_tree);
 	assert(record_node != NULL);
 	btree_insert_rnb_node_by_content(
 			&record_node, record, &cmp_record_addr, &node_custom_allocator);
+	return (size_node_tree);
 }
 
 struct s_node	*get_free_record_node(size_t size, enum e_page_type type)

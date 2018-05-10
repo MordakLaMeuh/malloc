@@ -34,10 +34,10 @@ static void	fill_preallocated_chunk_next(char *base_addr)
 	ctx.node_density = (NODE_REQ_PAGES * ctx.page_size -
 			sizeof(struct s_primary_node)) / btree_get_node_size();
 	ctx.global_tiny_space_tree = btree_new();
-	assign_new_chunk((void *)base_addr, TINY);
+	assign_new_chunk((void *)base_addr, TINY, NULL);
 	base_addr += TINY_RANGE;
 	ctx.global_medium_space_tree = btree_new();
-	assign_new_chunk((void *)base_addr, MEDIUM);
+	assign_new_chunk((void *)base_addr, MEDIUM, NULL);
 }
 
 static void	fill_preallocated_chunk(char *base_addr)

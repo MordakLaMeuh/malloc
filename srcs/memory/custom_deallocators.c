@@ -16,13 +16,16 @@
 void					node_custom_deallocator(void *node)
 {
 	struct s_node_page	*end_node_page;
-	struct s_node		*src_node;
+	uint8_t				*src_node;
 
+	ft_printf("deallocation of node\n");
 	end_node_page = ctx.node_pages_entry;
 	assert(end_node_page->primary_block.nb_node > 0);
-	src_node = &end_node_page->node[end_node_page->primary_block.nb_node - 1];
+	src_node = (uint8_t *)(&end_node_page->node) +
+			((end_node_page->primary_block.nb_node - 1) * btree_get_node_size());
 	if (node != (void *)src_node)
-		btree_memory_move(node, src_node);
+		btree_memory_move(node, (struct s_node *)src_node);
+	ft_printf("moving node, src_node = %p\n", src_node);
 	end_node_page->primary_block.nb_node -= 1;
 	if (end_node_page->primary_block.nb_node == 0 &&
 			end_node_page->primary_block.next != NULL)

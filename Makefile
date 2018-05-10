@@ -21,7 +21,7 @@ CORE = allocator deallocator reallocator
 MEMORY = custom_allocators custom_deallocators
 TOOLS = index size_fn cmp finder
 MAIN = main_prototypes ctor mem_syscall 
-PAGES = chunk free_record
+PAGES = new_chunk del_chunk free_record
 
 SRC_LIST = $(MAIN) $(CORE) $(TOOLS) $(MEMORY) $(PAGES)
 
