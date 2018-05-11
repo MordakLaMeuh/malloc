@@ -36,25 +36,25 @@
 */
 
 # define RECORD_ALLIGN		16
-# define RECORD_REQ_PAGES	4
+# define RECORD_REQ_PAGES	1
 
 # define INDEX_ALLIGN		32
-# define INDEX_REQ_PAGES	2
+# define INDEX_REQ_PAGES	1
 
-# define NODE_ALLIGN		32
-# define NODE_REQ_PAGES		8
+# define NODE_ALLIGN		64
+# define NODE_REQ_PAGES		1
 
 # define TINY_SHR			4
 # define TINY_MASK			0xf
 # define TINY_BLOCK_SIZE	(1 << TINY_SHR)
 # define TINY_LIMIT			(TINY_BLOCK_SIZE * 32 - TINY_BLOCK_SIZE)
-# define TINY_RANGE			(TINY_LIMIT * 256)
+# define TINY_RANGE			(TINY_LIMIT * 128)
 
 # define MEDIUM_SHR			9
 # define MEDIUM_MASK		0x1ff
 # define MEDIUM_BLOCK_SIZE	(1 << MEDIUM_SHR)
 # define MEDIUM_LIMIT		(MEDIUM_BLOCK_SIZE * 32 - MEDIUM_BLOCK_SIZE)
-# define MEDIUM_RANGE		(MEDIUM_LIMIT * 256)
+# define MEDIUM_RANGE		(MEDIUM_LIMIT * 128)
 
 /*
 ** Global description
@@ -210,12 +210,6 @@ void								index_custom_deallocator(
 		struct s_index *index);
 void								record_custom_deallocator(
 		struct s_record *record);
-
-int									cmp_index_addr(void *i1, void *i2);
-int									cmp_record_size(void *r1, void *r2);
-int									cmp_record_addr(void *r1, void *r2);
-int									cmp_tiny_addr_range(void *r1, void *r2);
-int									cmp_medium_addr_range(void *r1, void *r2);
 
 /*
 ** Finders.

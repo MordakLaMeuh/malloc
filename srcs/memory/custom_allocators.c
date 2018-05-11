@@ -36,8 +36,9 @@ void				*node_custom_allocator(size_t size)
 		node_page = new_node_page;
 	}
 	addr = (char *)&node_page->node + (size * node_page->primary_block.nb_node);
+	ft_printf("%p %p %p %p\n", node_page, &node_page->primary_block, &node_page->node, addr);
 	node_page->primary_block.nb_node += 1;
-	ft_printf("new node created at: %p\n", addr);
+	ft_printf("node_custom: new node created at: %p\n", addr);
 	return (addr);
 }
 

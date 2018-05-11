@@ -12,6 +12,14 @@
 
 #include "main_headers.h"
 
+static int				cmp_index_to_index(void *index1, void *index2)
+{
+	if (((struct s_index *)index1)->page_addr < ((struct s_index *)index2)->page_addr)
+		return (-1);
+	if (((struct s_index *)index1)->page_addr > ((struct s_index *)index2)->page_addr)
+		return (1);
+	return (0);
+}
 static struct s_node	*assign_new_tiny_chunk(
 		struct s_record *record,
 		struct s_index *index_ref,
@@ -20,11 +28,14 @@ static struct s_node	*assign_new_tiny_chunk(
 	ft_printf("Assigning new TINY chunk\n");
 	record->size = TINY_RANGE;
 	if (free_record_sub_tree)
+	{
+		ft_printf("free_record_sub_tree\n");
 		*free_record_sub_tree = add_free_record(record, TINY);
+	}
 	else
 		add_free_record(record, TINY);
 	return (btree_insert_rnb_node_by_content(&ctx.tiny_index_pages_tree,
-			index_ref, &cmp_index_addr, &node_custom_allocator));
+			index_ref, &cmp_index_to_index, &node_custom_allocator));
 }
 
 static struct s_node	*assign_new_medium_chunk(
@@ -39,7 +50,7 @@ static struct s_node	*assign_new_medium_chunk(
 	else
 		add_free_record(record, MEDIUM);
 	return (btree_insert_rnb_node_by_content(&ctx.medium_index_pages_tree,
-			index_ref, &cmp_index_addr, &node_custom_allocator));
+			index_ref, &cmp_index_to_index, &node_custom_allocator));
 }
 
 /*

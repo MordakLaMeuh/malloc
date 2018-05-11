@@ -12,17 +12,30 @@
 
 #include "main_headers.h"
 
-int				x__cmp_index_addr(void *i1, void *i2)
+static int			cmp_addr_to_tiny_index(void *addr, void *index)
 {
-	uint64_t		*test_addr;
+	uint64_t *address;
 
-	test_addr = (uint64_t *)i1;
-	if (*test_addr < ((struct s_index *)i2)->page_addr)
+	address = (uint64_t *)addr;
+	if (*address < ((struct s_index *)index)->page_addr)
 		return (-1);
-	if (*test_addr > ((struct s_index *)i2)->page_addr)
+	if (*address >= (((struct s_index *)index)->page_addr + TINY_RANGE))
 		return (1);
 	return (0);
 }
+
+static int			cmp_addr_to_medium_index(void *addr, void *index)
+{
+	uint64_t *address;
+
+	address = (uint64_t *)addr;
+	if (*address < ((struct s_index *)index)->page_addr)
+		return (-1);
+	if (*address >= (((struct s_index *)index)->page_addr + MEDIUM_RANGE))
+		return (1);
+	return (0);
+}
+
 
 static uint64_t		find_index_and_set(
 		size_t size,
@@ -37,7 +50,7 @@ static uint64_t		find_index_and_set(
 	bool			alone_node;
 
 	free_record_tree_node = get_free_record_node(size, page_type);
-	assert(free_record_tree_node != NULL);
+//	assert(free_record_tree_node != NULL);
 	if (free_record_tree_node == NULL)
 	{
 		// ALLOCATE PAGES			// step 1 -
@@ -45,6 +58,8 @@ static uint64_t		find_index_and_set(
 		// CREATE A FREE NODE		// step 1 -
 		// RETURN POINTER TO THIS FREE NODE (begin tree) // step 1
 		// Associate to free_record_tree_node
+		ft_printf("reserving new pages\n");
+//		exit (0);
 		*index = reserve_new_chunk(page_type, &free_record_tree_node);
 	}
 	// Take the first suitable space we found
@@ -57,21 +72,20 @@ static uint64_t		find_index_and_set(
 	addr = record->addr;
 
 	// find in pages (tiny or medium) the corresponding index
-	uint64_t address;
-
-	address = record->addr & (uint64_t)~0xFFF;
+	//address = record->addr & (uint64_t)~0xFFF;
 	if (page_type == TINY)
 		*index = btree_search_content(ctx.tiny_index_pages_tree,
-				&address,
-				x__cmp_index_addr);
+				&record->addr,
+				&cmp_addr_to_tiny_index);
 
 	else
 		*index = btree_search_content(ctx.medium_index_pages_tree,
-				&address,
-				x__cmp_index_addr);
+				&record->addr,
+				&cmp_addr_to_medium_index);
 
 	// Test if alone				// step 2 - method founded !
 	alone_node = (btree_is_last_node(free_record_node)) ? true : false;
+	ft_printf("ALONE = %i\n", alone_node);
 
 	// Destroy the free node we found
 	btree_delete_rnb_node(&free_record_node, free_record_node,
@@ -79,12 +93,15 @@ static uint64_t		find_index_and_set(
 	// Deletion problem; if alone
 	if (alone_node)
 	{
+		alone_node = (btree_is_last_node(ctx.global_tiny_space_tree)) ? true : false;
+		ft_printf("ALONE = %i\n", alone_node);
 		if (page_type == TINY)
 			btree_delete_rnb_node(&ctx.global_tiny_space_tree,
 					free_record_tree_node, &node_custom_deallocator);
 		else
 			btree_delete_rnb_node(&ctx.global_medium_space_tree,
 					free_record_tree_node, &node_custom_deallocator);
+		ft_printf("final addr = %p\n", ctx.global_tiny_space_tree);
 	}
 
 	if (record->size > size)
@@ -92,11 +109,24 @@ static uint64_t		find_index_and_set(
 		// Insert a new free node after take the space
 		record->size -= size;
 		record->addr += size;
+		ft_printf("new size = %lu, addr = %p\n", record->size, record->addr);
 		add_free_record(record, page_type);
 	}
 	else
+	{
+		ft_printf("deallocate record\n");
 		record_custom_deallocator(record);
+	}
 	return (addr);
+}
+
+static int			cmp_record_to_record(void *record1, void *record2)
+{
+	if (((struct s_record *)record1)->addr < ((struct s_record *)record2)->addr)
+		return (-1);
+	if (((struct s_record *)record1)->addr > ((struct s_record *)record2)->addr)
+		return (1);
+	return (0);
 }
 
 static void			*core_allocator_large(size_t *size)
@@ -116,7 +146,7 @@ static void			*core_allocator_large(size_t *size)
 		return (NULL);
 	}
 	node = btree_insert_rnb_node_by_content(&ctx.big_page_record_tree,
-			record, &cmp_record_addr, &node_custom_allocator);
+			record, &cmp_record_to_record, &node_custom_allocator);
 	if (node == NULL)
 	{
 		destroy_pages(addr, *size);
@@ -145,9 +175,11 @@ static void			*core_allocator_tiny_medium(size_t *size)
 		record_custom_deallocator(record);
 		return (NULL);
 	}
+	ft_printf("New allocated insertion:\n");
 	if (btree_insert_rnb_node_by_content(&index->allocation_tree,
-			record, &cmp_record_addr, &node_custom_allocator) == NULL)
+			record, &cmp_record_to_record, &node_custom_allocator) == NULL)
 	{
+		ft_printf("Allocation failed !\n");
 		record_custom_deallocator(record);
 		return (NULL);
 	}

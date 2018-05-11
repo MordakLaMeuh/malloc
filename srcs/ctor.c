@@ -25,6 +25,8 @@ extern pthread_mutex_t g_mut;
 ** It's not a really a 'next' step, just got 26 lines instead of 25.
 */
 
+void					find_root(void *node);
+
 static void	fill_preallocated_chunk_next(char *base_addr)
 {
 	ctx.record_density = (RECORD_REQ_PAGES * ctx.page_size -
@@ -83,6 +85,7 @@ void		constructor_runtime(void)
 	}
 	fill_preallocated_chunk(base_addr);
 	ctx.is_initialized = true;
+	find_root(NULL);
 }
 
 void		main_constructor(void)
