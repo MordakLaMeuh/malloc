@@ -19,7 +19,6 @@ void			*ft_malloc(size_t size)
 {
 	void		*addr;
 
-	ft_printf("--- MALLOC ---\n");
 	pthread_mutex_lock(&g_mut);
 	if (size == 0)
 	{
@@ -29,7 +28,8 @@ void			*ft_malloc(size_t size)
 	}
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	addr = core_allocator(&size);
+	//addr = core_allocator(&size);
+	addr = NULL;
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -48,7 +48,8 @@ void			*ft_calloc(size_t count, size_t size)
 	}
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	addr = core_allocator(&global_size);
+	//addr = core_allocator(&global_size);
+	addr = NULL;
 	if (addr == NULL)
 	{
 		errno = ENOMEM;
@@ -70,7 +71,8 @@ void			ft_free(void *ptr)
 	}
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	core_deallocator(ptr);
+//	core_deallocator(ptr);
+	(void)ptr;
 	pthread_mutex_unlock(&g_mut);
 }
 
@@ -81,7 +83,8 @@ void			*ft_realloc(void *ptr, size_t size)
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	addr = core_realloc(ptr, size);
+//	addr = core_realloc(ptr, size);
+	addr = NULL;
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -91,6 +94,6 @@ void			ft_show_alloc_mem(void)
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	show_alloc();
+//	show_alloc();
 	pthread_mutex_unlock(&g_mut);
 }

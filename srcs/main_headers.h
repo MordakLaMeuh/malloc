@@ -35,14 +35,8 @@
 ** Data page
 */
 
-# define RECORD_ALLIGN		16
-# define RECORD_REQ_PAGES	1
-
-# define INDEX_ALLIGN		32
-# define INDEX_REQ_PAGES	1
-
 # define NODE_ALLIGN		64
-# define NODE_REQ_PAGES		1
+# define NODE_REQ_PAGES		4
 
 # define TINY_SHR			4
 # define TINY_MASK			0xf
@@ -60,82 +54,27 @@
 ** Global description
 */
 
-enum		e_page_type {
-	TINY = 0,
-	MEDIUM,
-	LARGE
-};
-
 struct s_data_page;
-struct s_record_page;
-struct s_index_page;
 struct s_node_page;
 
 struct								s_ctx {
 	size_t					page_size;
 	struct rlimit			mem_limit;
 
-	struct s_record_page	*record_pages_entry;
 	struct s_node_page		*node_pages_entry;
-	struct s_index_page		*index_pages_entry;
 	struct s_node			*tiny_index_pages_tree;
 	struct s_node			*medium_index_pages_tree;
-	struct s_node			*big_page_record_tree;
 	struct s_node			*global_tiny_space_tree;
 	struct s_node			*global_medium_space_tree;
+	struct s_node			*big_page_record_tree;
 
-	int						record_density;
 	int						node_density;
-	int						index_density;
 
 	bool					is_initialized;
 } ctx;
 
 struct								s_data_page {
 	uint64_t				*content;
-};
-
-/*
-** Record Pages Structure
-*/
-
-struct s_record;
-
-struct								s_primary_record {
-	struct s_record_page	*next;
-	int						nb_record;
-} __attribute__((aligned(RECORD_ALLIGN)));
-
-struct								s_record {
-	uint64_t				addr;
-	size_t					size;
-} __attribute__((aligned(RECORD_ALLIGN)));
-
-struct								s_record_page {
-	struct s_primary_record	primary_block;
-	struct s_record			record[];
-};
-
-/*
-** Index Pages Structure
-*/
-
-struct s_index;
-
-struct								s_primary_index {
-	struct s_index_page		*next;
-	int						nb_index;
-} __attribute__((aligned(INDEX_ALLIGN)));
-
-struct								s_index {
-	struct s_node			*allocation_tree;
-	__uint64_t				page_addr;
-	enum e_page_type		type;
-} __attribute__((aligned(INDEX_ALLIGN)));
-
-struct								s_index_page {
-	struct s_primary_index	primary_block;
-	struct s_index			index[];
 };
 
 /*
@@ -149,16 +88,8 @@ struct								s_primary_node {
 
 struct								s_node_page {
 	struct s_primary_node	primary_block;
-	struct s_node			*node;
+	struct s_node			node[];
 };
-
-/*
-** Main Functions
-*/
-
-void								*core_allocator(size_t *size);
-void								core_deallocator(void *addr);
-void								*core_realloc(void *ptr, size_t size);
 
 /*
 ** Mem_syscall functions
@@ -168,9 +99,19 @@ void								*get_new_pages(size_t size);
 int									destroy_pages(void *addr, size_t size);
 
 /*
+** Main Functions
+*/
+
+
+//void								*core_allocator(size_t *size);
+//void								core_deallocator(void *addr);
+//void								*core_realloc(void *ptr, size_t size);
+
+/*
 ** Record space tree management
 */
 
+/*
 void								trash_free_record(
 		uint64_t addr,
 		size_t size,
@@ -183,11 +124,13 @@ struct s_node						*add_free_record(
 struct s_node						*get_free_record_node(
 		size_t size,
 		enum e_page_type type);
+*/
 
 /*
 ** Pages management
 */
 
+/*
 struct s_index						*reserve_new_chunk(
 		enum e_page_type page_type,
 		struct s_node **free_record_sub_tree);
@@ -196,11 +139,13 @@ struct s_index						*assign_new_chunk(
 		void *addr,
 		enum e_page_type page_type,
 		struct s_node **free_record_tree);
+*/
 
 /*
 ** Custom memory management
 */
 
+/*
 void								*node_custom_allocator(size_t size);
 struct s_index						*index_custom_allocator(void);
 struct s_record						*record_custom_allocator(void);
@@ -210,11 +155,13 @@ void								index_custom_deallocator(
 		struct s_index *index);
 void								record_custom_deallocator(
 		struct s_record *record);
+*/
 
 /*
 ** Finders.
 */
 
+/*
 struct s_node						*get_associated_node_for_record(
 		struct s_record *record);
 struct s_node						*get_associated_node_for_index(
@@ -223,11 +170,13 @@ struct s_node						*get_associated_node_for_index(
 struct s_node						*search_record_node(
 		uint64_t addr,
 		struct s_index **index);
+*/
 
 /*
 ** Size tools.
 */
 
+/*
 size_t								allign_size(
 		size_t size,
 		enum e_page_type page_type);
@@ -235,5 +184,6 @@ size_t								allign_size(
 enum e_page_type					get_page_type(size_t size);
 
 void								show_alloc(void);
+*/
 
 #endif
