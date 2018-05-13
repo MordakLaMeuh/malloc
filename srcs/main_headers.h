@@ -36,7 +36,7 @@
 */
 
 # define NODE_ALLIGN		64
-# define NODE_REQ_PAGES		4
+# define NODE_REQ_PAGES		1
 
 # define TINY_SHR			4
 # define TINY_MASK			0xf
@@ -73,10 +73,6 @@ struct								s_ctx {
 	bool					is_initialized;
 } ctx;
 
-struct								s_data_page {
-	uint64_t				*content;
-};
-
 /*
 ** Node Pages Structure
 */
@@ -95,35 +91,90 @@ struct								s_node_page {
 ** Mem_syscall functions
 */
 
-void								*get_new_pages(size_t size);
-int									destroy_pages(void *addr, size_t size);
+void				*get_new_pages(size_t size);
+int					destroy_pages(void *addr, size_t size);
 
+void				*core_allocator(size_t *size);
+
+void				core_deallocator(void *ptr);
+
+void				*node_custom_allocator(size_t size);
+void				node_custom_deallocator(void *node);
+
+struct s_node		*insert_free_record(
+		void *addr,
+		size_t size,
+		enum e_page_type type,
+		struct s_node **parent_ref);
+
+int					delete_free_record(
+		struct s_node *record,
+		struct s_node *parent,
+		enum e_page_type type);
+
+struct s_node		*get_free_record(
+		void *addr,
+		size_t size,
+		struct s_node **parent,
+		enum e_page_type type);
+
+struct s_node		*get_best_free_record_tree(
+		size_t size,
+		enum e_page_type type);
+
+void				*insert_allocated_record(
+		struct s_node *record,
+		enum e_page_type type);
+
+void				**find_index_node(
+		void *addr,
+		enum e_node_type type);
+
+void				*create_index(
+		void *addr,
+		enum e_page_type type);
+
+void				destroy_index(
+		struct s_node *index,
+		enum e_page_type type);
+
+int					cmp_addr_to_node_addr(
+		void *addr,
+		struct s_node *node_b);
+
+int					cmp_node_addr_to_node_addr(
+		struct s_node *node_a,
+		struct s_node *node_b);
+
+int					cmp_size_to_node_size(
+		void *size,
+		struct s_node *node_b);
+
+int					cmp_node_size_to_node_size(
+		struct s_node *node_a,
+		struct s_node *node_b);
+
+int					cmp_addr_to_node_size_tiny_range(
+		void *content,
+		struct s_node *node);
+
+int					cmp_addr_to_node_size_medium_range(
+		void *content,
+		struct s_node *node);
+
+size_t				allign_size(size_t size, enum e_page_type page_type);
+
+enum e_page_type	get_page_type(size_t size);
+
+void				show_alloc(void);
+
+void				debug_nodes(void);
 /*
 ** Main Functions
 */
 
-
-//void								*core_allocator(size_t *size);
-//void								core_deallocator(void *addr);
-//void								*core_realloc(void *ptr, size_t size);
-
 /*
 ** Record space tree management
-*/
-
-/*
-void								trash_free_record(
-		uint64_t addr,
-		size_t size,
-		enum e_page_type type);
-
-struct s_node						*add_free_record(
-		struct s_record *record,
-		enum e_page_type type);
-
-struct s_node						*get_free_record_node(
-		size_t size,
-		enum e_page_type type);
 */
 
 /*
@@ -131,30 +182,7 @@ struct s_node						*get_free_record_node(
 */
 
 /*
-struct s_index						*reserve_new_chunk(
-		enum e_page_type page_type,
-		struct s_node **free_record_sub_tree);
-
-struct s_index						*assign_new_chunk(
-		void *addr,
-		enum e_page_type page_type,
-		struct s_node **free_record_tree);
-*/
-
-/*
 ** Custom memory management
-*/
-
-/*
-void								*node_custom_allocator(size_t size);
-struct s_index						*index_custom_allocator(void);
-struct s_record						*record_custom_allocator(void);
-
-void								node_custom_deallocator(void *node);
-void								index_custom_deallocator(
-		struct s_index *index);
-void								record_custom_deallocator(
-		struct s_record *record);
 */
 
 /*
@@ -162,28 +190,7 @@ void								record_custom_deallocator(
 */
 
 /*
-struct s_node						*get_associated_node_for_record(
-		struct s_record *record);
-struct s_node						*get_associated_node_for_index(
-		struct s_index *index);
-
-struct s_node						*search_record_node(
-		uint64_t addr,
-		struct s_index **index);
-*/
-
-/*
 ** Size tools.
-*/
-
-/*
-size_t								allign_size(
-		size_t size,
-		enum e_page_type page_type);
-
-enum e_page_type					get_page_type(size_t size);
-
-void								show_alloc(void);
 */
 
 #endif

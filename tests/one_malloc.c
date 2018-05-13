@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 void	*ft_malloc(size_t size);
+void	ft_free(void *ptr);
 
 int main(void)
 {
@@ -20,17 +21,68 @@ int main(void)
 	(void)e;
 	char *z = ft_malloc(1024 * 1024);
 	(void)z;
-	for (int i = 0; i < 1024; i++)
+
+	ft_free(a);
+	ft_free(c);
+	ft_free(b);
+	ft_free(d);
+
+	ft_free(z);
+	a = ft_malloc(400);
+
+	b = ft_malloc(400);
+	c = ft_malloc(400);
+	ft_free(b);
+	ft_free(a);
+	ft_free(c);
+
+	void *tab[8096];
+	int i = 0;
+
+	for (; i < 800; i++)
 	{
-		z = ft_malloc(64);
-		memcpy(z, "banane", 7);
-		printf("%i malloc done\n", i);
-		if (memcmp(z, "banane", 7) != 0)
+		tab[i] = ft_malloc(89);
+		memcpy(tab[i], "banane", 7);
+		if (memcmp(tab[i], "banane", 7) != 0)
 		{
 			printf("READ ERROR\n");
 			exit (1);
 		}
+		printf("%i malloc done\n", i);
 	}
+
+	for (; i < 1500; i++)
+	{
+		tab[i] = ft_malloc(45);
+		memcpy(tab[i], "banane", 7);
+		if (memcmp(tab[i], "banane", 7) != 0)
+		{
+			printf("READ ERROR\n");
+			exit (1);
+		}
+		printf("%i malloc done\n", i);
+	}
+
+	for (; i < 2400; i++)
+	{
+		tab[i] = ft_malloc(1024);
+		memcpy(tab[i], "banane", 7);
+		if (memcmp(tab[i], "banane", 7) != 0)
+		{
+			printf("READ ERROR\n");
+			exit (1);
+		}
+		printf("%i malloc done\n", i);
+	}
+
+	i = 0;
+	for (; i < 2400; i++)
+	{
+		ft_free(tab[i]);
+		printf("%i free done\n", i);
+	}
+
+	z = ft_malloc(124542);
 	ft_show_alloc_mem();
-	return 0;
+	return (0);
 }

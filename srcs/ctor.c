@@ -20,22 +20,17 @@ extern pthread_mutex_t g_mut;
 # define GETPAGESIZE() getpagesize()
 #endif
 
-/*
-** That 'next' function is just called like that for the 42 norm...
-** It's not a really a 'next' step, just got 26 lines instead of 25.
-*/
-
-void					find_root(void *node);
-
 static void	fill_preallocated_chunk_next(char *base_addr)
 {
 	ctx.node_density = (NODE_REQ_PAGES * ctx.page_size -
 			sizeof(struct s_primary_node)) / btree_get_node_size();
 	ctx.global_tiny_space_tree = btree_new();
-//	assign_new_chunk((void *)base_addr, TINY, NULL);
+	create_index(base_addr, TINY);
+	insert_free_record(base_addr, TINY_RANGE, TINY, NULL);
 	base_addr += TINY_RANGE;
 	ctx.global_medium_space_tree = btree_new();
-//	assign_new_chunk((void *)base_addr, MEDIUM, NULL);
+	create_index(base_addr, MEDIUM);
+	insert_free_record(base_addr, MEDIUM_RANGE, MEDIUM, NULL);
 }
 
 static void	fill_preallocated_chunk(char *base_addr)
@@ -72,7 +67,6 @@ void		constructor_runtime(void)
 	}
 	fill_preallocated_chunk(base_addr);
 	ctx.is_initialized = true;
-	find_root(NULL);
 }
 
 void		main_constructor(void)

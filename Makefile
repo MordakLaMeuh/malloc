@@ -17,19 +17,12 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-#CORE = allocator deallocator reallocator
-#MEMORY = custom_allocators custom_deallocators
-#TOOLS = index size_fn cmp finder
-#MAIN = main_prototypes ctor mem_syscall 
-#PAGES = new_chunk del_chunk free_record
-#DEBUG_ALLOC = show_alloc
+MAIN = ctor mem_syscall main_prototypes node_custom_allocator node_custom_deallocator free_record cmp_range cmp_fixe \
+		allocator deallocator size_fn index show_alloc
 
-MAIN = ctor mem_syscall main_prototypes
+SRC_LIST = $(MAIN)
 
-#SRC_LIST = $(MAIN) $(CORE) $(TOOLS) $(MEMORY) $(PAGES) $(DEBUG_ALLOC)
-SRC_LISY = ctor
-
-VPATH = srcs srcs/core srcs/tools srcs/pages srcs/memory srcs/chunk srcs/debug
+VPATH = srcs
 
 ## HEADERS
 

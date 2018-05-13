@@ -1,0 +1,89 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   allocator.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/22 17:47:28 by bmickael          #+#    #+#             */
+/*   Updated: 2018/04/22 18:14:49 by bmickael         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "main_headers.h"
+
+static void			*core_allocator_large(
+		size_t *size)
+{
+	void			*addr;
+	struct s_node	*record;
+
+	addr = get_new_pages(*size);
+	if (addr == NULL)
+		return (NULL);
+	record = btree_create_node(&node_custom_allocator);
+	if (record == NULL)
+	{
+		destroy_pages(addr, *size);
+		return (NULL);
+	}
+	record->content = addr;
+	record->size = *size;
+	record->mask.s.node_type = RECORD_ALLOCATED_LARGE;
+	record = btree_insert_rnb_node(&ctx.big_page_record_tree,
+			record, &cmp_node_addr_to_node_addr);
+	if (record == NULL)
+	{
+		destroy_pages(addr, *size);
+		btree_destroy_node(record, &node_custom_deallocator);
+		return (NULL);
+	}
+	return (addr);
+}
+
+static void			*core_allocator_tiny_medium(
+		size_t *size,
+		enum e_page_type type)
+{
+	struct s_node	*free_parent_tree;
+	struct s_node	*free_record;
+	struct s_node	*record;
+	size_t			free_size;
+	uint64_t		addr;
+
+	free_parent_tree = get_best_free_record_tree(*size, type);
+	if (free_parent_tree == NULL)
+		return (NULL);
+
+	free_record = free_parent_tree->content;
+	free_size = free_record->size;
+
+	addr = (uint64_t)free_record->content;
+
+	delete_free_record(free_record, free_parent_tree, type);
+	if (free_size > *size)
+	{
+		addr += *size;
+		insert_free_record((void *)addr, free_size - *size, type, NULL);
+		addr -= (uint64_t)*size;
+	}
+	record = btree_create_node(&node_custom_allocator);
+	if (record == NULL)
+		return (NULL);
+	record->size = *size;
+	record->content = (void *)addr;
+	record->mask.s.node_type = (type == TINY) ?
+			RECORD_ALLOCATED_TINY : RECORD_ALLOCATED_MEDIUM;
+	return (insert_allocated_record(record, type));
+}
+
+void				*core_allocator(size_t *size)
+{
+	enum e_page_type page_type;
+
+	page_type = get_page_type(*size);
+	*size = allign_size(*size, page_type);
+	return ((page_type != LARGE) ?
+		core_allocator_tiny_medium(size, page_type) :
+		core_allocator_large(size));
+}

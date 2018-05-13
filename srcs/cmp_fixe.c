@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc.c                                       :+:      :+:    :+:   */
+/*   cmp.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,30 +12,49 @@
 
 #include "main_headers.h"
 
-void		find_root(void *tmp);
-
-static void	display_alloc(void *index)
+int		cmp_addr_to_node_addr(
+		void *addr,
+		struct s_node *node)
 {
-	ft_printf("%p - %lu\n",
-			((struct s_record *)index)->addr,
-			((struct s_record *)index)->size);
+	if (addr < node->content)
+		return (-1);
+	if (addr > node->content)
+		return (1);
+	return (0);
 }
 
-static void	display_pages(void *index)
+int		cmp_node_addr_to_node_addr(
+		struct s_node *node_a,
+		struct s_node *node_b)
 {
-	ft_printf("PAGE: %p\n", ((struct s_index *)index)->page_addr);
-	btree_apply_infix(
-			((struct s_index *)index)->allocation_tree,
-			&display_alloc);
+	if (node_a->content < node_b->content)
+		return (-1);
+	if (node_a->content > node_b->content)
+		return (1);
+	return (0);
 }
 
-void		show_alloc(void)
+int		cmp_size_to_node_size(
+		void *size,
+		struct s_node *node)
 {
-	ft_printf("* * * TINY * * *\n");
-	btree_apply_infix(ctx.tiny_index_pages_tree, &display_pages);
-	ft_printf("\n* * * MEDIUM * * *\n");
-	btree_apply_infix(ctx.medium_index_pages_tree, &display_pages);
-	ft_printf("\n* * * LARGE * * *\n");
-	btree_apply_infix(ctx.big_page_record_tree, &display_alloc);
-	find_root(NULL);
+	size_t *len;
+
+	len = (size_t *)size;
+	if (*len < node->size)
+		return (-1);
+	if (*len > node->size)
+		return (1);
+	return (0);
+}
+
+int		cmp_node_size_to_node_size(
+		struct s_node *node_a,
+		struct s_node *node_b)
+{
+	if (node_a->size < node_b->size)
+		return (-1);
+	if (node_a->size > node_b->size)
+		return (1);
+	return (0);
 }
