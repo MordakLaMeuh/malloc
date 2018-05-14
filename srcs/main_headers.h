@@ -94,12 +94,23 @@ struct								s_node_page {
 void				*get_new_pages(size_t size);
 int					destroy_pages(void *addr, size_t size);
 
-void				*core_allocator(size_t *size);
+/*
+** Main Functions
+*/
 
+void				*core_allocator(size_t *size);
 void				core_deallocator(void *ptr);
+
+/*
+** Special allocator
+*/
 
 void				*node_custom_allocator(size_t size);
 void				node_custom_deallocator(void *node);
+
+/*
+** Free pages management
+*/
 
 struct s_node		*insert_free_record(
 		void *addr,
@@ -122,6 +133,10 @@ struct s_node		*get_best_free_record_tree(
 		size_t size,
 		enum e_page_type type);
 
+/*
+** Index management
+*/
+
 void				*insert_allocated_record(
 		struct s_node *record,
 		enum e_page_type type);
@@ -137,6 +152,10 @@ void				*create_index(
 void				destroy_index(
 		struct s_node *index,
 		enum e_page_type type);
+
+/*
+** Finders.
+*/
 
 int					cmp_addr_to_node_addr(
 		void *addr,
@@ -162,36 +181,20 @@ int					cmp_addr_to_node_size_medium_range(
 		void *content,
 		struct s_node *node);
 
+/*
+** Size tools.
+*/
+
 size_t				allign_size(size_t size, enum e_page_type page_type);
 
 enum e_page_type	get_page_type(size_t size);
 
+/*
+** Debug tools
+*/
+
 void				show_alloc(void);
 
 void				debug_nodes(void);
-
-/*
-** Main Functions
-*/
-
-/*
-** Record space tree management
-*/
-
-/*
-** Pages management
-*/
-
-/*
-** Custom memory management
-*/
-
-/*
-** Finders.
-*/
-
-/*
-** Size tools.
-*/
 
 #endif
