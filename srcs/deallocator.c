@@ -50,18 +50,18 @@ void	do_prev_job(
 	prev = btree_get_prev_neighbours_node(record);
 	if (prev != NULL)
 	{
-		out->len += (uint64_t)record->content - (uint64_t)prev->content
-				- (uint64_t)prev->size;
-		out->addr = (void *)((uint64_t)prev->content + (uint64_t)prev->size);
-		s->addr = (void *)((uint64_t)prev->content + (uint64_t)prev->size);
-		s->len = (size_t)record->content - (size_t)prev->content - prev->size;
+		out->len += (uint64_t)record->ptr_a - (uint64_t)prev->ptr_a
+				- (uint64_t)prev->m.size;
+		out->addr = (void *)((uint64_t)prev->ptr_a + (uint64_t)prev->m.size);
+		s->addr = (void *)((uint64_t)prev->ptr_a + (uint64_t)prev->m.size);
+		s->len = (size_t)record->ptr_a - (size_t)prev->ptr_a - prev->m.size;
 	}
-	else if (record->content != (void *)index->size)
+	else if (record->ptr_a != (void *)index->m.size)
 	{
-		out->len += (uint64_t)record->content - (uint64_t)index->size;
-		out->addr = (void *)index->size;
-		s->addr = (void *)((uint64_t)index->size);
-		s->len = (uint64_t)record->content - index->size;
+		out->len += (uint64_t)record->ptr_a - (uint64_t)index->m.size;
+		out->addr = (void *)index->m.size;
+		s->addr = (void *)((uint64_t)index->m.size);
+		s->len = (uint64_t)record->ptr_a - index->m.size;
 	}
 }
 
@@ -71,7 +71,7 @@ int		apply_modif(
 		struct s_couple s[2],
 		enum e_page_type type)
 {
-	btree_delete_rnb_node((struct s_node **)&index->content,
+	btree_delete_rnb_node((struct s_node **)&index->ptr_a,
 			record, &node_custom_deallocator);
 	if (s[0].len > 0)
 		fflush_neighbours(s[0].len, s[0].addr, type);
@@ -93,21 +93,21 @@ int		inherit_neighbour(
 	s[1].len = 0;
 	if ((next = btree_get_next_neighbours_node(record)) != NULL)
 	{
-		out->len = (uint64_t)next->content - (uint64_t)record->content;
-		s[0].addr = (void *)((uint64_t)record->content +
-				(uint64_t)record->size);
-		s[0].len = out->len - record->size;
+		out->len = (uint64_t)next->ptr_a - (uint64_t)record->ptr_a;
+		s[0].addr = (void *)((uint64_t)record->ptr_a +
+				(uint64_t)record->m.size);
+		s[0].len = out->len - record->m.size;
 	}
-	else if ((uint64_t)record->content +
-			record->size != index->size + ((type == TINY) ?
+	else if ((uint64_t)record->ptr_a +
+			record->m.size != index->m.size + ((type == TINY) ?
 			TINY_RANGE : MEDIUM_RANGE))
 	{
-		s[0].len = (uint64_t)index->size + ((type == TINY) ?
-				TINY_RANGE : MEDIUM_RANGE) - ((uint64_t)record->content
-						+ record->size);
-		out->len = s[0].len + record->size;
-		s[0].addr = (void *)((uint64_t)record->content +
-				(uint64_t)record->size);
+		s[0].len = (uint64_t)index->m.size + ((type == TINY) ?
+				TINY_RANGE : MEDIUM_RANGE) - ((uint64_t)record->ptr_a
+						+ record->m.size);
+		out->len = s[0].len + record->m.size;
+		s[0].addr = (void *)((uint64_t)record->ptr_a +
+				(uint64_t)record->m.size);
 	}
 	do_prev_job(out, &s[1], record, index);
 	return (apply_modif(record, index, s, type));
@@ -120,8 +120,8 @@ void	tiny_medium_deallocate(
 {
 	struct s_couple s;
 
-	s.addr = record->content;
-	s.len = record->size;
+	s.addr = record->ptr_a;
+	s.len = record->m.size;
 
 	inherit_neighbour(record, index, &s, type);
 	insert_free_record(s.addr, s.len, type, NULL);
@@ -129,7 +129,7 @@ void	tiny_medium_deallocate(
 
 void	destroy_large_page(struct s_node *record)
 {
-	destroy_pages(record->content, record->size);
+	destroy_pages(record->ptr_a, record->m.size);
 	btree_delete_rnb_node(&ctx.big_page_record_tree,
 			record, &node_custom_deallocator);
 	return ;
@@ -153,15 +153,15 @@ void	core_deallocator(void *ptr)
 			ctx.medium_index_pages_tree, ptr,
 			cmp_addr_to_node_size_medium_range);
 	if (record == NULL)
-		record = btree_get_node_by_content(index->content, ptr,
+		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);
 	if (record)
-		ft_printf("{magenta}Founded ! addr: %p size: %lu{eoc}\n", record->content, record->size);
+		ft_printf("{magenta}Founded ! addr: %p size: %lu{eoc}\n", record->ptr_a, record->m.size);
 	else
 		ft_printf("{magenta}not found !{eoc}\n");
 	if (record == NULL)
 		return ;
-	type = get_page_type(record->size);
+	type = get_page_type(record->m.size);
 	if (type == LARGE)
 		destroy_large_page(record);
 	else

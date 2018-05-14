@@ -51,15 +51,15 @@ void		debug_nodes(void)
 static void	display_alloc(struct s_node *record)
 {
 	ft_printf("%p - %lu\n",
-			record->content,
-			record->size);
+			record->ptr_a,
+			record->m.size);
 }
 
 static void	display_pages(struct s_node *index)
 {
-	ft_printf("PAGE: %p\n", (void *)index->size);
+	ft_printf("PAGE: %p\n", (void *)index->m.size);
 	btree_apply_infix(
-			(struct s_node *)index->content,
+			(struct s_node *)index->ptr_a,
 			&display_alloc);
 }
 

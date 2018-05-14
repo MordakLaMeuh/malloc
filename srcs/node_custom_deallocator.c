@@ -21,13 +21,13 @@ static void	*find_free_node(
 	sub_node = (struct s_node *)btree_get_node_by_content(
 			(type == RECORD_FREE_TINY) ?
 			ctx.global_tiny_space_tree : ctx.global_medium_space_tree,
-			&node->size,
+			&node->m.size,
 			&cmp_size_to_node_size);
 	assert(sub_node != NULL);
 	if (sub_node == NULL)
 		return (NULL);
-	assert(sub_node->content != NULL);
-	return (&sub_node->content);
+	assert(sub_node->ptr_a != NULL);
+	return (&sub_node->ptr_a);
 }
 
 static void	*find_root(struct s_node *node)
@@ -46,9 +46,9 @@ static void	*find_root(struct s_node *node)
 	else if (node->mask.s.node_type == PARENT_RECORD_FREE_MEDIUM)
 		return (&ctx.global_medium_space_tree);
 	else if (node->mask.s.node_type == RECORD_ALLOCATED_TINY)
-		ptr = find_index_node(node->content, RECORD_ALLOCATED_TINY);
+		ptr = find_index_node(node->ptr_a, RECORD_ALLOCATED_TINY);
 	else if (node->mask.s.node_type == RECORD_ALLOCATED_MEDIUM)
-		ptr = find_index_node(node->content, RECORD_ALLOCATED_MEDIUM);
+		ptr = find_index_node(node->ptr_a, RECORD_ALLOCATED_MEDIUM);
 	else if (node->mask.s.node_type == RECORD_FREE_TINY)
 		ptr = find_free_node(node, RECORD_FREE_TINY);
 	else if (node->mask.s.node_type == RECORD_FREE_MEDIUM)

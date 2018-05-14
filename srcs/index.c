@@ -27,7 +27,7 @@ void		**find_index_node(
 					&cmp_addr_to_node_size_medium_range);
 	if (index == NULL)
 		return (NULL);
-	return (&index->content);
+	return (&index->ptr_a);
 }
 
 struct s_node	*__find_index_node(
@@ -52,13 +52,13 @@ void		*insert_allocated_record(
 {
 	struct s_node *index;
 
-	index = __find_index_node(record->content, type);
-	record = btree_insert_rnb_node((struct s_node **)&index->content,
+	index = __find_index_node(record->ptr_a, type);
+	record = btree_insert_rnb_node((struct s_node **)&index->ptr_a,
 			record, cmp_node_addr_to_node_addr);
 	assert(record != NULL);
 	if (record == NULL)
 		return (NULL);
-	return (record->content);
+	return (record->ptr_a);
 }
 
 void		*create_index(
@@ -70,8 +70,8 @@ void		*create_index(
 	index = btree_create_node(&node_custom_allocator);
 	if (index == NULL)
 		return (NULL);
-	index->content = btree_new();
-	index->size = (uint64_t)addr;
+	index->ptr_a = btree_new();
+	index->m.size = (uint64_t)addr;
 	if (type == TINY)
 	{
 		index->mask.s.node_type = INDEX_TINY;

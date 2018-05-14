@@ -19,8 +19,8 @@ static void		assign_parent_free_tiny(
 	size_t *size;
 
 	size = (size_t *)content;
-	node->size = *size;
-	node->content = NULL;
+	node->m.size = *size;
+	node->ptr_a = NULL;
 	node->mask.s.node_type = PARENT_RECORD_FREE_TINY;
 }
 
@@ -31,8 +31,8 @@ static void		assign_parent_free_medium(
 	size_t *size;
 
 	size = (size_t *)content;
-	node->size = *size;
-	node->content = NULL;
+	node->m.size = *size;
+	node->ptr_a = NULL;
 	node->mask.s.node_type = PARENT_RECORD_FREE_MEDIUM;
 }
 
@@ -62,12 +62,12 @@ struct s_node	*insert_free_record(
 	assert(record != NULL);
 	if (record == NULL)
 		return (NULL);
-	record->size = size;
-	record->content = addr;
+	record->m.size = size;
+	record->ptr_a = addr;
 	record->mask.s.node_type = (type == TINY) ?
 			RECORD_FREE_TINY : RECORD_FREE_MEDIUM;
 	ft_printf("{blue}Inserting free node: addr=%p size=%lu parent=%p{eoc}\n", addr, size, parent);
-	record = btree_insert_rnb_node(((struct s_node **)&parent->content),
+	record = btree_insert_rnb_node(((struct s_node **)&parent->ptr_a),
 			record, &cmp_node_addr_to_node_addr);
 	return (record);
 }
@@ -86,7 +86,7 @@ struct s_node	*get_free_record(
 	*parent = btree_get_node_by_content(root, &size, &cmp_size_to_node_size);
 	if (*parent == NULL)
 		return (NULL);
-	out = btree_get_node_by_content(((struct s_node *)(*parent)->content)
+	out = btree_get_node_by_content(((struct s_node *)(*parent)->ptr_a)
 			, addr, &cmp_addr_to_node_addr);
 	if (out == NULL)
 		return (NULL);
@@ -104,8 +104,8 @@ int				delete_free_record(
 
 	root = (type == TINY) ?
 			&ctx.global_tiny_space_tree : &ctx.global_medium_space_tree;
-	size = record->size,
-	ret = btree_delete_rnb_node(((struct s_node **)&parent->content),
+	size = record->m.size,
+	ret = btree_delete_rnb_node(((struct s_node **)&parent->ptr_a),
 			record, &node_custom_deallocator);
 	if (ret == 0)
 	{
