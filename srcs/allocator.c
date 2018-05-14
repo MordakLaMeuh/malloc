@@ -51,24 +51,18 @@ static void			*core_allocator_tiny_medium(
 	size_t			free_size;
 	uint64_t		addr;
 
-	free_parent_tree = get_best_free_record_tree(*size, type);
-	if (free_parent_tree == NULL)
+	if ((free_parent_tree = get_best_free_record_tree(*size, type)) == NULL)
 		return (NULL);
-
 	free_record = free_parent_tree->content;
 	free_size = free_record->size;
-
 	addr = (uint64_t)free_record->content;
-
 	delete_free_record(free_record, free_parent_tree, type);
 	if (free_size > *size)
 	{
-		addr += *size;
-		insert_free_record((void *)addr, free_size - *size, type, NULL);
-		addr -= (uint64_t)*size;
+		insert_free_record((void *)(addr + (uint64_t)*size),
+				free_size - *size, type, NULL);
 	}
-	record = btree_create_node(&node_custom_allocator);
-	if (record == NULL)
+	if ((record = btree_create_node(&node_custom_allocator)) == NULL)
 		return (NULL);
 	record->size = *size;
 	record->content = (void *)addr;

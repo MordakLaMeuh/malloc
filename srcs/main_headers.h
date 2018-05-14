@@ -169,6 +169,7 @@ enum e_page_type	get_page_type(size_t size);
 void				show_alloc(void);
 
 void				debug_nodes(void);
+
 /*
 ** Main Functions
 */

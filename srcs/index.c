@@ -53,7 +53,8 @@ void		*insert_allocated_record(
 	struct s_node *index;
 
 	index = __find_index_node(record->content, type);
-	record = btree_insert_rnb_node((struct s_node **)&index->content, record, cmp_node_addr_to_node_addr);
+	record = btree_insert_rnb_node((struct s_node **)&index->content,
+			record, cmp_node_addr_to_node_addr);
 	assert(record != NULL);
 	if (record == NULL)
 		return (NULL);

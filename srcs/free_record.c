@@ -144,6 +144,7 @@ struct s_node	*get_best_free_record_tree(
 		if (insert_free_record(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE,
 				type, &parent) == NULL)
 		{
+// XXX Logically destroy an index lead to destroying a page
 			destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
 			destroy_index(index, type);
 			return (NULL);

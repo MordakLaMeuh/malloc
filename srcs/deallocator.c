@@ -20,7 +20,6 @@
 ** Insert free record				Can take 2 nodes
 */
 
-
 void	fflush_neighbours(
 		size_t len,
 		void *address,
@@ -35,55 +34,83 @@ void	fflush_neighbours(
 	delete_free_record(node, parent, type);
 }
 
+struct s_couple {
+	size_t	len;
+	void	*addr;
+};
+
+void	do_prev_job(
+		struct s_couple *out,
+		struct s_couple *s,
+		struct s_node *record,
+		struct s_node *index)
+{
+	struct s_node *prev;
+
+	prev = btree_get_prev_neighbours_node(record);
+	if (prev != NULL)
+	{
+		out->len += (uint64_t)record->content - (uint64_t)prev->content
+				- (uint64_t)prev->size;
+		out->addr = (void *)((uint64_t)prev->content + (uint64_t)prev->size);
+		s->addr = (void *)((uint64_t)prev->content + (uint64_t)prev->size);
+		s->len = (size_t)record->content - (size_t)prev->content - prev->size;
+	}
+	else if (record->content != (void *)index->size)
+	{
+		out->len += (uint64_t)record->content - (uint64_t)index->size;
+		out->addr = (void *)index->size;
+		s->addr = (void *)((uint64_t)index->size);
+		s->len = (uint64_t)record->content - index->size;
+	}
+}
+
+int		apply_modif(
+		struct s_node *record,
+		struct s_node *index,
+		struct s_couple s[2],
+		enum e_page_type type)
+{
+	btree_delete_rnb_node((struct s_node **)&index->content,
+			record, &node_custom_deallocator);
+	if (s[0].len > 0)
+		fflush_neighbours(s[0].len, s[0].addr, type);
+	if (s[1].len > 0)
+		fflush_neighbours(s[1].len, s[1].addr, type);
+	return (0);
+}
+
 int		inherit_neighbour(
 		struct s_node *record,
 		struct s_node *index,
-		void **addr,
-		size_t *size,
+		struct s_couple *out,
 		enum e_page_type type)
 {
 	struct s_node *next;
-	struct s_node *prev;
-	size_t len[2];
-	void *address[2];
+	struct s_couple s[2];
 
-	len[0] = 0;
-	len[1] = 0;
+	s[0].len = 0;
+	s[1].len = 0;
 	if ((next = btree_get_next_neighbours_node(record)) != NULL)
 	{
-		*size = (uint64_t)next->content - (uint64_t)record->content;
-		address[0] = (void *)((uint64_t)record->content + (uint64_t)record->size);
-		len[0] = *size - record->size;
+		out->len = (uint64_t)next->content - (uint64_t)record->content;
+		s[0].addr = (void *)((uint64_t)record->content +
+				(uint64_t)record->size);
+		s[0].len = out->len - record->size;
 	}
-	if ((prev = btree_get_prev_neighbours_node(record)) != NULL)
+	else if ((uint64_t)record->content +
+			record->size != index->size + ((type == TINY) ?
+			TINY_RANGE : MEDIUM_RANGE))
 	{
-		*size += (uint64_t)record->content - (uint64_t)prev->content
-				- (uint64_t)prev->size;
-		*addr = (void *)((uint64_t)prev->content + (uint64_t)prev->size);
-		address[1] = (void *)((uint64_t)prev->content + (uint64_t)prev->size);
-		len[1] = (size_t)record->content - (size_t)prev->content - prev->size;
+		s[0].len = (uint64_t)index->size + ((type == TINY) ?
+				TINY_RANGE : MEDIUM_RANGE) - ((uint64_t)record->content
+						+ record->size);
+		out->len = s[0].len + record->size;
+		s[0].addr = (void *)((uint64_t)record->content +
+				(uint64_t)record->size);
 	}
-	if (next == NULL && ((uint64_t)record->content + record->size != index->size + ((type == TINY) ? TINY_RANGE : MEDIUM_RANGE)))
-	{
-		len[0] = (uint64_t)index->size + ((type == TINY) ?
-				TINY_RANGE : MEDIUM_RANGE) - ((uint64_t)record->content + record->size);
-		*size = len[0] + record->size;
-		address[0] = (void *)((uint64_t)record->content + (uint64_t)record->size);
-	}
-	if (prev == NULL && record->content != (void *)index->size)
-	{
-		*size += (uint64_t)record->content - (uint64_t)index->size;
-		*addr = (void *)index->size;
-		address[1] = (void *)((uint64_t)index->size);
-		len[1] = (uint64_t)record->content - index->size;
-	}
-
-	btree_delete_rnb_node((struct s_node **)&index->content, record, &node_custom_deallocator);
-	if (len[0] > 0)
-		fflush_neighbours(len[0], address[0], type);
-	if (len[1] > 0)
-		fflush_neighbours(len[1], address[1], type);
-	return (0);
+	do_prev_job(out, &s[1], record, index);
+	return (apply_modif(record, index, s, type));
 }
 
 void	tiny_medium_deallocate(
@@ -91,14 +118,21 @@ void	tiny_medium_deallocate(
 		struct s_node *index,
 		enum e_page_type type)
 {
-	void *addr;
-	size_t size;
+	struct s_couple s;
 
-	addr = record->content;
-	size = record->size;
+	s.addr = record->content;
+	s.len = record->size;
 
-	inherit_neighbour(record, index, &addr, &size, type);
-	insert_free_record(addr, size, type, NULL);
+	inherit_neighbour(record, index, &s, type);
+	insert_free_record(s.addr, s.len, type, NULL);
+}
+
+void	destroy_large_page(struct s_node *record)
+{
+	destroy_pages(record->content, record->size);
+	btree_delete_rnb_node(&ctx.big_page_record_tree,
+			record, &node_custom_deallocator);
+	return ;
 }
 
 void	core_deallocator(void *ptr)
@@ -112,32 +146,24 @@ void	core_deallocator(void *ptr)
 			ptr, &cmp_addr_to_node_addr);
 	if (record == NULL)
 		index = (struct s_node *)btree_get_node_by_content(
-			ctx.tiny_index_pages_tree,
-			ptr,
+			ctx.tiny_index_pages_tree, ptr,
 			cmp_addr_to_node_size_tiny_range);
 	if (record == NULL && index == NULL)
 		index = (struct s_node *)btree_get_node_by_content(
-			ctx.medium_index_pages_tree,
-			ptr,
+			ctx.medium_index_pages_tree, ptr,
 			cmp_addr_to_node_size_medium_range);
 	if (record == NULL)
-		record = btree_get_node_by_content(index->content, ptr, &cmp_addr_to_node_addr);
-
+		record = btree_get_node_by_content(index->content, ptr,
+			&cmp_addr_to_node_addr);
 	if (record)
 		ft_printf("{magenta}Founded ! addr: %p size: %lu{eoc}\n", record->content, record->size);
 	else
-	{
 		ft_printf("{magenta}not found !{eoc}\n");
+	if (record == NULL)
 		return ;
-	}
-
 	type = get_page_type(record->size);
 	if (type == LARGE)
-	{
-		destroy_pages(record->content, record->size);
-		btree_delete_rnb_node(&ctx.big_page_record_tree,
-				record, &node_custom_deallocator);
-		return ;
-	}
-	tiny_medium_deallocate(record, index, type);
+		destroy_large_page(record);
+	else
+		tiny_medium_deallocate(record, index, type);
 }
