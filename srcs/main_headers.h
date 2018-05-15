@@ -37,19 +37,19 @@
 */
 
 # define NODE_ALLIGN		64
-# define NODE_REQ_PAGES		4
+# define NODE_REQ_PAGES		1
 
 # define TINY_SHR			4
 # define TINY_BLOCK_SIZE	(1 << TINY_SHR)
 # define TINY_MASK			(TINY_BLOCK_SIZE - 1)
 # define TINY_LIMIT			(TINY_BLOCK_SIZE * 32 - TINY_BLOCK_SIZE)
-# define TINY_RANGE			(TINY_LIMIT * 128)
+# define TINY_RANGE			(TINY_LIMIT * 32)
 
 # define MEDIUM_SHR			9
 # define MEDIUM_BLOCK_SIZE	(1 << MEDIUM_SHR)
 # define MEDIUM_MASK		(MEDIUM_BLOCK_SIZE - 1)
 # define MEDIUM_LIMIT		(MEDIUM_BLOCK_SIZE * 32 - MEDIUM_BLOCK_SIZE)
-# define MEDIUM_RANGE		(MEDIUM_LIMIT * 128)
+# define MEDIUM_RANGE		(MEDIUM_LIMIT * 32)
 
 /*
 ** Global description
