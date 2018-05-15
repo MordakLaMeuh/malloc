@@ -15,15 +15,6 @@
 
 pthread_mutex_t g_mut = PTHREAD_MUTEX_INITIALIZER;
 
-void			show_alloc_mem(void)
-{
-	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
-	show_alloc();
-	pthread_mutex_unlock(&g_mut);
-}
-
 void			*malloc(size_t size)
 {
 	void		*addr;
@@ -103,6 +94,32 @@ void			*realloc(void *ptr, size_t size)
 		addr = core_allocator(&size);
 	else
 		addr = core_realloc(ptr, &size);
+	pthread_mutex_unlock(&g_mut);
+	return (addr);
+}
+
+void			*reallocarray(void *ptr, size_t nmemb, size_t size)
+{
+	void				*addr;
+	size_t				global_size;
+
+	ft_dprintf(B_DEBUG, "{yellow}- - - - - REALLOCARRAY - - - - -{eoc}\n");
+	pthread_mutex_lock(&g_mut);
+	if (ctx.is_initialized == false)
+		constructor_runtime();
+	if (nmemb > 0 && (SIZE_MAX / nmemb) < size)
+	{
+		ft_printf("%s ENOMEM: (overflow) %lu x %lu\n", __func__, nmemb, size);
+		show_alloc_mem();
+		errno = ENOMEM;
+		pthread_mutex_unlock(&g_mut);
+		return (NULL);
+	}
+	global_size = nmemb * size;
+	if (ptr == NULL)
+		addr = core_allocator(&global_size);
+	else
+		addr = core_realloc(ptr, &global_size);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }

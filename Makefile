@@ -18,7 +18,7 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 ### SOURCES ###
 
 MAIN = ctor mem_syscall main_prototypes node_custom_allocator node_custom_deallocator free_record cmp_range cmp_fixe \
-		allocator deallocator size_fn index debug_show_alloc debug_display_nodes reallocator
+		allocator deallocator size_fn index debug_show_alloc debug_display_nodes reallocator show_alloc_mem
 
 SRC_LIST = $(MAIN)
 

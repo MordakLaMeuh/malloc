@@ -38,7 +38,7 @@ static inline void	show_part(struct s_node_page *e, int i)
 	ft_printf("\n");
 }
 
-void		debug_nodes(void)
+void				debug_nodes(void)
 {
 	struct s_node_page *e;
 	int i;

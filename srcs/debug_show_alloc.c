@@ -12,7 +12,7 @@
 
 #include "main_headers.h"
 
-static void	display_alloc(struct s_node *record)
+static void		display_alloc(struct s_node *record)
 {
 	ft_printf("%p --> %p  %lu\n",
 			record->ptr_a,
@@ -20,7 +20,7 @@ static void	display_alloc(struct s_node *record)
 			record->m.size);
 }
 
-static void	display_pages_alloc_tiny(struct s_node *index)
+static void		display_pages_alloc_tiny(struct s_node *index)
 {
 	if (index->mask.s.node_type_b != INDEX_TINY)
 		return;
@@ -30,7 +30,7 @@ static void	display_pages_alloc_tiny(struct s_node *index)
 			&display_alloc);
 }
 
-static void	display_pages_alloc_medium(struct s_node *index)
+static void		display_pages_alloc_medium(struct s_node *index)
 {
 	if (index->mask.s.node_type_b != INDEX_MEDIUM)
 		return;
@@ -40,7 +40,7 @@ static void	display_pages_alloc_medium(struct s_node *index)
 			&display_alloc);
 }
 
-static void	display_pages_free(struct s_node *index)
+static void		display_pages_free(struct s_node *index)
 {
 	ft_printf("{yellow}chunk size: %lu{eoc}\n", (void *)index->m.size);
 	btree_apply_infix(
@@ -48,7 +48,7 @@ static void	display_pages_free(struct s_node *index)
 			&display_alloc);
 }
 
-void		show_alloc(void)
+void			show_alloc(void)
 {
 	debug_nodes();
 	ft_printf("{magenta}__TINY_ALLOCATED_BLOCK__{eoc}\n");
@@ -62,3 +62,4 @@ void		show_alloc(void)
 	ft_printf("\n{green}__MEDIUM_FREE_BLOCK__{eoc}\n");
 	btree_apply_infix(ctx.global_medium_space_tree, &display_pages_free);
 }
+
