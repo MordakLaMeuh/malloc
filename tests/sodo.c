@@ -99,6 +99,8 @@ void		sodo_test(void)
 	ft_show_alloc_mem();
 }
 
+#include <malloc.h>
+
 int			main(void)
 {
 	sodo_test();

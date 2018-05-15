@@ -19,8 +19,20 @@ static void	display_alloc(struct s_node *record)
 			record->m.size);
 }
 
-static void	display_pages_alloc(struct s_node *index)
+static void	display_pages_alloc_tiny(struct s_node *index)
 {
+	if (index->mask.s.node_type_b != INDEX_TINY)
+		return;
+	ft_printf("{yellow}PAGE: %p{eoc}\n", (void *)index->m.size);
+	btree_apply_infix(
+			(struct s_node *)index->ptr_a,
+			&display_alloc);
+}
+
+static void	display_pages_alloc_medium(struct s_node *index)
+{
+	if (index->mask.s.node_type_b != INDEX_MEDIUM)
+		return;
 	ft_printf("{yellow}PAGE: %p{eoc}\n", (void *)index->m.size);
 	btree_apply_infix(
 			(struct s_node *)index->ptr_a,
@@ -39,9 +51,9 @@ void		show_alloc(void)
 {
 	debug_nodes();
 	ft_printf("{magenta}__TINY_ALLOCATED_BLOCK__{eoc}\n");
-	btree_apply_infix(ctx.tiny_index_pages_tree, &display_pages_alloc);
+	btree_apply_infix(ctx.index_pages_tree, &display_pages_alloc_tiny);
 	ft_printf("\n{magenta}__MEDIUM_ALLOCATED_BLOCK__{eoc}\n");
-	btree_apply_infix(ctx.medium_index_pages_tree, &display_pages_alloc);
+	btree_apply_infix(ctx.index_pages_tree, &display_pages_alloc_medium);
 	ft_printf("\n{magenta}__LARGE_ALLOCATED_BLOCK__{eoc}\n");
 	btree_apply_infix(ctx.big_page_record_tree, &display_alloc);
 	ft_printf("\n{green}__TINY_FREE_BLOCK__{eoc}\n");

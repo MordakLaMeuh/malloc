@@ -35,10 +35,8 @@ static void	*find_root(struct s_node *node)
 	void *ptr;
 
 	ptr = NULL;
-	if (node->mask.s.node_type == INDEX_TINY)
-		return (&ctx.tiny_index_pages_tree);
-	else if (node->mask.s.node_type == INDEX_MEDIUM)
-		return (&ctx.medium_index_pages_tree);
+	if (node->mask.s.node_type == INDEX)
+		return (&ctx.index_pages_tree);
 	else if (node->mask.s.node_type == RECORD_ALLOCATED_LARGE)
 		return (&ctx.big_page_record_tree);
 	else if (node->mask.s.node_type == PARENT_RECORD_FREE_TINY)
@@ -46,9 +44,9 @@ static void	*find_root(struct s_node *node)
 	else if (node->mask.s.node_type == PARENT_RECORD_FREE_MEDIUM)
 		return (&ctx.global_medium_space_tree);
 	else if (node->mask.s.node_type == RECORD_ALLOCATED_TINY)
-		ptr = find_index_node(node->ptr_a, RECORD_ALLOCATED_TINY);
+		ptr = find_index_node(node->ptr_a);
 	else if (node->mask.s.node_type == RECORD_ALLOCATED_MEDIUM)
-		ptr = find_index_node(node->ptr_a, RECORD_ALLOCATED_MEDIUM);
+		ptr = find_index_node(node->ptr_a);
 	else if (node->mask.s.node_type == RECORD_FREE_TINY)
 		ptr = find_free_node(node, RECORD_FREE_TINY);
 	else if (node->mask.s.node_type == RECORD_FREE_MEDIUM)

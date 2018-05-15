@@ -37,19 +37,23 @@
 */
 
 # define NODE_ALLIGN		64
-# define NODE_REQ_PAGES		1
+# define NODE_REQ_PAGES		16
 
 # define TINY_SHR			4
+# define TINY_MAX_BLOCK		128
+
 # define TINY_BLOCK_SIZE	(1 << TINY_SHR)
 # define TINY_MASK			(TINY_BLOCK_SIZE - 1)
 # define TINY_LIMIT			(TINY_BLOCK_SIZE * 32 - TINY_BLOCK_SIZE)
-# define TINY_RANGE			(TINY_LIMIT * 32)
+# define TINY_RANGE			(TINY_BLOCK_SIZE * 32 * TINY_MAX_BLOCK)
 
 # define MEDIUM_SHR			9
+# define MEDIUM_MAX_BLOCK	128
+
 # define MEDIUM_BLOCK_SIZE	(1 << MEDIUM_SHR)
 # define MEDIUM_MASK		(MEDIUM_BLOCK_SIZE - 1)
 # define MEDIUM_LIMIT		(MEDIUM_BLOCK_SIZE * 32 - MEDIUM_BLOCK_SIZE)
-# define MEDIUM_RANGE		(MEDIUM_LIMIT * 32)
+# define MEDIUM_RANGE		(MEDIUM_BLOCK_SIZE * 32 * MEDIUM_MAX_BLOCK)
 
 /*
 ** Global description
@@ -63,8 +67,7 @@ struct								s_ctx {
 	struct rlimit			mem_limit;
 
 	struct s_node_page		*node_pages_entry;
-	struct s_node			*tiny_index_pages_tree;
-	struct s_node			*medium_index_pages_tree;
+	struct s_node			*index_pages_tree;
 	struct s_node			*global_tiny_space_tree;
 	struct s_node			*global_medium_space_tree;
 	struct s_node			*big_page_record_tree;
@@ -138,21 +141,15 @@ struct s_node		*get_best_free_record_tree(
 ** Index management
 */
 
-void				*insert_allocated_record(
-		struct s_node *record,
-		enum e_page_type type);
+void				*insert_allocated_record(struct s_node *record);
 
-void				**find_index_node(
-		void *addr,
-		enum e_node_type type);
+void				**find_index_node(void *addr);
 
 void				*create_index(
 		void *addr,
 		enum e_page_type type);
 
-void				destroy_index(
-		struct s_node *index,
-		enum e_page_type type);
+void				destroy_index(struct s_node *index);
 
 /*
 ** Finders.
@@ -174,11 +171,7 @@ int					cmp_node_size_to_node_size(
 		struct s_node *node_a,
 		struct s_node *node_b);
 
-int					cmp_addr_to_node_m_addr_tiny_range(
-		void *content,
-		struct s_node *node);
-
-int					cmp_addr_to_node_m_addr_medium_range(
+int					cmp_addr_to_node_m_addr_range(
 		void *content,
 		struct s_node *node);
 

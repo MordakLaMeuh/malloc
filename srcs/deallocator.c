@@ -146,12 +146,8 @@ void	core_deallocator(void *ptr)
 			ptr, &cmp_addr_to_node_addr);
 	if (record == NULL)
 		index = (struct s_node *)btree_get_node_by_content(
-			ctx.tiny_index_pages_tree, ptr,
-			cmp_addr_to_node_m_addr_tiny_range);
-	if (record == NULL && index == NULL)
-		index = (struct s_node *)btree_get_node_by_content(
-			ctx.medium_index_pages_tree, ptr,
-			cmp_addr_to_node_m_addr_medium_range);
+			ctx.index_pages_tree, ptr,
+			cmp_addr_to_node_m_addr_range);
 	if (record == NULL)
 		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);

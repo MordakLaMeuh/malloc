@@ -12,24 +12,17 @@
 
 #include "main_headers.h"
 
-int		cmp_addr_to_node_m_addr_tiny_range(
+int		cmp_addr_to_node_m_addr_range(
 		void *content,
 		struct s_node *node)
 {
-	if (content < node->m.ptr_b)
-		return (-1);
-	if ((uint8_t *)content >= (uint8_t *)node->m.ptr_b + TINY_RANGE)
-		return (1);
-	return (0);
-}
+	int val;
 
-int		cmp_addr_to_node_m_addr_medium_range(
-		void *content,
-		struct s_node *node)
-{
+	val = (node->mask.s.node_type_b == INDEX_TINY) ? TINY_RANGE : MEDIUM_RANGE;
+
 	if (content < node->m.ptr_b)
 		return (-1);
-	if ((uint8_t *)content >= (uint8_t *)node->m.ptr_b + MEDIUM_RANGE)
+	if ((uint8_t *)content >= (uint8_t *)node->m.ptr_b + val)
 		return (1);
 	return (0);
 }

@@ -12,47 +12,27 @@
 
 #include "main_headers.h"
 
-void		**find_index_node(
-		void *addr,
-		enum e_node_type type)
+void		**find_index_node(void *addr)
 {
 	struct s_node *index;
 
 	index = (struct s_node *)btree_get_node_by_content(
-			(type == RECORD_ALLOCATED_TINY) ?
-			ctx.tiny_index_pages_tree : ctx.medium_index_pages_tree,
+			ctx.index_pages_tree,
 			addr,
-			(type == RECORD_ALLOCATED_TINY) ?
-					&cmp_addr_to_node_m_addr_tiny_range :
-					&cmp_addr_to_node_m_addr_medium_range);
+			&cmp_addr_to_node_m_addr_range);
 	if (index == NULL)
 		return (NULL);
 	return (&index->ptr_a);
 }
 
-struct s_node	*__find_index_node(
-		void *addr,
-		enum e_page_type type)
+void		*insert_allocated_record(struct s_node *record)
 {
 	struct s_node *index;
 
 	index = (struct s_node *)btree_get_node_by_content(
-			(type == TINY) ?
-			ctx.tiny_index_pages_tree : ctx.medium_index_pages_tree,
-			addr,
-			(type == TINY) ?
-					&cmp_addr_to_node_m_addr_tiny_range :
-					&cmp_addr_to_node_m_addr_medium_range);
-	return (index);
-}
-
-void		*insert_allocated_record(
-		struct s_node *record,
-		enum e_page_type type)
-{
-	struct s_node *index;
-
-	index = __find_index_node(record->ptr_a, type);
+			ctx.index_pages_tree,
+			record->ptr_a,
+			&cmp_addr_to_node_m_addr_range);
 	record = btree_insert_rnb_node((struct s_node **)&index->ptr_a,
 			record, cmp_node_addr_to_node_addr);
 	assert(record != NULL);
@@ -73,40 +53,21 @@ void		*create_index(
 	index->ptr_a = btree_new();
 	index->m.ptr_b = addr;
 	if (type == TINY)
-	{
-		index->mask.s.node_type = INDEX_TINY;
-		index = btree_insert_rnb_node(
-				&ctx.tiny_index_pages_tree,
-				index,
-				&cmp_node_m_addr_to_node_m_addr);
-	}
+		index->mask.s.node_type_b = INDEX_TINY;
 	else
-	{
-		index->mask.s.node_type = INDEX_MEDIUM;
-		index = btree_insert_rnb_node(
-				&ctx.medium_index_pages_tree,
-				index,
-				&cmp_node_m_addr_to_node_m_addr);
-	}
+		index->mask.s.node_type_b = INDEX_MEDIUM;
+	index->mask.s.node_type = INDEX;
+	index = btree_insert_rnb_node(
+			&ctx.index_pages_tree,
+			index,
+			&cmp_node_m_addr_to_node_m_addr);
 	return (index);
 }
 
-void		destroy_index(
-		struct s_node *index,
-		enum e_page_type type)
+void		destroy_index(struct s_node *index)
 {
-	if (type == TINY)
-	{
-		btree_delete_rnb_node(
-				&ctx.tiny_index_pages_tree,
-				index,
-				&node_custom_deallocator);
-	}
-	else
-	{
-		btree_delete_rnb_node(
-				&ctx.medium_index_pages_tree,
-				index,
-				&node_custom_deallocator);
-	}
+	btree_delete_rnb_node(
+			&ctx.index_pages_tree,
+			index,
+			&node_custom_deallocator);
 }

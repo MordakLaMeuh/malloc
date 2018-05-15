@@ -16,10 +16,9 @@ static inline void	show_part(struct s_node_page *e, int i)
 {
 	ft_printf("%.3i: ", i);
 	ft_printf("{red}%s{eoc}", e->node[i].parent == NULL ? "ROOT " : "     ");
-	if (e->node[i].mask.s.node_type == INDEX_TINY)
-		ft_printf("UNIQUE: tiny_index_pages_tree, %p", &e->node[i]);
-	else if (e->node[i].mask.s.node_type == INDEX_MEDIUM)
-		ft_printf("UNIQUE: medium_index_pages_tree");
+
+	if (e->node[i].mask.s.node_type == INDEX)
+		ft_printf("UNIQUE: index_pages_tree, %p", &e->node[i]);
 	else if (e->node[i].mask.s.node_type == RECORD_ALLOCATED_LARGE)
 		ft_printf("UNIQUE: big_page_record_tree");
 	else if (e->node[i].mask.s.node_type == PARENT_RECORD_FREE_TINY)

@@ -39,8 +39,8 @@ static void	display_item(struct s_node *item, int lvl, int first_elem) {
 
 void		debug_free_record(enum e_page_type type)
 {
-	return;
-
+	if (B_DEBUG == 0)
+		return ;
 	ft_printf("\n");
 	btree_apply_by_level((type == TINY) ?
 			ctx.global_tiny_space_tree : ctx.global_medium_space_tree, &display_item);
@@ -129,7 +129,8 @@ struct s_node	*get_free_record(
 	struct s_node	*out;
 
 	*parent = btree_get_node_by_content((type == TINY) ?
-			ctx.global_tiny_space_tree : ctx.global_medium_space_tree, &size, &cmp_size_to_node_size);
+			ctx.global_tiny_space_tree : ctx.global_medium_space_tree,
+			&size, &cmp_size_to_node_size);
 	if (*parent == NULL)
 		return (NULL);
 	out = btree_get_node_by_content(((struct s_node *)(*parent)->ptr_a)
@@ -175,7 +176,8 @@ struct s_node	*get_best_free_record_tree(
 	void			*addr;
 
 	parent = btree_get_last_valid_node((type == TINY) ?
-			ctx.global_tiny_space_tree : ctx.global_medium_space_tree, &size, &cmp_size_to_node_size);
+			ctx.global_tiny_space_tree : ctx.global_medium_space_tree, &size,
+			&cmp_size_to_node_size);
 	if (parent == NULL)
 	{
 		addr = get_new_pages(type == TINY ? TINY_RANGE : MEDIUM_RANGE);
@@ -192,7 +194,7 @@ struct s_node	*get_best_free_record_tree(
 		{
 // XXX Logically destroy an index lead to destroying a page
 			destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
-			destroy_index(index, type);
+			destroy_index(index);
 			return (NULL);
 		}
 	}

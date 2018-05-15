@@ -68,7 +68,7 @@ static void			*core_allocator_tiny_medium(
 	record->ptr_a = (void *)addr;
 	record->mask.s.node_type = (type == TINY) ?
 			RECORD_ALLOCATED_TINY : RECORD_ALLOCATED_MEDIUM;
-	return (insert_allocated_record(record, type));
+	return (insert_allocated_record(record));
 }
 
 void				*core_allocator(size_t *size)
