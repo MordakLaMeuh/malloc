@@ -19,7 +19,7 @@ void			*ft_malloc(size_t size)
 {
 	void		*addr;
 
-	ft_printf("{yellow}- - - - - MALLOC - - - - -{eoc}\n");
+	ft_dprintf(B_DEBUG, "{yellow}- - - - - MALLOC - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	if (size == 0)
 	{
@@ -29,9 +29,7 @@ void			*ft_malloc(size_t size)
 	}
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	debug_nodes();
 	addr = core_allocator(&size);
-	debug_nodes();
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -65,7 +63,7 @@ void			*ft_calloc(size_t count, size_t size)
 
 void			ft_free(void *ptr)
 {
-	ft_printf("{yellow}- - - - - FREE - - - - -{eoc}\n");
+	ft_dprintf(B_DEBUG, "{yellow}- - - - - FREE - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	if (ptr == NULL)
 	{
@@ -74,9 +72,7 @@ void			ft_free(void *ptr)
 	}
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	debug_nodes();
 	core_deallocator(ptr);
-	debug_nodes();
 	pthread_mutex_unlock(&g_mut);
 }
 

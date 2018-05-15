@@ -12,30 +12,35 @@
 
 #include "main_headers.h"
 
-int		cmp_addr_to_node_size_tiny_range(
+int		cmp_addr_to_node_m_addr_tiny_range(
 		void *content,
 		struct s_node *node)
 {
-	uint64_t record_addr;
-
-	record_addr = (uint64_t)content;
-	if (record_addr < (uint64_t)node->m.size)
+	if (content < node->m.ptr_b)
 		return (-1);
-	if (record_addr >= (uint64_t)node->m.size + TINY_RANGE)
+	if ((uint8_t *)content >= (uint8_t *)node->m.ptr_b + TINY_RANGE)
 		return (1);
 	return (0);
 }
 
-int		cmp_addr_to_node_size_medium_range(
+int		cmp_addr_to_node_m_addr_medium_range(
 		void *content,
 		struct s_node *node)
 {
-	uint64_t record_addr;
-
-	record_addr = (uint64_t)content;
-	if (record_addr >= (uint64_t)node->m.size + MEDIUM_RANGE)
+	if (content < node->m.ptr_b)
 		return (-1);
-	if (record_addr < node->m.size)
+	if ((uint8_t *)content >= (uint8_t *)node->m.ptr_b + MEDIUM_RANGE)
+		return (1);
+	return (0);
+}
+
+int			cmp_node_m_addr_to_node_m_addr(
+		struct s_node *node_a,
+		struct s_node *node_b)
+{
+	if (node_a->m.ptr_b < node_b->m.ptr_b)
+		return (-1);
+	if (node_a->m.ptr_b > node_b->m.ptr_b)
 		return (1);
 	return (0);
 }

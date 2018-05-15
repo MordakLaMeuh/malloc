@@ -30,23 +30,24 @@
 */
 
 # include <assert.h>
+# define B_DEBUG 0
 
 /*
 ** Data page
 */
 
 # define NODE_ALLIGN		64
-# define NODE_REQ_PAGES		1
+# define NODE_REQ_PAGES		4
 
 # define TINY_SHR			4
-# define TINY_MASK			0xf
 # define TINY_BLOCK_SIZE	(1 << TINY_SHR)
+# define TINY_MASK			(TINY_BLOCK_SIZE - 1)
 # define TINY_LIMIT			(TINY_BLOCK_SIZE * 32 - TINY_BLOCK_SIZE)
 # define TINY_RANGE			(TINY_LIMIT * 128)
 
 # define MEDIUM_SHR			9
-# define MEDIUM_MASK		0x1ff
 # define MEDIUM_BLOCK_SIZE	(1 << MEDIUM_SHR)
+# define MEDIUM_MASK		(MEDIUM_BLOCK_SIZE - 1)
 # define MEDIUM_LIMIT		(MEDIUM_BLOCK_SIZE * 32 - MEDIUM_BLOCK_SIZE)
 # define MEDIUM_RANGE		(MEDIUM_LIMIT * 128)
 
@@ -173,13 +174,17 @@ int					cmp_node_size_to_node_size(
 		struct s_node *node_a,
 		struct s_node *node_b);
 
-int					cmp_addr_to_node_size_tiny_range(
+int					cmp_addr_to_node_m_addr_tiny_range(
 		void *content,
 		struct s_node *node);
 
-int					cmp_addr_to_node_size_medium_range(
+int					cmp_addr_to_node_m_addr_medium_range(
 		void *content,
 		struct s_node *node);
+
+int					cmp_node_m_addr_to_node_m_addr(
+		struct s_node *node_a,
+		struct s_node *node_b);
 
 /*
 ** Size tools.

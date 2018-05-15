@@ -23,8 +23,8 @@ void		**find_index_node(
 			ctx.tiny_index_pages_tree : ctx.medium_index_pages_tree,
 			addr,
 			(type == RECORD_ALLOCATED_TINY) ?
-					&cmp_addr_to_node_size_tiny_range :
-					&cmp_addr_to_node_size_medium_range);
+					&cmp_addr_to_node_m_addr_tiny_range :
+					&cmp_addr_to_node_m_addr_medium_range);
 	if (index == NULL)
 		return (NULL);
 	return (&index->ptr_a);
@@ -41,8 +41,8 @@ struct s_node	*__find_index_node(
 			ctx.tiny_index_pages_tree : ctx.medium_index_pages_tree,
 			addr,
 			(type == TINY) ?
-					&cmp_addr_to_node_size_tiny_range :
-					&cmp_addr_to_node_size_medium_range);
+					&cmp_addr_to_node_m_addr_tiny_range :
+					&cmp_addr_to_node_m_addr_medium_range);
 	return (index);
 }
 
@@ -71,14 +71,14 @@ void		*create_index(
 	if (index == NULL)
 		return (NULL);
 	index->ptr_a = btree_new();
-	index->m.size = (uint64_t)addr;
+	index->m.ptr_b = addr;
 	if (type == TINY)
 	{
 		index->mask.s.node_type = INDEX_TINY;
 		index = btree_insert_rnb_node(
 				&ctx.tiny_index_pages_tree,
 				index,
-				&cmp_node_size_to_node_size);
+				&cmp_node_m_addr_to_node_m_addr);
 	}
 	else
 	{
@@ -86,7 +86,7 @@ void		*create_index(
 		index = btree_insert_rnb_node(
 				&ctx.medium_index_pages_tree,
 				index,
-				&cmp_node_size_to_node_size);
+				&cmp_node_m_addr_to_node_m_addr);
 	}
 	return (index);
 }

@@ -28,7 +28,7 @@ void	fflush_neighbours(
 	struct s_node *node;
 	struct s_node *parent;
 
-	ft_printf("searching neighbours: %lu at %p\n", len, address);
+	ft_dprintf(B_DEBUG, "searching neighbours: %lu at %p\n", len, address);
 	node = get_free_record(address, len, &parent, type);
 	assert(node != NULL);
 	delete_free_record(node, parent, type);
@@ -147,18 +147,18 @@ void	core_deallocator(void *ptr)
 	if (record == NULL)
 		index = (struct s_node *)btree_get_node_by_content(
 			ctx.tiny_index_pages_tree, ptr,
-			cmp_addr_to_node_size_tiny_range);
+			cmp_addr_to_node_m_addr_tiny_range);
 	if (record == NULL && index == NULL)
 		index = (struct s_node *)btree_get_node_by_content(
 			ctx.medium_index_pages_tree, ptr,
-			cmp_addr_to_node_size_medium_range);
+			cmp_addr_to_node_m_addr_medium_range);
 	if (record == NULL)
 		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);
 	if (record)
-		ft_printf("{magenta}Founded ! addr: %p size: %lu{eoc}\n", record->ptr_a, record->m.size);
+		ft_dprintf(B_DEBUG, "{magenta}Founded ! addr: %p size: %lu{eoc}\n", record->ptr_a, record->m.size);
 	else
-		ft_printf("{magenta}not found !{eoc}\n");
+		ft_dprintf(B_DEBUG, "{magenta}not found !{eoc}\n");
 	if (record == NULL)
 		return ;
 	type = get_page_type(record->m.size);

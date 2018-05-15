@@ -14,7 +14,7 @@
 
 void				*node_custom_allocator(size_t size)
 {
-	ft_printf("{green}NODE ALLOCATION{eoc}\n");
+	ft_dprintf(B_DEBUG, "{green}NODE ALLOCATION{eoc}\n");
 	struct s_node_page		*node_page;
 	struct s_node_page		*new_node_page;
 	void					*addr;

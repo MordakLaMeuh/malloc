@@ -36,8 +36,29 @@ int main(void)
 	ft_free(a);
 	ft_free(c);
 
-	void *tab[8096];
+	void *tab[32000];
 	int i = 0;
+
+	i = 0;
+	for (; i < 24000; i++)
+	{
+		tab[i] = ft_malloc(1024);
+		memcpy(tab[i], "banane", 7);
+		if (memcmp(tab[i], "banane", 7) != 0)
+		{
+			printf("READ ERROR\n");
+			exit (1);
+		}
+		printf("%i malloc done\n", i);
+	}
+
+	i = 0;
+	for (; i < 24000; i++)
+	{
+		ft_free(tab[i]);
+		printf("%i free done\n", i);
+	}
+
 
 	for (; i < 800; i++)
 	{
