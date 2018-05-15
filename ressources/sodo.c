@@ -8,13 +8,11 @@
 
 void	*malloc(size_t size);
 void	free(void *ptr);
-void	show_alloc_mem(void)
-{
-}
+void	show_alloc_mem(void);
 void	*realloc(void *ptr, size_t size);
 
 #define TEST_LENGTH  100000
-#define MAX_ALLOC 1200
+#define MAX_ALLOC 400
 
 #define NB_TESTS 1000000
 
@@ -187,15 +185,13 @@ void		sodo_realloc(void)
 	show_alloc_mem();
 
 	i = 0;
-	while (i < nb_elmt - 1)
+	while (i < nb_elmt)
 	{
 		free(tab_ptr[i].ptr);
 		i++;
 	}
 	show_alloc_mem();
 }
-
-#include <malloc.h>
 
 int			main(void)
 {
