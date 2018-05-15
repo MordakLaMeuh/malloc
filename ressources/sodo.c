@@ -6,10 +6,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
-void	*ft_malloc(size_t size);
-void	ft_free(void *ptr);
-void	ft_show_alloc_mem(void);
-void	*ft_realloc(void *ptr, size_t size);
+void	*malloc(size_t size);
+void	free(void *ptr);
+void	show_alloc_mem(void)
+{
+}
+void	*realloc(void *ptr, size_t size);
 
 #define TEST_LENGTH  100000
 #define MAX_ALLOC 1200
@@ -35,7 +37,7 @@ static void	add_sodo(
 {
 	int i = rand() % (MAX_ALLOC);
 	tab_ptr[nb_elmt].c = i % 256;
-	tab_ptr[nb_elmt].ptr = ft_malloc(i);
+	tab_ptr[nb_elmt].ptr = malloc(i);
 	tab_ptr[nb_elmt].size = (size_t)i;
 	memset(tab_ptr[nb_elmt].ptr, tab_ptr[nb_elmt].c, i);
 }
@@ -59,7 +61,7 @@ static void	del_sodo(
 		ptr++;
 		n++;
 	}
-	ft_free(tab_ptr[i].ptr);
+	free(tab_ptr[i].ptr);
 
 	if (i != (nb_elmt - 1))
 		tab_ptr[i] = tab_ptr[nb_elmt - 1];
@@ -91,15 +93,15 @@ void		sodo_test(void)
 	}
 	printf("%i malloc made and %i free made\n", count_add, count_del);
 
-	ft_show_alloc_mem();
+	show_alloc_mem();
 
 	i = 0;
 	while (i < nb_elmt)
 	{
-		ft_free(tab_ptr[i].ptr);
+		free(tab_ptr[i].ptr);
 		i++;
 	}
-	ft_show_alloc_mem();
+	show_alloc_mem();
 }
 
 static void	real_sodo(
@@ -126,7 +128,7 @@ static void	real_sodo(
 		return ;
 
 
-	tab_ptr[i].ptr = ft_realloc(tab_ptr[i].ptr, x);
+	tab_ptr[i].ptr = realloc(tab_ptr[i].ptr, x);
 	if (tab_ptr[i].ptr == NULL) {
 		printf("BAD REALLOC\n");
 		exit (1);
@@ -182,15 +184,15 @@ void		sodo_realloc(void)
 	}
 	printf("%i realloc made, %i mallocs and %i free made\n", count_realloc, count_add, count_del);
 
-	ft_show_alloc_mem();
+	show_alloc_mem();
 
 	i = 0;
 	while (i < nb_elmt - 1)
 	{
-		ft_free(tab_ptr[i].ptr);
+		free(tab_ptr[i].ptr);
 		i++;
 	}
-	ft_show_alloc_mem();
+	show_alloc_mem();
 }
 
 #include <malloc.h>
