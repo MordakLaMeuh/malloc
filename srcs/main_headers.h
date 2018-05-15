@@ -200,6 +200,6 @@ void				show_alloc(void);
 
 void				debug_nodes(void);
 
-void				show_alloc_mem(void);
+void				ft_show_alloc_mem(void);
 
 #endif
