@@ -15,7 +15,16 @@
 
 pthread_mutex_t g_mut = PTHREAD_MUTEX_INITIALIZER;
 
-void			*ft_malloc(size_t size)
+void			show_alloc_mem(void)
+{
+	pthread_mutex_lock(&g_mut);
+	if (ctx.is_initialized == false)
+		constructor_runtime();
+	show_alloc();
+	pthread_mutex_unlock(&g_mut);
+}
+
+void			*malloc(size_t size)
 {
 	void		*addr;
 
@@ -23,18 +32,23 @@ void			*ft_malloc(size_t size)
 	pthread_mutex_lock(&g_mut);
 	if (size == 0)
 	{
-		errno = ENOMEM;
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}
 	if (ctx.is_initialized == false)
 		constructor_runtime();
 	addr = core_allocator(&size);
+	if (addr == NULL)
+	{
+		ft_printf("%s ENOMEM: %lu\n", __func__, size);
+		show_alloc_mem();
+		errno = ENOMEM;
+	}
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
 
-void			*ft_calloc(size_t count, size_t size)
+void			*calloc(size_t count, size_t size)
 {
 	void		*addr;
 	size_t		global_size;
@@ -49,9 +63,10 @@ void			*ft_calloc(size_t count, size_t size)
 	if (ctx.is_initialized == false)
 		constructor_runtime();
 	addr = core_allocator(&global_size);
-	addr = NULL;
 	if (addr == NULL)
 	{
+		ft_printf("%s ENOMEM: %lu x %lu\n", __func__, count, size);
+		show_alloc_mem();
 		errno = ENOMEM;
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
@@ -61,7 +76,7 @@ void			*ft_calloc(size_t count, size_t size)
 	return (addr);
 }
 
-void			ft_free(void *ptr)
+void			free(void *ptr)
 {
 	ft_dprintf(B_DEBUG, "{yellow}- - - - - FREE - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
@@ -76,7 +91,7 @@ void			ft_free(void *ptr)
 	pthread_mutex_unlock(&g_mut);
 }
 
-void			*ft_realloc(void *ptr, size_t size)
+void			*realloc(void *ptr, size_t size)
 {
 	void				*addr;
 
@@ -90,13 +105,4 @@ void			*ft_realloc(void *ptr, size_t size)
 		addr = core_realloc(ptr, &size);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
-}
-
-void			ft_show_alloc_mem(void)
-{
-	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
-	show_alloc();
-	pthread_mutex_unlock(&g_mut);
 }

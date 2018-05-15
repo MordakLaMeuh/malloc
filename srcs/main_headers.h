@@ -37,7 +37,7 @@
 */
 
 # define NODE_ALLIGN		64
-# define NODE_REQ_PAGES		1
+# define NODE_REQ_PAGES		4
 
 # define TINY_SHR			4
 # define TINY_MAX_BLOCK		128
