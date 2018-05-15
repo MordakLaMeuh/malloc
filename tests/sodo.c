@@ -11,8 +11,10 @@ void	ft_free(void *ptr);
 void	ft_show_alloc_mem(void);
 void	*ft_realloc(void *ptr, size_t size);
 
-#define TEST_LENGTH  10000
+#define TEST_LENGTH  100000
 #define MAX_ALLOC 1200
+
+#define NB_TESTS 1000000
 
 struct test {
 	void *ptr;
@@ -73,7 +75,7 @@ void		sodo_test(void)
 	int count_del = 0;
 	int i = 0;
 
-	while (i < 1000000)
+	while (i < NB_TESTS)
 	{
 		int op = rand();
 		if (nb_elmt == 0 || ((op & 0x1) == 0 && nb_elmt < TEST_LENGTH)) {
@@ -161,7 +163,7 @@ void		sodo_realloc(void)
 	int count_realloc = 0;
 	int i = 0;
 
-	while (i < 1000000)
+	while (i < NB_TESTS)
 	{
 		int op = rand() % 3;
 		if (nb_elmt == 0 || (op == 0 && nb_elmt < TEST_LENGTH)) {
@@ -183,7 +185,7 @@ void		sodo_realloc(void)
 	ft_show_alloc_mem();
 
 	i = 0;
-	while (i < nb_elmt)
+	while (i < nb_elmt - 1)
 	{
 		ft_free(tab_ptr[i].ptr);
 		i++;

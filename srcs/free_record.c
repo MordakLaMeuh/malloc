@@ -79,7 +79,35 @@ static void		assign_parent_free_medium(
 	node->mask.s.node_type = PARENT_RECORD_FREE_MEDIUM;
 }
 
-struct s_node	*insert_free_record(
+int				check_index_destroy(
+		void *addr,
+		size_t size,
+		enum e_page_type type)
+{
+	struct s_node *parent;
+
+	parent = NULL;
+	if (type == TINY && size == TINY_RANGE)
+		parent = btree_get_node_by_content(
+				ctx.global_tiny_space_tree,
+				&size, &cmp_size_to_node_size);
+	if (type == MEDIUM && size == MEDIUM_RANGE)
+		parent = btree_get_node_by_content(
+				ctx.global_medium_space_tree,
+				&size, &cmp_size_to_node_size);
+	if (parent)
+	{
+		destroy_index(
+				btree_get_node_by_content(
+						ctx.index_pages_tree,
+						addr,
+						&cmp_m_addr_to_node_m_addr));
+		return (1);
+	}
+	return (0);
+}
+
+int				insert_free_record(
 		void *addr,
 		size_t size,
 		enum e_page_type type,
@@ -88,6 +116,9 @@ struct s_node	*insert_free_record(
 	struct s_node			*parent;
 	struct s_node			*record;
 	struct s_node_params	use_ctx;
+
+	if (check_index_destroy(addr, size, type))
+		return (0);
 
 	use_ctx.allocator = &node_custom_allocator;
 	use_ctx.comp = &cmp_size_to_node_size;
@@ -102,13 +133,13 @@ struct s_node	*insert_free_record(
 	debug_free_record(type);
 
 	if (parent == NULL)
-		return (NULL);
+		return (-1);
 	if (parent_ref)
 		*parent_ref = parent;
 	record = btree_create_node(&node_custom_allocator);
 	assert(record != NULL);
 	if (record == NULL)
-		return (NULL);
+		return (-1);
 	record->m.size = size;
 	record->ptr_a = addr;
 	record->mask.s.node_type = (type == TINY) ?
@@ -117,7 +148,7 @@ struct s_node	*insert_free_record(
 	record = btree_insert_rnb_node(((struct s_node **)&parent->ptr_a),
 			record, &cmp_node_addr_to_node_addr);
 	ft_dprintf(B_DEBUG, "ALLOCATION ENDED\n");
-	return (record);
+	return (0);
 }
 
 struct s_node	*get_free_record(
@@ -190,9 +221,8 @@ struct s_node	*get_best_free_record_tree(
 			return (NULL);
 		}
 		if (insert_free_record(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE,
-				type, &parent) == NULL)
+				type, &parent) < 0)
 		{
-// XXX Logically destroy an index lead to destroying a page
 			destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
 			destroy_index(index);
 			return (NULL);

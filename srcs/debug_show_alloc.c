@@ -14,8 +14,9 @@
 
 static void	display_alloc(struct s_node *record)
 {
-	ft_printf("%p - %lu\n",
+	ft_printf("%p --> %p  %lu\n",
 			record->ptr_a,
+			(uint8_t *)record->ptr_a + record->m.size - 1,
 			record->m.size);
 }
 

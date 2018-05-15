@@ -37,3 +37,14 @@ int			cmp_node_m_addr_to_node_m_addr(
 		return (1);
 	return (0);
 }
+
+int			cmp_m_addr_to_node_m_addr(
+		void *addr,
+		struct s_node *node_b)
+{
+	if (addr < node_b->m.ptr_b)
+		return (-1);
+	if (addr > node_b->m.ptr_b)
+		return (1);
+	return (0);
+}

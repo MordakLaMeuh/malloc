@@ -37,7 +37,7 @@
 */
 
 # define NODE_ALLIGN		64
-# define NODE_REQ_PAGES		16
+# define NODE_REQ_PAGES		1
 
 # define TINY_SHR			4
 # define TINY_MAX_BLOCK		128
@@ -117,7 +117,7 @@ void				node_custom_deallocator(void *node);
 ** Free pages management
 */
 
-struct s_node		*insert_free_record(
+int					insert_free_record(
 		void *addr,
 		size_t size,
 		enum e_page_type type,
@@ -178,6 +178,10 @@ int					cmp_addr_to_node_m_addr_range(
 
 int					cmp_node_m_addr_to_node_m_addr(
 		struct s_node *node_a,
+		struct s_node *node_b);
+
+int					cmp_m_addr_to_node_m_addr(
+		void *addr,
 		struct s_node *node_b);
 
 /*
