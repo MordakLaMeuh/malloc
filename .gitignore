@@ -5,4 +5,5 @@
 *.a
 *.so
 raw_user_programs/first
+sodo
 !.gitignore
