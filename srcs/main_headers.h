@@ -104,6 +104,7 @@ int					destroy_pages(void *addr, size_t size);
 
 void				*core_allocator(size_t *size);
 void				core_deallocator(void *ptr);
+void				*core_realloc(void *ptr, size_t *size);
 
 /*
 ** Special allocator

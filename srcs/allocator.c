@@ -75,6 +75,8 @@ void				*core_allocator(size_t *size)
 {
 	enum e_page_type page_type;
 
+	if (*size == 0)
+		return (NULL);
 	page_type = get_page_type(*size);
 	*size = allign_size(*size, page_type);
 	return ((page_type != LARGE) ?

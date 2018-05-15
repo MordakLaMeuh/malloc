@@ -80,13 +80,14 @@ void			*ft_realloc(void *ptr, size_t size)
 {
 	void				*addr;
 
+	ft_dprintf(B_DEBUG, "{yellow}- - - - - REALLOC - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-//	addr = core_realloc(ptr, size);
-	addr = NULL;
-	(void)ptr;
-	(void)size;
+	if (ptr == NULL)
+		addr = core_allocator(&size);
+	else
+		addr = core_realloc(ptr, &size);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }

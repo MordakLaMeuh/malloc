@@ -30,7 +30,7 @@ void	fflush_neighbours(
 
 	ft_dprintf(B_DEBUG, "searching neighbours: %lu at %p\n", len, address);
 	node = get_free_record(address, len, &parent, type);
-	assert(node != NULL);
+//	assert(node != NULL);
 	delete_free_record(node, parent, type);
 }
 
