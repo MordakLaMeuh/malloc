@@ -6,4 +6,5 @@
 *.so
 raw_user_programs/first
 sodo
+test1024
 !.gitignore
