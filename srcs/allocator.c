@@ -73,13 +73,22 @@ static void			*core_allocator_tiny_medium(
 
 void				*core_allocator(size_t *size)
 {
-	enum e_page_type page_type;
+	enum e_page_type	page_type;
+	void				*addr;
 
 	if (*size == 0)
 		return (NULL);
 	page_type = get_page_type(*size);
 	*size = allign_size(*size, page_type);
-	return ((page_type != LARGE) ?
-		core_allocator_tiny_medium(size, page_type) :
-		core_allocator_large(size));
+	if (page_type != LARGE)
+		addr = core_allocator_tiny_medium(size, page_type);
+	else
+		addr = core_allocator_large(size);
+	if (addr == NULL)
+	{
+		ft_printf("%s ENOMEM: %lu\n", __func__, size);
+		ft_show_alloc_mem();
+		errno = ENOMEM;
+	}
+	return (addr);
 }

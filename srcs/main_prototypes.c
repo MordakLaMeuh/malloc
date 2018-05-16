@@ -29,12 +29,6 @@ void			*ft_malloc(size_t size)
 	if (ctx.is_initialized == false)
 		constructor_runtime();
 	addr = core_allocator(&size);
-	if (addr == NULL)
-	{
-		ft_printf("%s ENOMEM: %lu\n", __func__, size);
-		ft_show_alloc_mem();
-		errno = ENOMEM;
-	}
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -56,9 +50,6 @@ void			*ft_calloc(size_t count, size_t size)
 	addr = core_allocator(&global_size);
 	if (addr == NULL)
 	{
-		ft_printf("%s ENOMEM: %lu x %lu\n", __func__, count, size);
-		ft_show_alloc_mem();
-		errno = ENOMEM;
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}

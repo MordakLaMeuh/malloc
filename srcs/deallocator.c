@@ -34,11 +34,6 @@ void	fflush_neighbours(
 	delete_free_record(node, parent, type);
 }
 
-struct s_couple {
-	size_t	len;
-	void	*addr;
-};
-
 void	do_prev_job(
 		struct s_couple *out,
 		struct s_couple *s,

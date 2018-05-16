@@ -44,11 +44,6 @@ static void					*copy_another_place(
 	return (dst_addr);
 }
 
-struct s_couple {
-	size_t	len;
-	void	*addr;
-};
-
 void						view_next_record(
 		struct s_node *record,
 		struct s_node *index,
@@ -153,7 +148,6 @@ void						*core_realloc(void *ptr, size_t *size)
 {
 	struct s_node		*record;
 	struct s_node		*index;
-	void				*addr;
 
 	index = NULL;
 	record = btree_get_node_by_content(ctx.big_page_record_tree,
@@ -179,8 +173,5 @@ void						*core_realloc(void *ptr, size_t *size)
 		core_deallocator(ptr);
 		return (NULL);
 	}
-	addr = reallocator(record, index, size);
-	if (addr == NULL)
-		errno = ENOMEM;
-	return (addr);
+	return (reallocator(record, index, size));
 }

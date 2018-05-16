@@ -91,6 +91,12 @@ struct								s_node_page {
 	struct s_node			node[];
 };
 
+
+struct								s_couple {
+	size_t					len;
+	void					*addr;
+};
+
 /*
 ** Mem_syscall functions
 */
