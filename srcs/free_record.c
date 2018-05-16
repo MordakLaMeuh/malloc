@@ -214,7 +214,7 @@ struct s_node	*get_best_free_record_tree(
 		addr = get_new_pages(type == TINY ? TINY_RANGE : MEDIUM_RANGE);
 		if (addr == NULL)
 			return (NULL);
-		index = create_index(addr, type);
+		index = create_index(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
 		if (index == NULL)
 		{
 			destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);

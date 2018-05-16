@@ -43,7 +43,7 @@ void		*insert_allocated_record(struct s_node *record)
 
 void		*create_index(
 		void *addr,
-		enum e_page_type type)
+		uint32_t range)
 {
 	struct s_node *index;
 
@@ -52,10 +52,7 @@ void		*create_index(
 		return (NULL);
 	index->ptr_a = btree_new();
 	index->m.ptr_b = addr;
-	if (type == TINY)
-		index->mask.s.node_type_b = INDEX_TINY;
-	else
-		index->mask.s.node_type_b = INDEX_MEDIUM;
+		index->mask.s.range = range;
 	index->mask.s.node_type = INDEX;
 	index = btree_insert_rnb_node(
 			&ctx.index_pages_tree,

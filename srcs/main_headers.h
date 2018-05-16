@@ -154,7 +154,7 @@ void				**find_index_node(void *addr);
 
 void				*create_index(
 		void *addr,
-		enum e_page_type type);
+		uint32_t range);
 
 void				destroy_index(struct s_node *index);
 

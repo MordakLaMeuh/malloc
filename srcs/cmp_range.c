@@ -16,13 +16,9 @@ int		cmp_addr_to_node_m_addr_range(
 		void *content,
 		struct s_node *node)
 {
-	int val;
-
-	val = (node->mask.s.node_type_b == INDEX_TINY) ? TINY_RANGE : MEDIUM_RANGE;
-
 	if (content < node->m.ptr_b)
 		return (-1);
-	if ((uint8_t *)content >= (uint8_t *)node->m.ptr_b + val)
+	if ((uint8_t *)content >= (uint8_t *)node->m.ptr_b + node->mask.s.range)
 		return (1);
 	return (0);
 }
