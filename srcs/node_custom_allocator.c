@@ -12,7 +12,22 @@
 
 #include "main_headers.h"
 
-void				*node_custom_allocator(size_t size)
+static struct s_node_page	*assign_new_node_page(void)
+{
+	struct s_node_page *new_node_page;
+
+	if (ctx.node_cache == NULL)
+		new_node_page = (struct s_node_page *)
+				get_new_pages(NODE_REQ_PAGES * ctx.page_size);
+	else
+	{
+		new_node_page = ctx.node_cache;
+		ctx.node_cache = NULL;
+	}
+	return (new_node_page);
+}
+
+void						*node_custom_allocator(size_t size)
 {
 	ft_dprintf(B_DEBUG, "{green}NODE ALLOCATION{eoc}\n");
 	struct s_node_page		*node_page;
@@ -22,9 +37,7 @@ void				*node_custom_allocator(size_t size)
 	node_page = ctx.node_pages_entry;
 	if (node_page->primary_block.nb_node == ctx.node_density)
 	{
-		new_node_page = (struct s_node_page *)
-				get_new_pages(NODE_REQ_PAGES * ctx.page_size);
-		if (new_node_page == NULL)
+		if ((new_node_page = assign_new_node_page()) == NULL)
 			return (NULL);
 		new_node_page->primary_block.nb_node = 0;
 		new_node_page->primary_block.next = node_page;

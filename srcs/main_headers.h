@@ -59,7 +59,6 @@
 ** Global description
 */
 
-struct s_data_page;
 struct s_node_page;
 
 struct								s_ctx {
@@ -73,6 +72,7 @@ struct								s_ctx {
 	struct s_node			*big_page_record_tree;
 
 	int						node_density;
+	struct s_node_page		*node_cache;
 
 	bool					is_initialized;
 } ctx;

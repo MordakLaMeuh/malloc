@@ -38,6 +38,7 @@ static void	fill_preallocated_chunk(char *base_addr)
 	ctx.node_pages_entry = (struct s_node_page *)base_addr;
 	ctx.node_pages_entry->primary_block.nb_node = 0;
 	ctx.node_pages_entry->primary_block.next = NULL;
+	ctx.node_cache = NULL;
 	base_addr += NODE_REQ_PAGES * ctx.page_size;
 	ctx.big_page_record_tree = btree_new();
 	ctx.index_pages_tree = btree_new();
