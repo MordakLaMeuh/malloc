@@ -1,12 +1,12 @@
 {
-	global: ft_malloc;
-		ft_free;
-		ft_realloc;
-		ft_calloc;
-		ft_show_alloc_mem;
-		ft_reallocarray;
-		ft_reallocf
-		ft_valloc
+	global: malloc;
+		free;
+		realloc;
+		calloc;
+		show_alloc_mem;
+		reallocarray;
+		reallocf
+		valloc
 
 	local: *;
 };

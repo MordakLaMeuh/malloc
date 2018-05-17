@@ -87,7 +87,7 @@ void				*core_allocator(size_t *size)
 	if (addr == NULL)
 	{
 		ft_printf("%s ENOMEM: %lu\n", __func__, size);
-		ft_show_alloc_mem();
+		show_alloc_mem();
 		errno = ENOMEM;
 	}
 	return (addr);

@@ -1,8 +1,8 @@
-_ft_free
-_ft_malloc
-_ft_realloc
-_ft_calloc
-_ft_reallocarray
-_ft_show_alloc_mem
-_ft_reallocf
-_ft_valloc
+_free
+_malloc
+_realloc
+_calloc
+_reallocarray
+_show_alloc_mem
+_reallocf
+_valloc

@@ -144,8 +144,12 @@ void	core_deallocator(void *ptr)
 			ctx.index_pages_tree, ptr,
 			cmp_addr_to_node_m_addr_range);
 	if (record == NULL)
+	{
+		if (index == NULL)
+			return ;
 		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);
+	}
 	if (record)
 		ft_dprintf(B_DEBUG, "{magenta}Founded ! addr: %p size: %lu{eoc}\n", record->ptr_a, record->m.size);
 	else

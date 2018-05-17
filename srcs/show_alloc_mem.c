@@ -15,7 +15,7 @@
 
 extern pthread_mutex_t g_mut;
 
-void			ft_show_alloc_mem(void)
+void			show_alloc_mem(void)
 {
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)

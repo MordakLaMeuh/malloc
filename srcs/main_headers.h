@@ -206,7 +206,7 @@ void				show_alloc(void);
 
 void				debug_nodes(void);
 
-void				ft_show_alloc_mem(void);
+void				show_alloc_mem(void);
 
 void				*core_allocator_large(size_t *size);
 

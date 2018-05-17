@@ -15,7 +15,7 @@
 
 pthread_mutex_t g_mut = PTHREAD_MUTEX_INITIALIZER;
 
-void			*ft_malloc(size_t size)
+void			*malloc(size_t size)
 {
 	void		*addr;
 
@@ -33,7 +33,7 @@ void			*ft_malloc(size_t size)
 	return (addr);
 }
 
-void			*ft_calloc(size_t count, size_t size)
+void			*calloc(size_t count, size_t size)
 {
 	void		*addr;
 	size_t		global_size;
@@ -58,7 +58,7 @@ void			*ft_calloc(size_t count, size_t size)
 	return (addr);
 }
 
-void			ft_free(void *ptr)
+void			free(void *ptr)
 {
 	ft_dprintf(B_DEBUG, "{yellow}- - - - - FREE - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
@@ -73,7 +73,7 @@ void			ft_free(void *ptr)
 	pthread_mutex_unlock(&g_mut);
 }
 
-void			*ft_realloc(void *ptr, size_t size)
+void			*realloc(void *ptr, size_t size)
 {
 	void				*addr;
 
@@ -89,7 +89,7 @@ void			*ft_realloc(void *ptr, size_t size)
 	return (addr);
 }
 
-void			*ft_reallocarray(void *ptr, size_t nmemb, size_t size)
+void			*reallocarray(void *ptr, size_t nmemb, size_t size)
 {
 	void				*addr;
 	size_t				global_size;
@@ -101,7 +101,7 @@ void			*ft_reallocarray(void *ptr, size_t nmemb, size_t size)
 	if (nmemb > 0 && (SIZE_MAX / nmemb) < size)
 	{
 		ft_printf("%s ENOMEM: (overflow) %lu x %lu\n", __func__, nmemb, size);
-		ft_show_alloc_mem();
+		show_alloc_mem();
 		errno = ENOMEM;
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
@@ -115,7 +115,7 @@ void			*ft_reallocarray(void *ptr, size_t nmemb, size_t size)
 	return (addr);
 }
 
-void			*ft_reallocf(void *ptr, size_t size)
+void			*reallocf(void *ptr, size_t size)
 {
 	void *addr;
 	bool memfail;
@@ -139,7 +139,7 @@ void			*ft_reallocf(void *ptr, size_t size)
 	return (addr);
 }
 
-void			*ft_valloc(size_t size)
+void			*valloc(size_t size)
 {
 	void		*addr;
 
@@ -157,7 +157,7 @@ void			*ft_valloc(size_t size)
 	if (addr == NULL)
 	{
 		ft_printf("%s ENOMEM: %lu\n", __func__, size);
-		ft_show_alloc_mem();
+		show_alloc_mem();
 		errno = ENOMEM;
 	}
 	pthread_mutex_unlock(&g_mut);
