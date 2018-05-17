@@ -1,0 +1,5 @@
+1: Multiple sub-functions like valloc, calloc, reallocf and reallocarray
+2: A true mulitest uni checker
+3: A show_alloc_mem_ex with free chunks and node description
+4: Auto defragment free zone
+5: A malloc tracer, allocations time sended to a file or even a fifo with colour et env variable
