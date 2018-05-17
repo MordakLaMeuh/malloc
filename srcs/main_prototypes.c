@@ -84,7 +84,7 @@ void			*ft_realloc(void *ptr, size_t size)
 	if (ptr == NULL)
 		addr = core_allocator(&size);
 	else
-		addr = core_realloc(ptr, &size);
+		addr = core_realloc(ptr, &size, NULL);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -110,7 +110,56 @@ void			*ft_reallocarray(void *ptr, size_t nmemb, size_t size)
 	if (ptr == NULL)
 		addr = core_allocator(&global_size);
 	else
-		addr = core_realloc(ptr, &global_size);
+		addr = core_realloc(ptr, &global_size, NULL);
+	pthread_mutex_unlock(&g_mut);
+	return (addr);
+}
+
+void			*ft_reallocf(void *ptr, size_t size)
+{
+	void *addr;
+	bool memfail;
+
+	ft_dprintf(B_DEBUG, "{yellow}- - - - - REALLOCF - - - - -{eoc}\n");
+	pthread_mutex_lock(&g_mut);
+	memfail = false;
+	if (ctx.is_initialized == false)
+		constructor_runtime();
+	if (ptr == NULL)
+	{
+		addr = core_allocator(&size);
+		if (addr == NULL)
+			memfail = true;
+	}
+	else
+		addr = core_realloc(ptr, &size, &memfail);
+	if (memfail == true)
+		core_deallocator(ptr);
+	pthread_mutex_unlock(&g_mut);
+	return (addr);
+}
+
+void			*ft_valloc(size_t size)
+{
+	void		*addr;
+
+	ft_dprintf(B_DEBUG, "{yellow}- - - - - VALLOC - - - - -{eoc}\n");
+	pthread_mutex_lock(&g_mut);
+	if (size == 0)
+	{
+		pthread_mutex_unlock(&g_mut);
+		return (NULL);
+	}
+	if (ctx.is_initialized == false)
+		constructor_runtime();
+	size = allign_size(size, LARGE);
+	addr = core_allocator_large(&size);
+	if (addr == NULL)
+	{
+		ft_printf("%s ENOMEM: %lu\n", __func__, size);
+		ft_show_alloc_mem();
+		errno = ENOMEM;
+	}
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }

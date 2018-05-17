@@ -144,10 +144,14 @@ static void					*reallocator(
 	return (copy_another_place(record, size));
 }
 
-void						*core_realloc(void *ptr, size_t *size)
+void						*core_realloc(
+		void *ptr,
+		size_t *size,
+		bool *memfail)
 {
 	struct s_node		*record;
 	struct s_node		*index;
+	void				*addr;
 
 	index = NULL;
 	record = btree_get_node_by_content(ctx.big_page_record_tree,
@@ -173,5 +177,8 @@ void						*core_realloc(void *ptr, size_t *size)
 		core_deallocator(ptr);
 		return (NULL);
 	}
-	return (reallocator(record, index, size));
+	addr = reallocator(record, index, size);
+	if (addr == NULL && memfail)
+		*memfail = true;
+	return (addr);
 }

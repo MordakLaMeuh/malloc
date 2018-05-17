@@ -12,7 +12,7 @@
 
 #include "main_headers.h"
 
-static void			*core_allocator_large(
+void				*core_allocator_large(
 		size_t *size)
 {
 	void			*addr;

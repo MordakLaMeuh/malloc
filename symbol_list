@@ -4,3 +4,5 @@ _ft_realloc
 _ft_calloc
 _ft_reallocarray
 _ft_show_alloc_mem
+_ft_reallocf
+_ft_valloc

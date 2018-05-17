@@ -110,7 +110,7 @@ int					destroy_pages(void *addr, size_t size);
 
 void				*core_allocator(size_t *size);
 void				core_deallocator(void *ptr);
-void				*core_realloc(void *ptr, size_t *size);
+void				*core_realloc(void *ptr, size_t *size, bool *memfail);
 
 /*
 ** Special allocator
@@ -207,5 +207,7 @@ void				show_alloc(void);
 void				debug_nodes(void);
 
 void				ft_show_alloc_mem(void);
+
+void				*core_allocator_large(size_t *size);
 
 #endif

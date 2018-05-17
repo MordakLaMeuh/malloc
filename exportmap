@@ -5,6 +5,8 @@
 		ft_calloc;
 		ft_show_alloc_mem;
 		ft_reallocarray;
+		ft_reallocf
+		ft_valloc
 
 	local: *;
 };
