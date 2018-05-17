@@ -52,7 +52,7 @@ void		*create_index(
 		return (NULL);
 	index->ptr_a = btree_new();
 	index->m.ptr_b = addr;
-		index->mask.s.range = range;
+	index->mask.s.range = range;
 	index->mask.s.node_type = INDEX;
 	index = btree_insert_rnb_node(
 			&ctx.index_pages_tree,

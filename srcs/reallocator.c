@@ -16,8 +16,8 @@ static void					*substract_large_page(
 		struct s_node *record,
 		size_t new_size)
 {
-	uint8_t *cut_point;
-	size_t cut_size;
+	uint8_t		*cut_point;
+	size_t		cut_size;
 
 	cut_point = (uint8_t *)record->ptr_a + new_size;
 	cut_size = record->m.size - new_size;
@@ -30,9 +30,9 @@ static void					*copy_another_place(
 		struct s_node *record,
 		size_t *size)
 {
-	void *dst_addr;
-	void *src_addr;
-	size_t src_size;
+	void		*dst_addr;
+	void		*src_addr;
+	size_t		src_size;
 
 	src_addr = record->ptr_a;
 	src_size = record->m.size;
@@ -53,7 +53,6 @@ void						view_next_record(
 	struct s_node *next_allocated_record;
 
 	next_allocated_record = btree_get_next_neighbours_node(record);
-
 	if (next_allocated_record != NULL)
 	{
 		new_free_record->addr = (void *)((uint64_t)record->ptr_a
@@ -88,10 +87,10 @@ static void					*fill_possible(
 	size_t size,
 	enum e_page_type type)
 {
-	struct s_couple new_free_record;
-	struct s_node *next_free_record;
-	struct s_node *free_record_parent;
-	void *addr;
+	struct s_couple		new_free_record;
+	struct s_node		*next_free_record;
+	struct s_node		*free_record_parent;
+	void				*addr;
 
 	new_free_record.len = 0;
 	view_next_record(record, index, type, &new_free_record);
@@ -104,7 +103,7 @@ static void					*fill_possible(
 		return (NULL);
 	addr = record->ptr_a;
 	new_free_record.len = (new_free_record.len + record->m.size) - size;
-	new_free_record.addr = (uint8_t *)record->ptr_a  + size;
+	new_free_record.addr = (uint8_t *)record->ptr_a + size;
 	record->m.size = size;
 	if (next_free_record)
 		delete_free_record(next_free_record, free_record_parent, type);
@@ -126,7 +125,6 @@ static void					*reallocator(
 	old_type = get_page_type(record->m.size);
 	new_type = get_page_type(*size);
 	*size = allign_size(*size, new_type);
-
 	if (old_type != new_type)
 		return (copy_another_place(record, size));
 	if (record->m.size == *size)
@@ -172,7 +170,6 @@ void						*core_realloc(
 				record->ptr_a, record->m.size);
 	else
 		ft_dprintf(B_DEBUG, "{magenta}not found !{eoc}\n");
-
 	if (record == NULL)
 		return (NULL);
 	if (*size == 0)

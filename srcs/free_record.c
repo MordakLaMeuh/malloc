@@ -12,50 +12,57 @@
 
 #include "main_headers.h"
 
-static void	display_item(struct s_node *item, int lvl, int first_elem) {
-	if (first_elem)
-		ft_printf("%s--- level %i ---\n", (lvl != 0) ? "\n" : "", lvl);
+static void				display_item(
+		struct s_node *item,
+		int lvl,
+		int first_elem)
+{
 	char color;
 
-	switch (item->mask.s.color)
-	{
-	case (BLACK):
+	if (first_elem)
+		ft_printf("%s--- level %i ---\n", (lvl != 0) ? "\n" : "", lvl);
+	if (item->mask.s.color == BLACK)
 		color = 'B';
-		break;
-	case (RED):
+	else if (item->mask.s.color == RED)
 		color = 'R';
-		break;
-	case (DOUBLE_BLACK):
+	else if (item->mask.s.color == DOUBLE_BLACK)
 		color = 'D';
-		break;
-	default:
+	else
 		color = 'O';
-	}
 	ft_printf("[%c %lu", color, item->m.size);
 	if (item->parent)
 		ft_printf(" (%lu)", item->parent->m.size);
 	ft_printf("]  ");
 }
 
-void		debug_free_record(enum e_page_type type)
+void					debug_free_record(enum e_page_type type)
 {
+	struct s_rnb_tree_checker_result result;
+
 	if (B_DEBUG == 0)
 		return ;
 	ft_printf("\n");
 	btree_apply_by_level((type == TINY) ?
-			ctx.global_tiny_space_tree : ctx.global_medium_space_tree, &display_item);
+			ctx.global_tiny_space_tree : ctx.global_medium_space_tree,
+			&display_item);
 	ft_printf("\n");
-	struct s_rnb_tree_checker_result result;
 	btree_check_rnb_property((type == TINY) ?
-			ctx.global_tiny_space_tree : ctx.global_medium_space_tree, &result);
-	ft_printf("root_is_black      : %s\n", result.root_is_black == FAILED ? "FAIL" : "OK");
-	ft_printf("homogenetic_black  : %s\n", result.homogenetic_black == FAILED ? "FAIL" : "OK");
-	ft_printf("filiation          : %s\n", result.filiation == FAILED ? "FAIL" : "OK");
-	ft_printf("rnb_interlacement  : %s\n", result.rnb_interlacement == FAILED ? "FAIL" : "OK");
-	ft_printf("%i levels for %i nodes\n", result.nb_levels, result.nb_nodes);
+			ctx.global_tiny_space_tree :
+			ctx.global_medium_space_tree,
+			&result);
+	ft_printf("root_is_black      : %s\n",
+			result.root_is_black == FAILED ? "FAIL" : "OK");
+	ft_printf("homogenetic_black  : %s\n",
+			result.homogenetic_black == FAILED ? "FAIL" : "OK");
+	ft_printf("filiation          : %s\n",
+			result.filiation == FAILED ? "FAIL" : "OK");
+	ft_printf("rnb_interlacement  : %s\n",
+			result.rnb_interlacement == FAILED ? "FAIL" : "OK");
+	ft_printf("%i levels for %i nodes\n",
+			result.nb_levels, result.nb_nodes);
 }
 
-static void		assign_parent_free_tiny(
+static void				assign_parent_free_tiny(
 		void *content,
 		struct s_node *node)
 {
@@ -67,7 +74,7 @@ static void		assign_parent_free_tiny(
 	node->mask.s.node_type = PARENT_RECORD_FREE_TINY;
 }
 
-static void		assign_parent_free_medium(
+static void				assign_parent_free_medium(
 		void *content,
 		struct s_node *node)
 {
@@ -79,7 +86,7 @@ static void		assign_parent_free_medium(
 	node->mask.s.node_type = PARENT_RECORD_FREE_MEDIUM;
 }
 
-int				check_index_destroy(
+int						check_index_destroy(
 		void *addr,
 		size_t size,
 		enum e_page_type type)
@@ -107,7 +114,25 @@ int				check_index_destroy(
 	return (0);
 }
 
-int				insert_free_record(
+static struct s_node	*get_parent(
+		size_t size,
+		enum e_page_type type)
+{
+	struct s_node_params	use_ctx;
+	struct s_node			*parent;
+
+	use_ctx.allocator = &node_custom_allocator;
+	use_ctx.comp = &cmp_size_to_node_size;
+	use_ctx.associator = (type == TINY) ?
+			&assign_parent_free_tiny : &assign_parent_free_medium;
+	debug_free_record(type);
+	parent = btree_try_to_insert_rnb_node((type == TINY) ?
+			&ctx.global_tiny_space_tree : &ctx.global_medium_space_tree,
+			&size, &use_ctx);
+	return (parent);
+}
+
+int						insert_free_record(
 		void *addr,
 		size_t size,
 		enum e_page_type type,
@@ -115,23 +140,11 @@ int				insert_free_record(
 {
 	struct s_node			*parent;
 	struct s_node			*record;
-	struct s_node_params	use_ctx;
 
 	if (check_index_destroy(addr, size, type))
 		return (0);
-
-	use_ctx.allocator = &node_custom_allocator;
-	use_ctx.comp = &cmp_size_to_node_size;
-	use_ctx.associator = (type == TINY) ?
-			&assign_parent_free_tiny : &assign_parent_free_medium;
-
+	parent = get_parent(size, type);
 	debug_free_record(type);
-
-	parent = btree_try_to_insert_rnb_node((type == TINY) ?
-			&ctx.global_tiny_space_tree : &ctx.global_medium_space_tree, &size, &use_ctx);
-
-	debug_free_record(type);
-
 	if (parent == NULL)
 		return (-1);
 	if (parent_ref)
@@ -144,14 +157,15 @@ int				insert_free_record(
 	record->ptr_a = addr;
 	record->mask.s.node_type = (type == TINY) ?
 			RECORD_FREE_TINY : RECORD_FREE_MEDIUM;
-	ft_dprintf(B_DEBUG, "{blue}Inserting free node: addr=%p size=%lu parent=%p{eoc}\n", addr, size, parent);
+	ft_dprintf(B_DEBUG, "{blue}Inserting free node: addr=%p size=%lu"
+			"parent=%p{eoc}\n", addr, size, parent);
 	record = btree_insert_rnb_node(((struct s_node **)&parent->ptr_a),
 			record, &cmp_node_addr_to_node_addr);
 	ft_dprintf(B_DEBUG, "ALLOCATION ENDED\n");
 	return (0);
 }
 
-struct s_node	*get_free_record(
+struct s_node			*get_free_record(
 		void *addr,
 		size_t size,
 		struct s_node **parent,
@@ -171,7 +185,7 @@ struct s_node	*get_free_record(
 	return (out);
 }
 
-int				delete_free_record(
+int						delete_free_record(
 		struct s_node *record,
 		struct s_node *parent,
 		enum e_page_type type)
@@ -185,20 +199,19 @@ int				delete_free_record(
 	if (ret == 0)
 	{
 		debug_free_record(type);
-
 		btree_delete_rnb_node_by_content(
 				(type == TINY) ?
-							&ctx.global_tiny_space_tree : &ctx.global_medium_space_tree,
+							&ctx.global_tiny_space_tree :
+							&ctx.global_medium_space_tree,
 				&size,
 				&cmp_size_to_node_size,
 				&node_custom_deallocator);
-
 		debug_free_record(type);
 	}
 	return (0);
 }
 
-struct s_node	*get_best_free_record_tree(
+struct s_node			*get_best_free_record_tree(
 		size_t size,
 		enum e_page_type type)
 {
@@ -206,27 +219,25 @@ struct s_node	*get_best_free_record_tree(
 	struct s_node	*index;
 	void			*addr;
 
-	parent = btree_get_last_valid_node((type == TINY) ?
+	if ((parent = btree_get_last_valid_node((type == TINY) ?
 			ctx.global_tiny_space_tree : ctx.global_medium_space_tree, &size,
-			&cmp_size_to_node_size);
-	if (parent == NULL)
+			&cmp_size_to_node_size)) != NULL)
+		return (parent);
+	addr = get_new_pages(type == TINY ? TINY_RANGE : MEDIUM_RANGE);
+	if (addr == NULL)
+		return (NULL);
+	index = create_index(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
+	if (index == NULL)
 	{
-		addr = get_new_pages(type == TINY ? TINY_RANGE : MEDIUM_RANGE);
-		if (addr == NULL)
-			return (NULL);
-		index = create_index(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
-		if (index == NULL)
-		{
-			destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
-			return (NULL);
-		}
-		if (insert_free_record(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE,
-				type, &parent) < 0)
-		{
-			destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
-			destroy_index(index);
-			return (NULL);
-		}
+		destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
+		return (NULL);
+	}
+	if (insert_free_record(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE,
+			type, &parent) < 0)
+	{
+		destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
+		destroy_index(index);
+		return (NULL);
 	}
 	return (parent);
 }

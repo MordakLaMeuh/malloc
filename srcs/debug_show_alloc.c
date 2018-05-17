@@ -23,7 +23,7 @@ static void		display_alloc(struct s_node *record)
 static void		display_pages_alloc_tiny(struct s_node *index)
 {
 	if (index->mask.s.range != TINY_RANGE)
-		return;
+		return ;
 	ft_printf("{yellow}PAGE: %p{eoc}\n", (void *)index->m.size);
 	btree_apply_infix(
 			(struct s_node *)index->ptr_a,
@@ -33,7 +33,7 @@ static void		display_pages_alloc_tiny(struct s_node *index)
 static void		display_pages_alloc_medium(struct s_node *index)
 {
 	if (index->mask.s.range != MEDIUM_RANGE)
-		return;
+		return ;
 	ft_printf("{yellow}PAGE: %p{eoc}\n", (void *)index->m.size);
 	btree_apply_infix(
 			(struct s_node *)index->ptr_a,
@@ -62,4 +62,3 @@ void			show_alloc(void)
 	ft_printf("\n{green}__MEDIUM_FREE_BLOCK__{eoc}\n");
 	btree_apply_infix(ctx.global_medium_space_tree, &display_pages_free);
 }
-

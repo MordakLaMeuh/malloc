@@ -16,7 +16,6 @@ static inline void	show_part(struct s_node_page *e, int i)
 {
 	ft_printf("%.3i: ", i);
 	ft_printf("{red}%s{eoc}", e->node[i].parent == NULL ? "ROOT " : "     ");
-
 	if (e->node[i].mask.s.node_type == INDEX)
 		ft_printf("UNIQUE: index_pages_tree, %p", &e->node[i]);
 	else if (e->node[i].mask.s.node_type == RECORD_ALLOCATED_LARGE)
@@ -40,8 +39,8 @@ static inline void	show_part(struct s_node_page *e, int i)
 
 void				debug_nodes(void)
 {
-	struct s_node_page *e;
-	int i;
+	struct s_node_page	*e;
+	int					i;
 
 	ft_printf("{red}__ALLOCATED_NODES__:{eoc}\n");
 	e = ctx.node_pages_entry;

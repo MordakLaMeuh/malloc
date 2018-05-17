@@ -64,8 +64,6 @@ static void				destroy_node_page(struct s_node_page *end_node_page)
 			destroy_pages(ctx.node_cache, NODE_REQ_PAGES * ctx.page_size);
 			ctx.node_cache = NULL;
 		}
-		else
-		{}				// Do nothing.
 	}
 	else
 	{
@@ -76,7 +74,6 @@ static void				destroy_node_page(struct s_node_page *end_node_page)
 		}
 		ctx.node_cache = end_node_page;
 		ctx.node_pages_entry = end_node_page->primary_block.next;
-//		end_node_page = ctx.node_pages_entry;
 	}
 }
 
@@ -87,11 +84,11 @@ void					node_custom_deallocator(void *node)
 	uint64_t			*ptr;
 
 	ft_dprintf(B_DEBUG, "{red}NODE DEALLOCATION{eoc}\n");
-
 	end_node_page = ctx.node_pages_entry;
 	assert(end_node_page->primary_block.nb_node > 0);
 	src_node = &end_node_page->node[end_node_page->primary_block.nb_node - 1];
-	ft_dprintf(B_DEBUG, "{red}node = %p, src_node = %p, n:%.3i{eoc}\n", node, src_node, end_node_page->primary_block.nb_node - 1);
+	ft_dprintf(B_DEBUG, "{red}node = %p, src_node = %p, n:%.3i{eoc}\n",
+			node, src_node, end_node_page->primary_block.nb_node - 1);
 	if (node != (void *)src_node)
 	{
 		if (((struct s_node *)src_node)->parent == NULL)

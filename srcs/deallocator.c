@@ -30,7 +30,6 @@ void	fflush_neighbours(
 
 	ft_dprintf(B_DEBUG, "searching neighbours: %lu at %p\n", len, address);
 	node = get_free_record(address, len, &parent, type);
-//	assert(node != NULL);
 	delete_free_record(node, parent, type);
 }
 
@@ -81,8 +80,8 @@ int		inherit_neighbour(
 		struct s_couple *out,
 		enum e_page_type type)
 {
-	struct s_node *next;
-	struct s_couple s[2];
+	struct s_node	*next;
+	struct s_couple	s[2];
 
 	s[0].len = 0;
 	s[1].len = 0;
@@ -117,7 +116,6 @@ void	tiny_medium_deallocate(
 
 	s.addr = record->ptr_a;
 	s.len = record->m.size;
-
 	inherit_neighbour(record, index, &s, type);
 	insert_free_record(s.addr, s.len, type, NULL);
 }
@@ -132,9 +130,9 @@ void	destroy_large_page(struct s_node *record)
 
 void	core_deallocator(void *ptr)
 {
-	struct s_node *record;
-	struct s_node *index;
-	enum e_page_type type;
+	struct s_node		*record;
+	struct s_node		*index;
+	enum e_page_type	type;
 
 	index = NULL;
 	record = btree_get_node_by_content(ctx.big_page_record_tree,
@@ -151,7 +149,8 @@ void	core_deallocator(void *ptr)
 			&cmp_addr_to_node_addr);
 	}
 	if (record)
-		ft_dprintf(B_DEBUG, "{magenta}Founded ! addr: %p size: %lu{eoc}\n", record->ptr_a, record->m.size);
+		ft_dprintf(B_DEBUG, "{magenta}Founded ! addr: %p size: %lu{eoc}\n",
+				record->ptr_a, record->m.size);
 	else
 		ft_dprintf(B_DEBUG, "{magenta}not found !{eoc}\n");
 	if (record == NULL)
