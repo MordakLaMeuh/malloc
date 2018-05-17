@@ -152,24 +152,15 @@ void						*core_realloc(
 	void				*addr;
 
 	index = NULL;
-	record = btree_get_node_by_content(ctx.big_page_record_tree,
-			ptr, &cmp_addr_to_node_addr);
-	if (record == NULL)
+	if ((record = btree_get_node_by_content(ctx.big_page_record_tree,
+			ptr, &cmp_addr_to_node_addr)) == NULL)
 		index = (struct s_node *)btree_get_node_by_content(
-			ctx.index_pages_tree, ptr,
-			cmp_addr_to_node_m_addr_range);
-	if (record == NULL)
+			ctx.index_pages_tree, ptr, cmp_addr_to_node_m_addr_range);
+	if (record == NULL && index != NULL)
 	{
-		if (index == NULL)
-			return (NULL);
 		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);
 	}
-	if (record)
-		ft_dprintf(B_DEBUG, "{magenta}Founded ! addr: %p size: %lu{eoc}\n",
-				record->ptr_a, record->m.size);
-	else
-		ft_dprintf(B_DEBUG, "{magenta}not found !{eoc}\n");
 	if (record == NULL)
 		return (NULL);
 	if (*size == 0)
@@ -177,8 +168,7 @@ void						*core_realloc(
 		core_deallocator(ptr);
 		return (NULL);
 	}
-	addr = reallocator(record, index, size);
-	if (addr == NULL && memfail)
+	if ((addr = reallocator(record, index, size)) == NULL && memfail)
 		*memfail = true;
 	return (addr);
 }

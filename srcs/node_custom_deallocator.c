@@ -23,10 +23,8 @@ static void				*find_free_node(
 			ctx.global_tiny_space_tree : ctx.global_medium_space_tree,
 			&node->m.size,
 			&cmp_size_to_node_size);
-	assert(sub_node != NULL);
 	if (sub_node == NULL)
 		return (NULL);
-	assert(sub_node->ptr_a != NULL);
 	return (&sub_node->ptr_a);
 }
 
@@ -60,7 +58,6 @@ static void				destroy_node_page(struct s_node_page *end_node_page)
 	{
 		if (ctx.node_cache)
 		{
-			ft_dprintf(B_DEBUG, "destroying pages\n");
 			destroy_pages(ctx.node_cache, NODE_REQ_PAGES * ctx.page_size);
 			ctx.node_cache = NULL;
 		}
@@ -68,10 +65,7 @@ static void				destroy_node_page(struct s_node_page *end_node_page)
 	else
 	{
 		if (ctx.node_cache)
-		{
-			ft_dprintf(B_DEBUG, "destroying pages\n");
 			destroy_pages(ctx.node_cache, NODE_REQ_PAGES * ctx.page_size);
-		}
 		ctx.node_cache = end_node_page;
 		ctx.node_pages_entry = end_node_page->primary_block.next;
 	}
@@ -83,17 +77,12 @@ void					node_custom_deallocator(void *node)
 	struct s_node		*src_node;
 	uint64_t			*ptr;
 
-	ft_dprintf(B_DEBUG, "{red}NODE DEALLOCATION{eoc}\n");
 	end_node_page = ctx.node_pages_entry;
-	assert(end_node_page->primary_block.nb_node > 0);
 	src_node = &end_node_page->node[end_node_page->primary_block.nb_node - 1];
-	ft_dprintf(B_DEBUG, "{red}node = %p, src_node = %p, n:%.3i{eoc}\n",
-			node, src_node, end_node_page->primary_block.nb_node - 1);
 	if (node != (void *)src_node)
 	{
 		if (((struct s_node *)src_node)->parent == NULL)
 		{
-			ft_dprintf(B_DEBUG, "root moved !\n");
 			ptr = (uint64_t *)find_root(src_node);
 			*ptr = (uint64_t)node;
 		}

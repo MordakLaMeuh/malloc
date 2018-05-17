@@ -33,7 +33,6 @@ void						*node_custom_allocator(size_t size)
 	struct s_node_page		*new_node_page;
 	void					*addr;
 
-	ft_dprintf(B_DEBUG, "{green}NODE ALLOCATION{eoc}\n");
 	node_page = ctx.node_pages_entry;
 	if (node_page->primary_block.nb_node == ctx.node_density)
 	{

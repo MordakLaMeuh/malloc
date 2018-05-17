@@ -35,7 +35,6 @@ void		*insert_allocated_record(struct s_node *record)
 			&cmp_addr_to_node_m_addr_range);
 	record = btree_insert_rnb_node((struct s_node **)&index->ptr_a,
 			record, cmp_node_addr_to_node_addr);
-	assert(record != NULL);
 	if (record == NULL)
 		return (NULL);
 	return (record->ptr_a);

@@ -26,13 +26,6 @@
 # include "btree.h"
 
 /*
-** XXX Debug
-*/
-
-# include <assert.h>
-# define B_DEBUG 0
-
-/*
 ** Data page
 */
 
@@ -208,5 +201,37 @@ void				debug_nodes(void);
 void				show_alloc_mem(void);
 
 void				*core_allocator_large(size_t *size);
+
+/*
+** deallocator_next content
+*/
+
+void				fflush_neighbours(
+		size_t len,
+		void *address,
+		enum e_page_type type);
+
+void				do_prev_job(
+		struct s_couple *out,
+		struct s_couple *s,
+		struct s_node *record,
+		struct s_node *index);
+
+/*
+** free_record_next content
+*/
+
+void				assign_parent_free_tiny(
+		void *content,
+		struct s_node *node);
+
+void				assign_parent_free_medium(
+		void *content,
+		struct s_node *node);
+
+int					check_index_destroy(
+		void *addr,
+		size_t size,
+		enum e_page_type type);
 
 #endif

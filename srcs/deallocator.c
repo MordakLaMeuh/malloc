@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   malloc.c                                           :+:      :+:    :+:   */
+/*   deallocator.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,53 +11,6 @@
 /* ************************************************************************** */
 
 #include "main_headers.h"
-
-/*
-** Search in index pages
-** Search in allocated records		+1 node
-** Search neighbours left			if exist +1 node
-** Search neighbours right			if exist +1 node
-** Insert free record				Can take 2 nodes
-*/
-
-void	fflush_neighbours(
-		size_t len,
-		void *address,
-		enum e_page_type type)
-{
-	struct s_node *node;
-	struct s_node *parent;
-
-	ft_dprintf(B_DEBUG, "searching neighbours: %lu at %p\n", len, address);
-	node = get_free_record(address, len, &parent, type);
-	delete_free_record(node, parent, type);
-}
-
-void	do_prev_job(
-		struct s_couple *out,
-		struct s_couple *s,
-		struct s_node *record,
-		struct s_node *index)
-{
-	struct s_node *prev;
-
-	prev = btree_get_prev_neighbours_node(record);
-	if (prev != NULL)
-	{
-		out->len += (uint64_t)record->ptr_a - (uint64_t)prev->ptr_a
-				- (uint64_t)prev->m.size;
-		out->addr = (void *)((uint64_t)prev->ptr_a + (uint64_t)prev->m.size);
-		s->addr = (void *)((uint64_t)prev->ptr_a + (uint64_t)prev->m.size);
-		s->len = (size_t)record->ptr_a - (size_t)prev->ptr_a - prev->m.size;
-	}
-	else if (record->ptr_a != (void *)index->m.size)
-	{
-		out->len += (uint64_t)record->ptr_a - (uint64_t)index->m.size;
-		out->addr = (void *)index->m.size;
-		s->addr = (void *)((uint64_t)index->m.size);
-		s->len = (uint64_t)record->ptr_a - index->m.size;
-	}
-}
 
 int		apply_modif(
 		struct s_node *record,
@@ -148,11 +101,6 @@ void	core_deallocator(void *ptr)
 		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);
 	}
-	if (record)
-		ft_dprintf(B_DEBUG, "{magenta}Founded ! addr: %p size: %lu{eoc}\n",
-				record->ptr_a, record->m.size);
-	else
-		ft_dprintf(B_DEBUG, "{magenta}not found !{eoc}\n");
 	if (record == NULL)
 		return ;
 	type = get_page_type(record->m.size);

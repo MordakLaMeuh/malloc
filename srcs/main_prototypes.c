@@ -19,7 +19,6 @@ void			*malloc(size_t size)
 {
 	void		*addr;
 
-	ft_dprintf(B_DEBUG, "{yellow}- - - - - MALLOC - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	if (size == 0)
 	{
@@ -60,7 +59,6 @@ void			*calloc(size_t count, size_t size)
 
 void			free(void *ptr)
 {
-	ft_dprintf(B_DEBUG, "{yellow}- - - - - FREE - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	if (ptr == NULL)
 	{
@@ -77,7 +75,6 @@ void			*realloc(void *ptr, size_t size)
 {
 	void				*addr;
 
-	ft_dprintf(B_DEBUG, "{yellow}- - - - - REALLOC - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
@@ -94,13 +91,11 @@ void			*reallocarray(void *ptr, size_t nmemb, size_t size)
 	void				*addr;
 	size_t				global_size;
 
-	ft_dprintf(B_DEBUG, "{yellow}- - - - - REALLOCARRAY - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
 	if (nmemb > 0 && (SIZE_MAX / nmemb) < size)
 	{
-		ft_printf("%s ENOMEM: (overflow) %lu x %lu\n", __func__, nmemb, size);
 		show_alloc_mem();
 		errno = ENOMEM;
 		pthread_mutex_unlock(&g_mut);
@@ -120,7 +115,6 @@ void			*reallocf(void *ptr, size_t size)
 	void *addr;
 	bool memfail;
 
-	ft_dprintf(B_DEBUG, "{yellow}- - - - - REALLOCF - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	memfail = false;
 	if (ctx.is_initialized == false)
@@ -143,7 +137,6 @@ void			*valloc(size_t size)
 {
 	void		*addr;
 
-	ft_dprintf(B_DEBUG, "{yellow}- - - - - VALLOC - - - - -{eoc}\n");
 	pthread_mutex_lock(&g_mut);
 	if (size == 0)
 	{
@@ -156,7 +149,6 @@ void			*valloc(size_t size)
 	addr = core_allocator_large(&size);
 	if (addr == NULL)
 	{
-		ft_printf("%s ENOMEM: %lu\n", __func__, size);
 		show_alloc_mem();
 		errno = ENOMEM;
 	}
