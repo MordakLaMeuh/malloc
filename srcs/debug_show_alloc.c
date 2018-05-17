@@ -48,17 +48,26 @@ static void		display_pages_free(struct s_node *index)
 			&display_alloc);
 }
 
-void			show_alloc(void)
+void			show_alloc(bool verbose)
 {
-	debug_nodes();
+	if (verbose)
+	{
+		debug_nodes();
+		ft_printf("\n{green}__TINY_FREE_BLOCK__{eoc}\n");
+		btree_apply_infix(ctx.global_tiny_space_tree, &display_pages_free);
+		ft_printf("\n{green}__MEDIUM_FREE_BLOCK__{eoc}\n");
+		btree_apply_infix(ctx.global_medium_space_tree, &display_pages_free);
+		ft_printf("\n");
+	}
 	ft_printf("{magenta}__TINY_ALLOCATED_BLOCK__{eoc}\n");
 	btree_apply_infix(ctx.index_pages_tree, &display_pages_alloc_tiny);
 	ft_printf("\n{magenta}__MEDIUM_ALLOCATED_BLOCK__{eoc}\n");
 	btree_apply_infix(ctx.index_pages_tree, &display_pages_alloc_medium);
 	ft_printf("\n{magenta}__LARGE_ALLOCATED_BLOCK__{eoc}\n");
 	btree_apply_infix(ctx.big_page_record_tree, &display_alloc);
-	ft_printf("\n{green}__TINY_FREE_BLOCK__{eoc}\n");
-	btree_apply_infix(ctx.global_tiny_space_tree, &display_pages_free);
-	ft_printf("\n{green}__MEDIUM_FREE_BLOCK__{eoc}\n");
-	btree_apply_infix(ctx.global_medium_space_tree, &display_pages_free);
+	ft_printf("\n{yellow}%lu{eoc} bytes allocated for user data,"
+			"{yellow} %lu{eoc} bytes"
+			" allocated by metadata nodes, total {magenta}%lu{eoc} bytes.\n\n",
+			ctx.size_owned_by_data, ctx.size_owned_by_nodes,
+			ctx.size_owned_by_data + ctx.size_owned_by_nodes);
 }

@@ -4,5 +4,6 @@ _realloc
 _calloc
 _reallocarray
 _show_alloc_mem
+_show_alloc_mem_ex
 _reallocf
 _valloc

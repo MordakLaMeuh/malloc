@@ -38,6 +38,7 @@ void				*core_allocator_large(
 		btree_destroy_node(record, &node_custom_deallocator);
 		return (NULL);
 	}
+	ctx.size_owned_by_data += record->m.size;
 	return (addr);
 }
 

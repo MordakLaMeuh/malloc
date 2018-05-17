@@ -19,9 +19,11 @@ void	*substract_large_page(
 	uint8_t		*cut_point;
 	size_t		cut_size;
 
+	ctx.size_owned_by_data -= record->m.size;
 	cut_point = (uint8_t *)record->ptr_a + new_size;
 	cut_size = record->m.size - new_size;
 	destroy_pages((void *)cut_point, cut_size);
 	record->m.size = new_size;
+	ctx.size_owned_by_data += record->m.size;
 	return (record->ptr_a);
 }

@@ -45,6 +45,7 @@ void						*node_custom_allocator(size_t size)
 	}
 	addr = &node_page->node[node_page->primary_block.nb_node];
 	node_page->primary_block.nb_node += 1;
+	ctx.size_owned_by_nodes += sizeof(struct s_node);
 	(void)size;
 	return (addr);
 }

@@ -34,25 +34,25 @@ void						view_next_record(
 		struct s_node *record,
 		struct s_node *index,
 		enum e_page_type type,
-		struct s_couple *new_free_record)
+		struct s_couple *n_free_record)
 {
 	struct s_node *next_allocated_record;
 
 	next_allocated_record = btree_get_next_neighbours_node(record);
 	if (next_allocated_record != NULL)
 	{
-		new_free_record->addr = (void *)((uint64_t)record->ptr_a
+		n_free_record->addr = (void *)((uint64_t)record->ptr_a
 				+ (uint64_t)record->m.size);
-		new_free_record->len = (uint64_t)next_allocated_record->ptr_a
+		n_free_record->len = (uint64_t)next_allocated_record->ptr_a
 				- (uint64_t)record->ptr_a - record->m.size;
 	}
 	else if ((uint64_t)record->ptr_a + record->m.size != index->m.size
 			+ ((type == TINY) ? TINY_RANGE : MEDIUM_RANGE))
 	{
-		new_free_record->len = (uint64_t)index->m.size + ((type == TINY) ?
+		n_free_record->len = (uint64_t)index->m.size + ((type == TINY) ?
 				TINY_RANGE : MEDIUM_RANGE) - ((uint64_t)record->ptr_a
 						+ record->m.size);
-		new_free_record->addr = (void *)((uint64_t)record->ptr_a +
+		n_free_record->addr = (void *)((uint64_t)record->ptr_a +
 				(uint64_t)record->m.size);
 	}
 }
@@ -61,10 +61,10 @@ void						view_next_record(
 ** determine if free size
 ** search next allocated record
 ** search free record at (uint8_t)record->ptr_a + record->m.size
-** copy to new_free_record
+** copy to n_free_record
 ** modify record size
 ** destroy free record
-** insert a new free record (new_free_record.addr, new_free_record.len)
+** insert a new free record (n_free_record.addr, n_free_record.len)
 */
 
 static void					*fill_possible(
@@ -73,29 +73,30 @@ static void					*fill_possible(
 	size_t size,
 	enum e_page_type type)
 {
-	struct s_couple		new_free_record;
+	struct s_couple		n_free_record;
 	struct s_node		*next_free_record;
 	struct s_node		*free_record_parent;
 	void				*addr;
 
-	new_free_record.len = 0;
-	view_next_record(record, index, type, &new_free_record);
+	n_free_record.len = 0;
+	view_next_record(record, index, type, &n_free_record);
 	next_free_record = NULL;
-	if (new_free_record.len > 0)
-		next_free_record = get_free_record(new_free_record.addr,
-				new_free_record.len, &free_record_parent, type);
-	new_free_record.len = (next_free_record) ? next_free_record->m.size : 0;
-	if ((new_free_record.len + record->m.size) < size)
+	if (n_free_record.len > 0)
+		next_free_record = get_free_record(n_free_record.addr,
+				n_free_record.len, &free_record_parent, type);
+	n_free_record.len = (next_free_record) ? next_free_record->m.size : 0;
+	if ((n_free_record.len + record->m.size) < size)
 		return (NULL);
 	addr = record->ptr_a;
-	new_free_record.len = (new_free_record.len + record->m.size) - size;
-	new_free_record.addr = (uint8_t *)record->ptr_a + size;
+	ctx.size_owned_by_data -= record->m.size;
+	n_free_record.len = (n_free_record.len + record->m.size) - size;
+	n_free_record.addr = (uint8_t *)record->ptr_a + size;
 	record->m.size = size;
+	ctx.size_owned_by_data += record->m.size;
 	if (next_free_record)
 		delete_free_record(next_free_record, free_record_parent, type);
-	if (new_free_record.len != 0)
-		insert_free_record(new_free_record.addr, new_free_record.len,
-				type, NULL);
+	if (n_free_record.len != 0)
+		insert_free_record(n_free_record.addr, n_free_record.len, type, NULL);
 	return (addr);
 }
 

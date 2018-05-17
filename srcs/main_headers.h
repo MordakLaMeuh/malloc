@@ -68,6 +68,8 @@ struct				s_ctx {
 	struct s_node_page		*node_cache;
 
 	bool					is_initialized;
+	size_t					size_owned_by_data;
+	size_t					size_owned_by_nodes;
 }					ctx;
 
 /*
@@ -194,7 +196,7 @@ enum e_page_type	get_page_type(size_t size);
 ** Debug tools
 */
 
-void				show_alloc(void);
+void				show_alloc(bool verbose);
 
 void				debug_nodes(void);
 

@@ -37,6 +37,7 @@ void		*insert_allocated_record(struct s_node *record)
 			record, cmp_node_addr_to_node_addr);
 	if (record == NULL)
 		return (NULL);
+	ctx.size_owned_by_data += record->m.size;
 	return (record->ptr_a);
 }
 

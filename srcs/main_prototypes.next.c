@@ -66,6 +66,15 @@ void			show_alloc_mem(void)
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	show_alloc();
+	show_alloc(false);
+	pthread_mutex_unlock(&g_mut);
+}
+
+void			show_alloc_mem_ex(void)
+{
+	pthread_mutex_lock(&g_mut);
+	if (ctx.is_initialized == false)
+		constructor_runtime();
+	show_alloc(true);
 	pthread_mutex_unlock(&g_mut);
 }

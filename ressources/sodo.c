@@ -106,7 +106,7 @@ void			sodo_realloc(struct s_test tab_ptr[TEST_LENGTH])
 	loop_sodo_realloc(tab_ptr, global_count, &nb_elmt);
 	printf("%i realloc made, %i mallocs and %i free made\n",
 			global_count[2], global_count[0], global_count[1]);
-	show_alloc_mem();
+	show_alloc_mem_ex();
 	i = 0;
 	if (nb_elmt != 0)
 		while (i < nb_elmt - 1)
@@ -114,7 +114,7 @@ void			sodo_realloc(struct s_test tab_ptr[TEST_LENGTH])
 			free(tab_ptr[i].ptr);
 			i++;
 		}
-	show_alloc_mem();
+	show_alloc_mem_ex();
 }
 
 int				main(void)

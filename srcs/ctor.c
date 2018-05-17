@@ -65,6 +65,8 @@ void		constructor_runtime(void)
 		ft_eprintf("failed to allocate base preallocated memory\n");
 		exit(1);
 	}
+	ctx.size_owned_by_data = 0;
+	ctx.size_owned_by_nodes = 0;
 	fill_preallocated_chunk(base_addr);
 	ctx.is_initialized = true;
 }

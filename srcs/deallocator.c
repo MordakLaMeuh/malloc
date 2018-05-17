@@ -103,8 +103,8 @@ void	core_deallocator(void *ptr)
 	}
 	if (record == NULL)
 		return ;
-	type = get_page_type(record->m.size);
-	if (type == LARGE)
+	ctx.size_owned_by_data -= record->m.size;
+	if ((type = get_page_type(record->m.size)) == LARGE)
 		destroy_large_page(record);
 	else
 		tiny_medium_deallocate(record, index, type);

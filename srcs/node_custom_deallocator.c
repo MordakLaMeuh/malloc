@@ -88,6 +88,7 @@ void					node_custom_deallocator(void *node)
 		}
 		btree_memory_move(node, src_node);
 	}
+	ctx.size_owned_by_nodes -= sizeof(struct s_node);
 	end_node_page->primary_block.nb_node -= 1;
 	if (end_node_page->primary_block.nb_node == 0)
 		destroy_node_page(end_node_page);
