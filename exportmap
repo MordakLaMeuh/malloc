@@ -6,8 +6,8 @@
 		show_alloc_mem;
 		show_alloc_mem_ex;
 		reallocarray;
-		reallocf
-		valloc
+		reallocf;
+		valloc;
 
 	local: *;
 };
