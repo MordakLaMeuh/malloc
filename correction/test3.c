@@ -1,18 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   test3.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/22 17:55:27 by bmickael          #+#    #+#             */
+/*   Updated: 2018/04/22 18:11:56 by bmickael         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 
 #define M (1024 * 1024)
 
-void print(char *s)
+void		print(char *s)
 {
 	write(1, s, strlen(s));
 }
 
-int main(void)
+int			main(void)
 {
-	char *addr1;
-	char *addr3;
+	char	*addr1;
+	char	*addr3;
 
 	addr1 = (char *)malloc(16 * M);
 	strcpy(addr1, "Bonjours\n");
