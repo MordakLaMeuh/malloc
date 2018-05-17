@@ -4,9 +4,9 @@ CC = gcc
 ### MAIN FLAGS ###
 
 ifeq ($(DEBUG),yes)
-	CFLAGS = -std=c99 -fPIC -pedantic -Wextra -Wall -Werror -g -O0 -fsanitize=address
+	CFLAGS = -std=c99 -fPIC -Wextra -Wall -Werror -g -O0 -fsanitize=address
 else
-	CFLAGS = -Ofast -std=c99 -fPIC -pedantic -Wextra -Wall -Werror
+	CFLAGS = -std=c99 -fPIC -Wextra -Wall -Werror -Ofast
 endif
 
 ### LIBRAIRIES ###
@@ -17,8 +17,13 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-MAIN = ctor mem_syscall main_prototypes node_custom_allocator node_custom_deallocator free_record cmp_range cmp_fixe \
-		allocator deallocator deallocator_next size_fn index debug_show_alloc debug_display_nodes reallocator show_alloc_mem free_record_next
+MAIN = ctor mem_syscall node_custom_allocator node_custom_deallocator cmp_range cmp_fixe \
+		allocator size_fn index debug_show_alloc debug_display_nodes \
+		free_record free_record.next \
+		reallocator reallocator.next \
+		deallocator deallocator.next \
+		main_prototypes main_prototypes.next
+		
 SRC_LIST = $(MAIN)
 
 VPATH = srcs

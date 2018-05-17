@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dyn_alocator.h                                     :+:      :+:    :+:   */
+/*   main_headers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -203,7 +203,7 @@ void				show_alloc_mem(void);
 void				*core_allocator_large(size_t *size);
 
 /*
-** deallocator_next content
+** deallocator.next.c
 */
 
 void				fflush_neighbours(
@@ -218,7 +218,7 @@ void				do_prev_job(
 		struct s_node *index);
 
 /*
-** free_record_next content
+** free_record.next.c
 */
 
 void				assign_parent_free_tiny(
@@ -233,5 +233,13 @@ int					check_index_destroy(
 		void *addr,
 		size_t size,
 		enum e_page_type type);
+
+/*
+** reallocator.next.c
+*/
+
+void				*substract_large_page(
+		struct s_node *record,
+		size_t new_size);
 
 #endif

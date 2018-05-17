@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   show_alloc_mem.c                                   :+:      :+:    :+:   */
+/*   reallocator.next.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bmickael <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,15 +11,17 @@
 /* ************************************************************************** */
 
 #include "main_headers.h"
-#include "ctor.h"
 
-extern pthread_mutex_t g_mut;
-
-void			show_alloc_mem(void)
+void	*substract_large_page(
+		struct s_node *record,
+		size_t new_size)
 {
-	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
-	show_alloc();
-	pthread_mutex_unlock(&g_mut);
+	uint8_t		*cut_point;
+	size_t		cut_size;
+
+	cut_point = (uint8_t *)record->ptr_a + new_size;
+	cut_size = record->m.size - new_size;
+	destroy_pages((void *)cut_point, cut_size);
+	record->m.size = new_size;
+	return (record->ptr_a);
 }
