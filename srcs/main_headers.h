@@ -61,7 +61,7 @@
 
 struct s_node_page;
 
-struct								s_ctx {
+struct				s_ctx {
 	size_t					page_size;
 	struct rlimit			mem_limit;
 
@@ -75,24 +75,23 @@ struct								s_ctx {
 	struct s_node_page		*node_cache;
 
 	bool					is_initialized;
-} ctx;
+}					ctx;
 
 /*
 ** Node Pages Structure
 */
 
-struct								s_primary_node {
+struct				s_primary_node {
 	struct s_node_page		*next;
 	int						nb_node;
 } __attribute__((aligned(NODE_ALLIGN)));
 
-struct								s_node_page {
+struct				s_node_page {
 	struct s_primary_node	primary_block;
 	struct s_node			node[];
 };
 
-
-struct								s_couple {
+struct				s_couple {
 	size_t					len;
 	void					*addr;
 };
