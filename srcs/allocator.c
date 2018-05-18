@@ -72,6 +72,10 @@ static void			*core_allocator_tiny_medium(
 	return (insert_allocated_record(record));
 }
 
+/*
+** NULL pointer means that no allocation is possible.
+*/
+
 void				*core_allocator(size_t *size)
 {
 	enum e_page_type	page_type;
@@ -86,9 +90,6 @@ void				*core_allocator(size_t *size)
 	else
 		addr = core_allocator_large(size);
 	if (addr == NULL)
-	{
-		show_alloc_mem();
 		errno = ENOMEM;
-	}
 	return (addr);
 }

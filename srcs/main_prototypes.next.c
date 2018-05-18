@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ctor.h"
 #include "main_headers.h"
 
 extern pthread_mutex_t g_mut;
@@ -21,9 +20,11 @@ void			*reallocf(void *ptr, size_t size)
 	bool memfail;
 
 	pthread_mutex_lock(&g_mut);
-	memfail = false;
 	if (ctx.is_initialized == false)
 		constructor_runtime();
+	if (ctx.tracer_file_descriptor != -1)
+		begin_trace(REALLOCF, ptr, size, 0);
+	memfail = false;
 	if (ptr == NULL)
 	{
 		addr = core_allocator(&size);
@@ -34,6 +35,8 @@ void			*reallocf(void *ptr, size_t size)
 		addr = core_realloc(ptr, &size, &memfail);
 	if (memfail == true)
 		core_deallocator(ptr);
+	if (ctx.tracer_file_descriptor != -1)
+		bend_trace(memfail == false ? SUCCESS : FAIL);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -43,20 +46,26 @@ void			*valloc(size_t size)
 	void		*addr;
 
 	pthread_mutex_lock(&g_mut);
+	if (ctx.is_initialized == false)
+		constructor_runtime();
+	if (ctx.tracer_file_descriptor != -1)
+		begin_trace(VALLOC, NULL, size, 0);
 	if (size == 0)
 	{
+		if (ctx.tracer_file_descriptor != -1)
+			bend_trace(NO_OP);
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}
-	if (ctx.is_initialized == false)
-		constructor_runtime();
 	size = allign_size(size, LARGE);
-	addr = core_allocator_large(&size);
-	if (addr == NULL)
+	if ((addr = core_allocator_large(&size)) == NULL)
 	{
-		show_alloc_mem();
+		if (ctx.tracer_file_descriptor != -1)
+			bend_trace(FAIL);
 		errno = ENOMEM;
 	}
+	else if (ctx.tracer_file_descriptor != -1)
+		bend_trace(SUCCESS);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }

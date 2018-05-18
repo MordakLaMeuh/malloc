@@ -20,7 +20,7 @@ extern pthread_mutex_t g_mut;
 # define GETPAGESIZE() getpagesize()
 #endif
 
-static void	fill_preallocated_chunk_next(char *base_addr)
+int	fill_preallocated_chunk_next(char *base_addr)
 {
 	ctx.node_density = (NODE_REQ_PAGES * ctx.page_size -
 			sizeof(struct s_primary_node)) / btree_get_node_size();
@@ -31,9 +31,10 @@ static void	fill_preallocated_chunk_next(char *base_addr)
 	ctx.global_medium_space_tree = btree_new();
 	create_index(base_addr, MEDIUM_RANGE);
 	insert_free_record(base_addr, MEDIUM_RANGE, MEDIUM, NULL);
+	return (0);
 }
 
-static void	fill_preallocated_chunk(char *base_addr)
+int	fill_preallocated_chunk(char *base_addr)
 {
 	ctx.node_pages_entry = (struct s_node_page *)base_addr;
 	ctx.node_pages_entry->primary_block.nb_node = 0;
@@ -43,16 +44,16 @@ static void	fill_preallocated_chunk(char *base_addr)
 	ctx.big_page_record_tree = btree_new();
 	ctx.index_pages_tree = btree_new();
 	fill_preallocated_chunk_next(base_addr);
+	return (0);
 }
 
-void		constructor_runtime(void)
+int	constructor_runtime(void)
 {
-	int		ret;
 	size_t	preallocated_size;
 	void	*base_addr;
 
 	ctx.page_size = GETPAGESIZE();
-	if ((ret = getrlimit(RLIMIT_DATA, &ctx.mem_limit)) < 0)
+	if (getrlimit(RLIMIT_DATA, &ctx.mem_limit) < 0)
 	{
 		ft_eprintf("dyn_allocator cannot get RLIMIT_DATA\n");
 		exit(1);
@@ -65,21 +66,27 @@ void		constructor_runtime(void)
 		ft_eprintf("failed to allocate base preallocated memory\n");
 		exit(1);
 	}
+	open_malloc_tracer();
 	ctx.size_owned_by_data = 0;
 	ctx.size_owned_by_nodes = 0;
 	fill_preallocated_chunk(base_addr);
 	ctx.is_initialized = true;
+	return (0);
 }
 
-void		main_constructor(void)
+void __attribute__((constructor))
+	main_constructor(void)
 {
 	pthread_mutex_lock(&g_mut);
-	constructor_runtime();
+	if (ctx.is_initialized == false)
+		constructor_runtime();
 	pthread_mutex_unlock(&g_mut);
 }
 
-void		main_destructor(void)
+void __attribute__((destructor))
+	main_destructor(void)
 {
 	pthread_mutex_lock(&g_mut);
+	close_malloc_tracer();
 	pthread_mutex_unlock(&g_mut);
 }

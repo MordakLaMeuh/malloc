@@ -21,6 +21,8 @@
 # include <pthread.h>
 # include <stdbool.h>
 # include <errno.h>
+# include <time.h>
+# include <fcntl.h>
 
 # include "libft.h"
 # include "btree.h"
@@ -48,6 +50,22 @@
 # define MEDIUM_LIMIT		(MEDIUM_BLOCK_SIZE * 32 - MEDIUM_BLOCK_SIZE)
 # define MEDIUM_RANGE		(MEDIUM_BLOCK_SIZE * 32 * MEDIUM_MAX_BLOCK)
 
+enum				e_op_type {
+	MALLOC = 0,
+	CALLOC,
+	REALLOC,
+	REALLOCF,
+	REALLOCARRAY,
+	VALLOC,
+	FREE
+};
+
+enum				e_trace_result {
+	SUCCESS = 0,
+	FAIL,
+	NO_OP
+};
+
 /*
 ** Global description
 */
@@ -70,6 +88,9 @@ struct				s_ctx {
 	bool					is_initialized;
 	size_t					size_owned_by_data;
 	size_t					size_owned_by_nodes;
+
+	struct timespec			begin_time;
+	int						tracer_file_descriptor;
 }					ctx;
 
 /*
@@ -92,6 +113,12 @@ struct				s_couple {
 };
 
 /*
+** Fail safe main constructor
+*/
+
+int					constructor_runtime(void);
+
+/*
 ** Mem_syscall functions
 */
 
@@ -103,7 +130,7 @@ int					destroy_pages(void *addr, size_t size);
 */
 
 void				*core_allocator(size_t *size);
-void				core_deallocator(void *ptr);
+int					core_deallocator(void *ptr);
 void				*core_realloc(void *ptr, size_t *size, bool *memfail);
 
 /*
@@ -203,6 +230,22 @@ void				debug_nodes(void);
 void				show_alloc_mem(void);
 
 void				*core_allocator_large(size_t *size);
+
+/*
+** Tracer
+*/
+
+void				open_malloc_tracer(void);
+
+void				close_malloc_tracer(void);
+
+void				begin_trace(
+		enum e_op_type op,
+		void *ptr,
+		size_t size_a,
+		size_t size_b);
+
+void				bend_trace(enum e_trace_result result);
 
 /*
 ** deallocator.next.c

@@ -28,7 +28,7 @@ static void				*find_free_node(
 	return (&sub_node->ptr_a);
 }
 
-static void				*find_root(struct s_node *node)
+static struct s_node	**find_root(struct s_node *node)
 {
 	void *ptr;
 

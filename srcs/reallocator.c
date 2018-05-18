@@ -129,6 +129,10 @@ static void					*reallocator(
 	return (copy_another_place(record, size));
 }
 
+/*
+** Memfail pointer is set to TRUE when a memory problem occur.
+*/
+
 void						*core_realloc(
 		void *ptr,
 		size_t *size,
@@ -139,6 +143,7 @@ void						*core_realloc(
 	void				*addr;
 
 	index = NULL;
+	*memfail = false;
 	if ((record = btree_get_node_by_content(ctx.big_page_record_tree,
 			ptr, &cmp_addr_to_node_addr)) == NULL)
 		index = (struct s_node *)btree_get_node_by_content(
@@ -148,14 +153,13 @@ void						*core_realloc(
 		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);
 	}
-	if (record == NULL)
-		return (NULL);
-	if (*size == 0)
+	if (*size == 0 || record == NULL)
 	{
-		core_deallocator(ptr);
+		if (record == NULL || core_deallocator(ptr) < 0)
+			*memfail = true;
 		return (NULL);
 	}
-	if ((addr = reallocator(record, index, size)) == NULL && memfail)
+	if ((addr = reallocator(record, index, size)) == NULL)
 		*memfail = true;
 	return (addr);
 }

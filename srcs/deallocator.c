@@ -81,31 +81,35 @@ void	destroy_large_page(struct s_node *record)
 	return ;
 }
 
-void	core_deallocator(void *ptr)
+/*
+** -1 means deallocator failed. No index || no record case.
+*/
+
+int		core_deallocator(void *ptr)
 {
 	struct s_node		*record;
 	struct s_node		*index;
 	enum e_page_type	type;
 
 	index = NULL;
-	record = btree_get_node_by_content(ctx.big_page_record_tree,
-			ptr, &cmp_addr_to_node_addr);
-	if (record == NULL)
+	if ((record = btree_get_node_by_content(ctx.big_page_record_tree,
+			ptr, &cmp_addr_to_node_addr)) == NULL)
 		index = (struct s_node *)btree_get_node_by_content(
 			ctx.index_pages_tree, ptr,
 			cmp_addr_to_node_m_addr_range);
 	if (record == NULL)
 	{
 		if (index == NULL)
-			return ;
+			return (-1);
 		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);
 	}
 	if (record == NULL)
-		return ;
+		return (-1);
 	ctx.size_owned_by_data -= record->m.size;
 	if ((type = get_page_type(record->m.size)) == LARGE)
 		destroy_large_page(record);
 	else
 		tiny_medium_deallocate(record, index, type);
+	return (0);
 }

@@ -17,12 +17,18 @@ LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
 
 ### SOURCES ###
 
-MAIN = ctor mem_syscall node_custom_allocator node_custom_deallocator cmp_range cmp_fixe \
-		allocator size_fn index debug_show_alloc debug_display_nodes \
+MAIN = ctor mem_syscall \
+		size_fn \
+		index \
+		debug_show_alloc debug_display_nodes \
+		node_custom_allocator node_custom_deallocator \
+		cmp_range cmp_fixe \
 		free_record free_record.next \
+		allocator \
 		reallocator reallocator.next \
 		deallocator deallocator.next \
-		main_prototypes main_prototypes.next
+		main_prototypes main_prototypes.next \
+		trace
 		
 SRC_LIST = $(MAIN)
 
@@ -31,7 +37,7 @@ VPATH = srcs
 ## HEADERS
 
 MAIN_HEADER = libft_alloc.h
-_HEADERS = main_headers.h ctor.h
+_HEADERS = main_headers.h
 
 ifeq ($(HOSTTYPE),)
 HOSTTYPE = $(shell uname -m)_$(shell uname -s)
