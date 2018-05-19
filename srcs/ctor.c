@@ -20,19 +20,6 @@ extern pthread_mutex_t g_mut;
 # define GETPAGESIZE() getpagesize()
 #endif
 
-int	fill_preallocated_chunk_next(char *base_addr)
-{
-	ctx.node_density = (NODE_REQ_PAGES * ctx.page_size -
-			sizeof(struct s_primary_node)) / btree_get_node_size();
-	ctx.global_tiny_space_tree = btree_new();
-	create_index(base_addr, TINY_RANGE);
-	insert_free_record(base_addr, TINY_RANGE, TINY, NULL);
-	base_addr += TINY_RANGE;
-	ctx.global_medium_space_tree = btree_new();
-	create_index(base_addr, MEDIUM_RANGE);
-	insert_free_record(base_addr, MEDIUM_RANGE, MEDIUM, NULL);
-	return (0);
-}
 
 int	fill_preallocated_chunk(char *base_addr)
 {
@@ -43,7 +30,15 @@ int	fill_preallocated_chunk(char *base_addr)
 	base_addr += NODE_REQ_PAGES * ctx.page_size;
 	ctx.big_page_record_tree = btree_new();
 	ctx.index_pages_tree = btree_new();
-	fill_preallocated_chunk_next(base_addr);
+	ctx.node_density = (NODE_REQ_PAGES * ctx.page_size -
+			sizeof(struct s_primary_node)) / btree_get_node_size();
+	ctx.global_tiny_space_tree = btree_new();
+	create_index(base_addr, TINY_RANGE);
+	insert_free_record(base_addr, TINY_RANGE, TINY, NULL);
+	base_addr += TINY_RANGE;
+	ctx.global_medium_space_tree = btree_new();
+	create_index(base_addr, MEDIUM_RANGE);
+	insert_free_record(base_addr, MEDIUM_RANGE, MEDIUM, NULL);
 	return (0);
 }
 
