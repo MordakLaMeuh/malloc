@@ -36,12 +36,24 @@ void					assign_parent_free_medium(
 	node->mask.s.node_type = PARENT_RECORD_FREE_MEDIUM;
 }
 
+/*
+** The aim of this function is to avoid having two full free pages:
+** Regarding to TINY_RANGE or MEDIUM_RANGE, this function destroy
+** a index page if his record is totally free and a total free record
+** exists already.
+** Return 1 if the suppress operation has been done. In this case,
+** 			no new free chunk will be created.
+** Return 0 if there are no free node like that, it will be
+** 			created in caller.
+*/
+
 int						check_index_destroy(
 		void *addr,
 		size_t size,
 		enum e_page_type type)
 {
 	struct s_node *parent;
+	struct s_node *index;
 
 	parent = NULL;
 	if (type == TINY && size == TINY_RANGE)
@@ -54,11 +66,12 @@ int						check_index_destroy(
 				&size, &cmp_size_to_node_size);
 	if (parent)
 	{
-		destroy_index(
-				btree_get_node_by_content(
-						ctx.index_pages_tree,
-						addr,
-						&cmp_m_addr_to_node_m_addr), (type == TINY) ? TINY_RANGE : MEDIUM_RANGE);
+		index = btree_get_node_by_content(
+				ctx.index_pages_tree,
+				addr,
+				&cmp_m_addr_to_node_m_addr);
+		destroy_index(index);
+		destroy_pages(addr, size);
 		return (1);
 	}
 	return (0);

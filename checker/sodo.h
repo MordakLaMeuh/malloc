@@ -28,7 +28,7 @@ void					show_alloc_mem_ex(void);
 void					*realloc(void *ptr, size_t size);
 
 # define TEST_LENGTH	100000
-# define MAX_ALLOC		6000
+# define MAX_ALLOC		1024
 # define NB_TESTS		10000000
 
 struct					s_test {

@@ -32,6 +32,7 @@ static struct s_node	*get_parent(
 /*
 ** First, check_index_destroy verify if the free slot is not for the total page
 ** size: If it is the case, the indexed page may be totally destroyed !
+** After, allocate a new free parent record if necessary and push his son !
 */
 
 int						insert_free_record(
@@ -51,15 +52,14 @@ int						insert_free_record(
 	if (parent_ref)
 		*parent_ref = parent;
 	record = btree_create_node(&node_custom_allocator);
-//	record = NULL;
+	record = NULL;
 	if (record == NULL)
 	{
 		if (parent->ptr_a == NULL)
 			btree_delete_rnb_node_by_content((type == TINY) ?
-					&ctx.global_tiny_space_tree : &ctx.global_medium_space_tree,
-					&size,
-					&cmp_size_to_node_size,
-					&node_custom_deallocator);
+					&ctx.global_tiny_space_tree :
+					&ctx.global_medium_space_tree,
+					&size, &cmp_size_to_node_size, &node_custom_deallocator);
 		return (-1);
 	}
 	record->m.size = size;
@@ -122,24 +122,25 @@ struct s_node			*get_best_free_record_tree(
 	struct s_node	*parent;
 	struct s_node	*index;
 	void			*addr;
+	size_t			range;
 
 	if ((parent = btree_get_last_valid_node((type == TINY) ?
 			ctx.global_tiny_space_tree : ctx.global_medium_space_tree, &size,
 			&cmp_size_to_node_size)) != NULL)
 		return (parent);
-	addr = get_new_pages(type == TINY ? TINY_RANGE : MEDIUM_RANGE);
-	if (addr == NULL)
+	range = type == TINY ? TINY_RANGE : MEDIUM_RANGE;
+	if ((addr = get_new_pages(range)) == NULL)
 		return (NULL);
-	index = create_index(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
+	index = create_index(addr, range);
 	if (index == NULL)
 	{
-		destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
+		destroy_pages(addr, range);
 		return (NULL);
 	}
-	if (insert_free_record(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE,
-			type, &parent) < 0)
+	if (insert_free_record(addr, range, type, &parent) < 0)
 	{
-		destroy_index(index, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
+		destroy_index(index);
+		destroy_pages(addr, range);
 		return (NULL);
 	}
 	return (parent);
