@@ -41,8 +41,8 @@ void			*reallocarray(void *ptr, size_t nmemb, size_t size)
 	void				*addr;
 
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return (NULL);
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(REALLOCARRAY, ptr, nmemb, size);
 	if (nmemb > 0 && (SIZE_MAX / nmemb) < size)
@@ -63,8 +63,8 @@ void			*valloc(size_t size)
 	void		*addr;
 
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return (NULL);
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(VALLOC, NULL, size, 0);
 	if (size == 0)
@@ -90,8 +90,8 @@ void			*valloc(size_t size)
 void			show_alloc_mem(void)
 {
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return ;
 	show_alloc(false, STDOUT_FILENO);
 	pthread_mutex_unlock(&g_mut);
 }
@@ -99,8 +99,8 @@ void			show_alloc_mem(void)
 void			show_alloc_mem_ex(void)
 {
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return ;
 	show_alloc(true, STDOUT_FILENO);
 	pthread_mutex_unlock(&g_mut);
 }

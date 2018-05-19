@@ -51,7 +51,7 @@ int	constructor_runtime(void)
 	if (getrlimit(RLIMIT_DATA, &ctx.mem_limit) < 0)
 	{
 		ft_eprintf("dyn_allocator cannot get RLIMIT_DATA\n");
-		exit(1);
+		return (-1);
 	}
 	preallocated_size = NODE_REQ_PAGES * ctx.page_size;
 	preallocated_size += TINY_RANGE;
@@ -59,7 +59,7 @@ int	constructor_runtime(void)
 	if ((base_addr = get_new_pages(preallocated_size)) == NULL)
 	{
 		ft_eprintf("failed to allocate base preallocated memory\n");
-		exit(1);
+		return (-1);
 	}
 	open_malloc_tracer();
 	ctx.size_owned_by_data = 0;
@@ -82,6 +82,7 @@ void __attribute__((destructor))
 	main_destructor(void)
 {
 	pthread_mutex_lock(&g_mut);
-	close_malloc_tracer();
+	if (ctx.is_initialized == true)
+		close_malloc_tracer();
 	pthread_mutex_unlock(&g_mut);
 }

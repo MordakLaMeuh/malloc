@@ -19,8 +19,8 @@ void			*malloc(size_t size)
 	void		*addr;
 
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return (NULL);
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(MALLOC, NULL, size, 0);
 	if (size == 0)
@@ -43,8 +43,8 @@ void			*calloc(size_t count, size_t size)
 	size_t		global_size;
 
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return (NULL);
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(CALLOC, NULL, count, size);
 	global_size = count * size;
@@ -69,8 +69,8 @@ void			free(void *ptr)
 	int ret;
 
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return ;
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(FREE, ptr, 0, 0);
 	if (ptr == NULL)
@@ -92,8 +92,8 @@ void			*realloc(void *ptr, size_t size)
 	bool				memfail;
 
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return (NULL);
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(REALLOC, ptr, size, 0);
 	if (ptr == NULL)
@@ -118,8 +118,8 @@ void			*reallocf(void *ptr, size_t size)
 	bool memfail;
 
 	pthread_mutex_lock(&g_mut);
-	if (ctx.is_initialized == false)
-		constructor_runtime();
+	if (ctx.is_initialized == false && constructor_runtime() == -1)
+		return (NULL);
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(REALLOCF, ptr, size, 0);
 	memfail = false;
