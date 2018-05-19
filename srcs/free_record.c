@@ -46,14 +46,11 @@ int						insert_free_record(
 
 	if (check_index_destroy(addr, size, type))
 		return (0);
-	parent = get_parent(size, type);
-	if (parent == NULL)
+	if ((parent = get_parent(size, type)) == NULL)
 		return (-1);
 	if (parent_ref)
 		*parent_ref = parent;
-	record = btree_create_node(&node_custom_allocator);
-	record = NULL;
-	if (record == NULL)
+	if ((record = btree_create_node(&node_custom_allocator)) == NULL)
 	{
 		if (parent->ptr_a == NULL)
 			btree_delete_rnb_node_by_content((type == TINY) ?
