@@ -89,10 +89,14 @@ void			begin_trace(
 	write_body(op, ptr, size_a, size_b);
 }
 
-void			bend_trace(enum e_trace_result result)
+void			bend_trace(enum e_trace_result result, void *addr)
 {
 	if (result == SUCCESS)
+	{
+		if (addr)
+			ft_fprintf(ctx.tracer_file_descriptor, "ret = %p ", addr);
 		ft_fprintf(ctx.tracer_file_descriptor, "{green}Success{eoc}\n");
+	}
 	else if (result == FAIL)
 		ft_fprintf(ctx.tracer_file_descriptor, "{red}Fail{eoc}\n");
 	else
@@ -103,5 +107,6 @@ void			close_malloc_tracer(void)
 {
 	if (ctx.tracer_file_descriptor < 0)
 		return ;
+	show_alloc(true, ctx.tracer_file_descriptor);
 	close(ctx.tracer_file_descriptor);
 }

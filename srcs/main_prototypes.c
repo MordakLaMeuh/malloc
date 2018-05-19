@@ -26,13 +26,13 @@ void			*malloc(size_t size)
 	if (size == 0)
 	{
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(NO_OP);
+			bend_trace(NO_OP, NULL);
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}
 	addr = core_allocator(&size);
 	if (ctx.tracer_file_descriptor != -1)
-		bend_trace(addr != NULL ? SUCCESS : FAIL);
+		bend_trace(addr != NULL ? SUCCESS : FAIL, addr);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -51,7 +51,7 @@ void			*calloc(size_t count, size_t size)
 	if (global_size == 0)
 	{
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(NO_OP);
+			bend_trace(NO_OP, NULL);
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}
@@ -59,7 +59,7 @@ void			*calloc(size_t count, size_t size)
 	if (addr != NULL)
 		ft_aligned_bzero(addr, global_size);
 	if (ctx.tracer_file_descriptor != -1)
-		bend_trace(addr != NULL ? SUCCESS : FAIL);
+		bend_trace(addr != NULL ? SUCCESS : FAIL, addr);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -76,13 +76,13 @@ void			free(void *ptr)
 	if (ptr == NULL)
 	{
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(NO_OP);
+			bend_trace(NO_OP, NULL);
 		pthread_mutex_unlock(&g_mut);
 		return ;
 	}
 	ret = core_deallocator(ptr);
 	if (ctx.tracer_file_descriptor != -1)
-		bend_trace(ret < 0 ? FAIL : SUCCESS);
+		bend_trace(ret < 0 ? FAIL : SUCCESS, NULL);
 	pthread_mutex_unlock(&g_mut);
 }
 
@@ -100,13 +100,13 @@ void			*realloc(void *ptr, size_t size)
 	{
 		addr = core_allocator(&size);
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(addr != NULL ? SUCCESS : FAIL);
+			bend_trace(addr != NULL ? SUCCESS : FAIL, addr);
 	}
 	else
 	{
 		addr = core_realloc(ptr, &size, &memfail);
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(memfail == false ? SUCCESS : FAIL);
+			bend_trace(memfail == false ? SUCCESS : FAIL, addr);
 	}
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
@@ -134,7 +134,7 @@ void			*reallocf(void *ptr, size_t size)
 	if (memfail == true)
 		core_deallocator(ptr);
 	if (ctx.tracer_file_descriptor != -1)
-		bend_trace(memfail == false ? SUCCESS : FAIL);
+		bend_trace(memfail == false ? SUCCESS : FAIL, addr);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }

@@ -25,13 +25,13 @@ static void		*reallocarray_next(void *ptr, size_t nmemb, size_t size)
 	{
 		addr = core_allocator(&global_size);
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(addr != NULL ? SUCCESS : FAIL);
+			bend_trace(addr != NULL ? SUCCESS : FAIL, addr);
 	}
 	else
 	{
 		addr = core_realloc(ptr, &global_size, &memfail);
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(memfail == false ? SUCCESS : FAIL);
+			bend_trace(memfail == false ? SUCCESS : FAIL, addr);
 	}
 	return (addr);
 }
@@ -48,7 +48,7 @@ void			*reallocarray(void *ptr, size_t nmemb, size_t size)
 	if (nmemb > 0 && (SIZE_MAX / nmemb) < size)
 	{
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(FAIL);
+			bend_trace(FAIL, NULL);
 		errno = ENOMEM;
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
@@ -70,7 +70,7 @@ void			*valloc(size_t size)
 	if (size == 0)
 	{
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(NO_OP);
+			bend_trace(NO_OP, NULL);
 		pthread_mutex_unlock(&g_mut);
 		return (NULL);
 	}
@@ -78,11 +78,11 @@ void			*valloc(size_t size)
 	if ((addr = core_allocator_large(&size)) == NULL)
 	{
 		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(FAIL);
+			bend_trace(FAIL, NULL);
 		errno = ENOMEM;
 	}
 	else if (ctx.tracer_file_descriptor != -1)
-		bend_trace(SUCCESS);
+		bend_trace(SUCCESS, addr);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }
@@ -92,7 +92,7 @@ void			show_alloc_mem(void)
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	show_alloc(false);
+	show_alloc(false, STDOUT_FILENO);
 	pthread_mutex_unlock(&g_mut);
 }
 
@@ -101,6 +101,6 @@ void			show_alloc_mem_ex(void)
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
-	show_alloc(true);
+	show_alloc(true, STDOUT_FILENO);
 	pthread_mutex_unlock(&g_mut);
 }

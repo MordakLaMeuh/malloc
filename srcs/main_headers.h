@@ -223,9 +223,9 @@ enum e_page_type	get_page_type(size_t size);
 ** Debug tools
 */
 
-void				show_alloc(bool verbose);
+void				show_alloc(bool verbose, int fd);
 
-void				debug_nodes(void);
+void				debug_nodes(int fd);
 
 void				show_alloc_mem(void);
 
@@ -245,7 +245,7 @@ void				begin_trace(
 		size_t size_a,
 		size_t size_b);
 
-void				bend_trace(enum e_trace_result result);
+void				bend_trace(enum e_trace_result result, void *addr);
 
 /*
 ** deallocator.next.c
