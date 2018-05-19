@@ -181,7 +181,7 @@ void				*create_index(
 		void *addr,
 		uint32_t range);
 
-void				destroy_index(struct s_node *index);
+void				destroy_index(struct s_node *index, size_t size);
 
 /*
 ** Finders.

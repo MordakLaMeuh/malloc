@@ -48,10 +48,18 @@ void		*create_index(
 	return (index);
 }
 
-void		destroy_index(struct s_node *index)
+/*
+** When a index if destroyed. Allocated pages block return to system.
+*/
+
+void		destroy_index(struct s_node *index, size_t size)
 {
+	void *addr;
+
+	addr = index->m.ptr_b;
 	btree_delete_rnb_node(
 			&ctx.index_pages_tree,
 			index,
 			&node_custom_deallocator);
+	destroy_pages(addr, size);
 }

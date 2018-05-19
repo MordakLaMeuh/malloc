@@ -58,7 +58,7 @@ int						check_index_destroy(
 				btree_get_node_by_content(
 						ctx.index_pages_tree,
 						addr,
-						&cmp_m_addr_to_node_m_addr));
+						&cmp_m_addr_to_node_m_addr), (type == TINY) ? TINY_RANGE : MEDIUM_RANGE);
 		return (1);
 	}
 	return (0);

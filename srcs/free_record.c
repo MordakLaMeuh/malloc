@@ -29,6 +29,11 @@ static struct s_node	*get_parent(
 	return (parent);
 }
 
+/*
+** First, check_index_destroy verify if the free slot is not for the total page
+** size: If it is the case, the indexed page may be totally destroyed !
+*/
+
 int						insert_free_record(
 		void *addr,
 		size_t size,
@@ -46,8 +51,17 @@ int						insert_free_record(
 	if (parent_ref)
 		*parent_ref = parent;
 	record = btree_create_node(&node_custom_allocator);
+//	record = NULL;
 	if (record == NULL)
+	{
+		if (parent->ptr_a == NULL)
+			btree_delete_rnb_node_by_content((type == TINY) ?
+					&ctx.global_tiny_space_tree : &ctx.global_medium_space_tree,
+					&size,
+					&cmp_size_to_node_size,
+					&node_custom_deallocator);
 		return (-1);
+	}
 	record->m.size = size;
 	record->ptr_a = addr;
 	record->mask.s.node_type = (type == TINY) ?
@@ -125,8 +139,7 @@ struct s_node			*get_best_free_record_tree(
 	if (insert_free_record(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE,
 			type, &parent) < 0)
 	{
-		destroy_pages(addr, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
-		destroy_index(index);
+		destroy_index(index, type == TINY ? TINY_RANGE : MEDIUM_RANGE);
 		return (NULL);
 	}
 	return (parent);
