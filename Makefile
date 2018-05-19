@@ -3,10 +3,21 @@ CC = gcc
 
 ### MAIN FLAGS ###
 
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
 ifeq ($(DEBUG),yes)
 	CFLAGS = -std=c99 -fPIC -Wextra -Wall -Werror -g -O0 -fsanitize=address
 else
 	CFLAGS = -std=c99 -fPIC -Wextra -Wall -Werror -Ofast
+endif
+endif
+
+ifeq ($(UNAME_S),Linux)
+ifeq ($(DEBUG),yes)
+	CFLAGS = -std=c99 -fPIC -Wextra -Wall -Werror -g -O0 -fsanitize=address -D _POSIX_C_SOURCE=200809L
+else
+	CFLAGS = -std=c99 -fPIC -Wextra -Wall -Werror -Ofast -D _POSIX_C_SOURCE=200809L
+endif
 endif
 
 ### LIBRAIRIES ###
@@ -52,7 +63,6 @@ HEADERS = $(addsuffix .h, $(__H__))
 
 IFLAGS = -Isrcs -I$(LIBFT)/includes -I$(LIBFT)/srcs
 
-UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 LDFLAGS = -shared -fPIC -L$(LIBFT) -lft -exported_symbols_list symbol_list
 endif
