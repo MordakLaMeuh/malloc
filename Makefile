@@ -63,7 +63,7 @@ endif
 
 .PHONY: all clean fclean re help
 
-all: top_level_rebuild_libft $(NAME).so
+all: top_level_rebuild_libft $(NAME).so sodo
 
 $(NAME).so: $(OBJ) libft/libft.a symbol_list
 	$(CC) $(CFLAGS) -o $(NAME)_$(HOSTTYPE).so $(OBJ) $(LDFLAGS)
@@ -75,16 +75,21 @@ $(OBJ_DIR)/%.o: %.c $(HEADERS) Makefile
 
 clean:
 	make -C $(LIBFT)/ clean
+	make -C checker/ clean
 	rm -f $(OBJ)
 
 fclean:
 	make -C $(LIBFT)/ fclean
+	make -C checker/ fclean
 	rm -f $(OBJ)
 	rm -f $(NAME)_$(HOSTTYPE).so
 	rm -f $(NAME).so
 
 top_level_rebuild_libft:
 	make -C $(LIBFT)/ all DEBUG=$(DEBUG)
+
+sodo:
+	make -C checker/ all DEBUG=$(DEBUG)
 
 re: fclean all
 

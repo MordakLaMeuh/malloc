@@ -14,29 +14,46 @@
 
 extern pthread_mutex_t g_mut;
 
-void			*reallocf(void *ptr, size_t size)
+static void		*reallocarray_next(void *ptr, size_t nmemb, size_t size)
 {
-	void *addr;
-	bool memfail;
+	size_t		global_size;
+	void		*addr;
+	bool		memfail;
+
+	global_size = nmemb * size;
+	if (ptr == NULL)
+	{
+		addr = core_allocator(&global_size);
+		if (ctx.tracer_file_descriptor != -1)
+			bend_trace(addr != NULL ? SUCCESS : FAIL);
+	}
+	else
+	{
+		addr = core_realloc(ptr, &global_size, &memfail);
+		if (ctx.tracer_file_descriptor != -1)
+			bend_trace(memfail == false ? SUCCESS : FAIL);
+	}
+	return (addr);
+}
+
+void			*reallocarray(void *ptr, size_t nmemb, size_t size)
+{
+	void				*addr;
 
 	pthread_mutex_lock(&g_mut);
 	if (ctx.is_initialized == false)
 		constructor_runtime();
 	if (ctx.tracer_file_descriptor != -1)
-		begin_trace(REALLOCF, ptr, size, 0);
-	memfail = false;
-	if (ptr == NULL)
+		begin_trace(REALLOCARRAY, ptr, nmemb, size);
+	if (nmemb > 0 && (SIZE_MAX / nmemb) < size)
 	{
-		addr = core_allocator(&size);
-		if (addr == NULL)
-			memfail = true;
+		if (ctx.tracer_file_descriptor != -1)
+			bend_trace(FAIL);
+		errno = ENOMEM;
+		pthread_mutex_unlock(&g_mut);
+		return (NULL);
 	}
-	else
-		addr = core_realloc(ptr, &size, &memfail);
-	if (memfail == true)
-		core_deallocator(ptr);
-	if (ctx.tracer_file_descriptor != -1)
-		bend_trace(memfail == false ? SUCCESS : FAIL);
+	addr = reallocarray_next(ptr, nmemb, size);
 	pthread_mutex_unlock(&g_mut);
 	return (addr);
 }

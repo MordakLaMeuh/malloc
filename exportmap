@@ -1,13 +1,13 @@
 {
-	global: malloc;
-		free;
-		realloc;
+	global: free;
+		malloc;
 		calloc;
+		realloc;
+		reallocf;
+		reallocarray;
+		valloc;
 		show_alloc_mem;
 		show_alloc_mem_ex;
-		reallocarray;
-		reallocf;
-		valloc;
 
 	local: *;
 };

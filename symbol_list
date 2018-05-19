@@ -1,9 +1,9 @@
 _free
 _malloc
-_realloc
 _calloc
+_realloc
+_reallocf
 _reallocarray
+_valloc
 _show_alloc_mem
 _show_alloc_mem_ex
-_reallocf
-_valloc

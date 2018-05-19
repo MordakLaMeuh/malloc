@@ -22,7 +22,7 @@ VPATH = ./
 _HEADERS = sodo.h
 
 SRC = $(addsuffix .c, $(SRC_LIST))
-OBJ_DIR = ./
+OBJ_DIR = .
 __OBJ__ = $(basename $(notdir $(SRC)))
 OBJ = $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(__OBJ__)))
 __H__ = $(basename $(notdir $(_HEADERS)))

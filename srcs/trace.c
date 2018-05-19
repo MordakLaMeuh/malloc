@@ -45,8 +45,8 @@ static void		write_body(
 		ft_fprintf(ctx.tracer_file_descriptor, "{cyan}Free{eoc} (%p) ", ptr);
 	else if (op == CALLOC)
 		ft_fprintf(ctx.tracer_file_descriptor,
-				"{green}Calloc{eoc} (%p, %lu, %lu) ",
-				ptr, size_a, size_b);
+				"{green}Calloc{eoc} (%lu, %lu) ",
+				size_a, size_b);
 	else if (op == REALLOC)
 		ft_fprintf(ctx.tracer_file_descriptor,
 				"{yellow}Realloc{eoc} (%p, %lu) ", ptr, size_a);
@@ -55,7 +55,7 @@ static void		write_body(
 				"{green}ReallocF{eoc} (%p, %lu) ", ptr, size_a);
 	else if (op == REALLOCARRAY)
 		ft_fprintf(ctx.tracer_file_descriptor,
-				"{green}ReallocArray {eoc}(%p, %lu, %lu) ", ptr,
+				"{green}ReallocArray{eoc} (%p, %lu, %lu) ", ptr,
 				size_a, size_b);
 	else if (op == VALLOC)
 		ft_fprintf(ctx.tracer_file_descriptor,
