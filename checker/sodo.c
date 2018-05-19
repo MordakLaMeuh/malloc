@@ -49,9 +49,10 @@ void			sodo_test(struct s_test	tab_ptr[TEST_LENGTH])
 
 	srand(get_timestamp());
 	nb_elmt = 0;
-	memset(global_count, 0, 2 * sizeof(int));
+	ft_memset(global_count, 0, 2 * sizeof(int));
 	loop_sodo_test(tab_ptr, global_count, &nb_elmt);
-	printf("%i malloc made,  %i free made\n", global_count[0], global_count[1]);
+	ft_printf("%i malloc made,  %i free made\n",
+			global_count[0], global_count[1]);
 	show_alloc_mem();
 	i = 0;
 	while (i < nb_elmt)
@@ -102,9 +103,9 @@ void			sodo_realloc(struct s_test tab_ptr[TEST_LENGTH])
 
 	srand(get_timestamp());
 	nb_elmt = 0;
-	memset(global_count, 0, 3 * sizeof(int));
+	ft_memset(global_count, 0, 3 * sizeof(int));
 	loop_sodo_realloc(tab_ptr, global_count, &nb_elmt);
-	printf("%i realloc made, %i mallocs and %i free made\n",
+	ft_printf("%i realloc made, %i mallocs and %i free made\n",
 			global_count[2], global_count[0], global_count[1]);
 	show_alloc_mem_ex();
 	i = 0;

@@ -12,7 +12,24 @@
 
 #include "main_headers.h"
 
-static void				*find_free_node(
+static struct s_node	**find_index_node(void *addr)
+{
+	struct s_node *index;
+
+	index = (struct s_node *)btree_get_node_by_content(
+			ctx.index_pages_tree,
+			addr,
+			&cmp_addr_to_node_m_addr_range);
+	if (index == NULL)
+	{
+		ft_eprintf("%s: (index = NULL) It leads us to undefined behavior\n",
+				__func__);
+		return (NULL);
+	}
+	return ((struct s_node **)&index->ptr_a);
+}
+
+static struct s_node	**find_free_node(
 		struct s_node *node,
 		enum e_node_type type)
 {
@@ -24,8 +41,12 @@ static void				*find_free_node(
 			&node->m.size,
 			&cmp_size_to_node_size);
 	if (sub_node == NULL)
+	{
+		ft_eprintf("%s: (subnode = NULL) It leads us to undefined behavior\n",
+				__func__);
 		return (NULL);
-	return (&sub_node->ptr_a);
+	}
+	return ((struct s_node **)&sub_node->ptr_a);
 }
 
 static struct s_node	**find_root(struct s_node *node)
@@ -49,6 +70,9 @@ static struct s_node	**find_root(struct s_node *node)
 		ptr = find_free_node(node, RECORD_FREE_TINY);
 	else if (node->mask.s.node_type == RECORD_FREE_MEDIUM)
 		ptr = find_free_node(node, RECORD_FREE_MEDIUM);
+	if (ptr == NULL)
+		ft_eprintf("%s: (ptr = NULL) It leads us to undefined behavior\n",
+				__func__);
 	return (ptr);
 }
 
@@ -84,7 +108,8 @@ void					node_custom_deallocator(void *node)
 		if (((struct s_node *)src_node)->parent == NULL)
 		{
 			ptr = (uint64_t *)find_root(src_node);
-			*ptr = (uint64_t)node;
+			if (ptr != NULL)
+				*ptr = (uint64_t)node;
 		}
 		btree_memory_move(node, src_node);
 	}

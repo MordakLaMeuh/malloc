@@ -12,19 +12,6 @@
 
 #include "main_headers.h"
 
-void		**find_index_node(void *addr)
-{
-	struct s_node *index;
-
-	index = (struct s_node *)btree_get_node_by_content(
-			ctx.index_pages_tree,
-			addr,
-			&cmp_addr_to_node_m_addr_range);
-	if (index == NULL)
-		return (NULL);
-	return (&index->ptr_a);
-}
-
 void		*insert_allocated_record(struct s_node *record)
 {
 	struct s_node *index;

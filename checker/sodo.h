@@ -18,7 +18,8 @@
 # include <unistd.h>
 # include <sys/time.h>
 # include <stdint.h>
-# include <stdio.h>
+
+# include "libft.h"
 
 void					*malloc(size_t size);
 void					free(void *ptr);

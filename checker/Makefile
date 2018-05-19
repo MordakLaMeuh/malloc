@@ -9,6 +9,12 @@ else
 	CFLAGS = -std=c99 -Wextra -Wall -Werror -Ofast
 endif
 
+### LIBRAIRIES ###
+
+LIB_DIR = ..
+_LIBFT = libft
+LIBFT = $(addprefix $(LIB_DIR)/, $(_LIBFT))
+
 ### SOURCES ###
 
 MAIN = sodo deep tool
@@ -28,12 +34,12 @@ OBJ = $(addprefix $(OBJ_DIR)/, $(addsuffix .o, $(__OBJ__)))
 __H__ = $(basename $(notdir $(_HEADERS)))
 HEADERS = $(addsuffix .h, $(__H__))
 
-IFLAGS =
-LDFLAGS = -L ../ -lft_malloc
+IFLAGS = -I$(LIBFT)/includes -I$(LIBFT)/srcs
+LDFLAGS = -L ../ -lft_malloc -L$(LIBFT) -lft
 
 .PHONY: all clean fclean re help
 
-all: $(NAME)
+all: top_level_rebuild_libft $(NAME)
 
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LDFLAGS)
@@ -49,6 +55,9 @@ fclean:
 	rm -f $(NAME)
 
 re: fclean all
+
+top_level_rebuild_libft:
+	make -C $(LIBFT)/ all DEBUG=$(DEBUG)
 
 help:
 	@echo

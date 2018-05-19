@@ -22,7 +22,7 @@ void			add_sodo(
 	tab_ptr[nb_elmt].c = i % 256;
 	tab_ptr[nb_elmt].ptr = malloc(i);
 	tab_ptr[nb_elmt].size = (size_t)i;
-	memset(tab_ptr[nb_elmt].ptr, tab_ptr[nb_elmt].c, i);
+	ft_memset(tab_ptr[nb_elmt].ptr, tab_ptr[nb_elmt].c, i);
 }
 
 void			del_sodo(
@@ -40,7 +40,8 @@ void			del_sodo(
 	{
 		if (*ptr != tab_ptr[i].c)
 		{
-			printf("BAD VALUE: Got %hhx instead of %hhx\n", *ptr, tab_ptr[i].c);
+			ft_printf("BAD VALUE: Got %hhx instead of %hhx\n",
+					*ptr, tab_ptr[i].c);
 			exit(1);
 		}
 		ptr++;
@@ -60,10 +61,9 @@ static void		real_sodo_next(
 	size_t			n;
 	size_t			n_size;
 
-	tab_ptr[i].ptr = realloc(tab_ptr[i].ptr, x);
-	if (tab_ptr[i].ptr == NULL)
+	if ((tab_ptr[i].ptr = realloc(tab_ptr[i].ptr, x)) == NULL)
 	{
-		printf("BAD REALLOC\n");
+		ft_printf("BAD REALLOC\n");
 		exit(1);
 	}
 	n = 0;
@@ -73,7 +73,8 @@ static void		real_sodo_next(
 	{
 		if (*ptr != tab_ptr[i].c)
 		{
-			printf("BAD VALUE: Got %hhx instead of %hhx\n", *ptr, tab_ptr[i].c);
+			ft_printf("BAD VALUE: Got %hhx instead of %hhx\n",
+					*ptr, tab_ptr[i].c);
 			exit(1);
 		}
 		ptr++;
@@ -81,7 +82,7 @@ static void		real_sodo_next(
 	}
 	tab_ptr[i].size = (size_t)x;
 	tab_ptr[i].c = x % 256;
-	memset(tab_ptr[i].ptr, tab_ptr[i].c, x);
+	ft_memset(tab_ptr[i].ptr, tab_ptr[i].c, x);
 }
 
 void			real_sodo(
@@ -100,7 +101,8 @@ void			real_sodo(
 	{
 		if (*ptr != tab_ptr[i].c)
 		{
-			printf("BAD VALUE: Got %hhx instead of %hhx\n", *ptr, tab_ptr[i].c);
+			ft_printf("BAD VALUE: Got %hhx instead of %hhx\n",
+					*ptr, tab_ptr[i].c);
 			exit(1);
 		}
 		ptr++;

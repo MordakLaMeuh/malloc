@@ -47,14 +47,3 @@ int		cmp_size_to_node_size(
 		return (1);
 	return (0);
 }
-
-int		cmp_node_size_to_node_size(
-		struct s_node *node_a,
-		struct s_node *node_b)
-{
-	if (node_a->m.size < node_b->m.size)
-		return (-1);
-	if (node_a->m.size > node_b->m.size)
-		return (1);
-	return (0);
-}

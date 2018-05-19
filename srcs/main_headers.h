@@ -134,6 +134,12 @@ int					core_deallocator(void *ptr);
 void				*core_realloc(void *ptr, size_t *size, bool *memfail);
 
 /*
+** Needed for valloc relink
+*/
+
+void				*core_allocator_large(size_t *size);
+
+/*
 ** Special allocator
 */
 
@@ -171,8 +177,6 @@ struct s_node		*get_best_free_record_tree(
 
 void				*insert_allocated_record(struct s_node *record);
 
-void				**find_index_node(void *addr);
-
 void				*create_index(
 		void *addr,
 		uint32_t range);
@@ -193,10 +197,6 @@ int					cmp_node_addr_to_node_addr(
 
 int					cmp_size_to_node_size(
 		void *size,
-		struct s_node *node_b);
-
-int					cmp_node_size_to_node_size(
-		struct s_node *node_a,
 		struct s_node *node_b);
 
 int					cmp_addr_to_node_m_addr_range(
@@ -226,10 +226,6 @@ enum e_page_type	get_page_type(size_t size);
 void				show_alloc(bool verbose, int fd);
 
 void				debug_nodes(int fd);
-
-void				show_alloc_mem(void);
-
-void				*core_allocator_large(size_t *size);
 
 /*
 ** Tracer
