@@ -20,7 +20,6 @@ extern pthread_mutex_t g_mut;
 # define GETPAGESIZE() getpagesize()
 #endif
 
-
 int	fill_preallocated_chunk(char *base_addr)
 {
 	ctx.node_pages_entry = (struct s_node_page *)base_addr;
