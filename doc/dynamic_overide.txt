@@ -1,0 +1,33 @@
+SOURCE:
+https://stackoverflow.com/questions/929893/how-can-i-override-malloc-calloc-free-etc-under-os-x
+
+I would use library preloading for this task, because it does not require modification of the running program. If you're familiar with the usual Unix way to do this, it's almost a matter of replacing LD_PRELOAD with DYLD_INSERT_LIBRARIES.
+
+First step is to create a library with code such as this, then build it using regular shared library linking options
+(gcc -dynamiclib):
+
+void *malloc(size_t size)
+{
+	void * (*real_malloc)(size_t);
+	real_malloc = dlsym(RTLD_NEXT, "malloc");
+
+	fprintf(stderr, "allocating %lu bytes\n", (unsigned long)size);
+	/* Do your stuff here */
+
+	return real_malloc(size);
+}
+
+Note that if you also divert calloc() and its implementation calls malloc(), you may need additional code to check how you're being called. C++ programs should be pretty safe because the new operator calls malloc() anyway, but be aware that no standard enforces that. I have never encountered an implementation that didn't use malloc(), though.
+
+Finally, set up the running environment for your program and launch it (might require adjustments depending on how your shell handles environment variables):
+
+export DYLD_INSERT_LIBRARIES=./yourlibrary.dylib
+export DYLD_FORCE_FLAT_NAMESPACE=1
+yourprogram --yourargs
+
+See the dyld manual page for more information about the dynamic linker environment variables.
+
+This method is pretty generic. There are limitations, however:
+
+    You won't be able to divert direct system calls
+	    If the application itself tricks you by using dlsym() to load malloc's address, the call won't be diverted. Unless, however, you trick it back by also diverting dlsym!
