@@ -75,7 +75,7 @@ endif
 
 all: top_level_rebuild_libft $(NAME).so sodo
 
-$(NAME).so: $(OBJ) libft/libft.a symbol_list
+$(NAME).so: $(OBJ) libft/libft.a symbol_list exportmap
 	$(CC) $(CFLAGS) -o $(NAME)_$(HOSTTYPE).so $(OBJ) $(LDFLAGS)
 	rm -f $(NAME).so
 	ln -s libft_malloc_$(HOSTTYPE).so $(NAME).so
