@@ -59,7 +59,7 @@ static void		write_body(
 				size_a, size_b);
 	else if (op == VALLOC)
 		ft_fprintf(ctx.tracer_file_descriptor,
-				"{magenta}Valloc{eoc} (%lu) ", ptr, size_a);
+				"{magenta}Valloc{eoc} (%lu) ", size_a);
 }
 
 void			begin_trace(
