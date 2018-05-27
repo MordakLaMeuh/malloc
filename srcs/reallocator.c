@@ -153,7 +153,7 @@ void						*core_realloc(
 		record = btree_get_node_by_content(index->ptr_a, ptr,
 			&cmp_addr_to_node_addr);
 	}
-	if (*size == 0 || record == NULL)
+	if (record == NULL)
 	{
 		if (record == NULL || core_deallocator(ptr) < 0)
 			*memfail = true;

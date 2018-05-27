@@ -23,13 +23,6 @@ void			*malloc(size_t size)
 		return (NULL);
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(MALLOC, NULL, size, 0);
-	if (size == 0)
-	{
-		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(NO_OP, NULL);
-		pthread_mutex_unlock(&g_mut);
-		return (NULL);
-	}
 	addr = core_allocator(&size);
 	if (ctx.tracer_file_descriptor != -1)
 		bend_trace(addr != NULL ? SUCCESS : FAIL, addr);
@@ -48,13 +41,6 @@ void			*calloc(size_t count, size_t size)
 	if (ctx.tracer_file_descriptor != -1)
 		begin_trace(CALLOC, NULL, count, size);
 	global_size = count * size;
-	if (global_size == 0)
-	{
-		if (ctx.tracer_file_descriptor != -1)
-			bend_trace(NO_OP, NULL);
-		pthread_mutex_unlock(&g_mut);
-		return (NULL);
-	}
 	addr = core_allocator(&global_size);
 	if (addr != NULL)
 		ft_aligned_bzero(addr, global_size);
